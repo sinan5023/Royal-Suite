@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>403 – Unauthorized</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #4b63ff;
+      --dark-gray: #22252b;
+      --darker-gray: #17191e;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.unauth-body-bg {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, var(--darker-gray) 0%, var(--dark-gray) 100%);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .unauth-main {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+      background: radial-gradient(circle at top, rgba(75, 99, 255, 0.18), transparent 55%);
+    }
+
+    .unauth-card {
+      position: relative;
+      max-width: 520px;
+      width: 100%;
+      padding: 40px 32px;
+      background: var(--darker-gray);
+      border-radius: 12px;
+      border: 1px solid rgba(75, 99, 255, 0.45);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .unauth-glow {
+      position: absolute;
+      inset: -1px;
+      background: radial-gradient(circle at top, rgba(75, 99, 255, 0.35), transparent 55%);
+      opacity: 0;
+      pointer-events: none;
+      animation: unauthPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes unauthPulse {
+      0%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+
+    .unauth-icon-wrapper {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .unauth-lock {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      border: 2px solid var(--primary-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px rgba(75, 99, 255, 0.4);
+      animation: unauthFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes unauthFloat {
+      0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 0 25px rgba(75, 99, 255, 0.35);
+      }
+      50% {
+        transform: translateY(-6px);
+        box-shadow: 0 0 40px rgba(75, 99, 255, 0.7);
+      }
+    }
+
+    .unauth-bar {
+      position: absolute;
+      top: 14px;
+      width: 42px;
+      height: 10px;
+      border-radius: 18px;
+      border: 3px solid var(--primary-500);
+      border-bottom: none;
+    }
+
+    .unauth-body-lock {
+      position: absolute;
+      bottom: 16px;
+      width: 40px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--primary-500);
+    }
+
+    .unauth-title {
+      font-size: 28px;
+      letter-spacing: 1px;
+      color: var(--primary-500);
+      margin-bottom: 12px;
+    }
+
+    .unauth-text {
+      color: #f5f5f5;
+      margin-bottom: 4px;
+    }
+
+    .unauth-subtext {
+      color: #9d9d9d;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .unauth-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary-500);
+      color: var(--darker-gray);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #3a50e0;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(75, 99, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-500);
+      border: 1px solid var(--primary-500);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-500);
+      color: var(--darker-gray);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(75, 99, 255, 0.4);
+    }
+  </style>
+</head>
+<body class="unauth-body-bg">
+
+  <main class="unauth-main">
+    <div class="unauth-card">
+      <div class="unauth-glow"></div>
+
+      <div class="unauth-icon-wrapper">
+        <div class="unauth-lock">
+          <span class="unauth-bar"></span>
+          <span class="unauth-body-lock"></span>
+        </div>
+      </div>
+
+      <h1 class="unauth-title">403 – Unauthorized</h1>
+      <p class="unauth-text">
+        You don’t have permission to view this page.
+      </p>
+      <p class="unauth-subtext">
+        If you believe this is a mistake, please contact your administrator.
+      </p>
+
+      <div class="unauth-actions">
+        <a href="/" class="btn-primary">Go to Login</a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

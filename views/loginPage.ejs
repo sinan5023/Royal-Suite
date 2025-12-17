@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SuitManager Pro - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-main: #101117;
+        --card-bg: #14151f;
+        --border-color: #1f2230;
+        --primary: #4b63ff;
+        --primary-hover: #394dd9;
+        --text-main: #ffffff;
+        --text-muted: #9ca3af;
+        --input-bg: #111827;
+        --input-border: #1f2937;
+        --input-focus: #4b63ff;
+        --btn-secondary-bg: #111827;
+        --btn-secondary-border: #1f2937;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .login-wrapper {
+        width: 100%;
+        max-width: 440px;
+      }
+
+      .login-card {
+        background: var(--card-bg);
+        border-radius: 14px;
+        padding: 32px 32px 28px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      }
+
+      .app-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .app-logo-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e5e7eb;
+        font-size: 18px;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      .app-logo-text {
+        font-size: 22px;
+        font-weight: 700;
+        color: #60a5fa;
+      }
+
+      .login-title {
+        text-align: center;
+        margin-bottom: 6px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .login-subtitle {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 26px;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: #d1d5db;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 9px 11px;
+        font-size: 13px;
+        border-radius: 8px;
+        border: 1px solid var(--input-border);
+        background: var(--input-bg);
+        color: var(--text-main);
+        outline: none;
+      }
+
+      .form-input::placeholder {
+        color: #6b7280;
+      }
+
+      .form-input:focus {
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 1px rgba(75, 99, 255, 0.4);
+      }
+
+      .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-top: 2px;
+        margin-bottom: 18px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .checkbox-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #d1d5db;
+        cursor: pointer;
+      }
+
+      .checkbox-label input[type="checkbox"] {
+        width: 13px;
+        height: 13px;
+        accent-color: var(--primary);
+      }
+
+      .link-muted {
+        color: #6366f1;
+        text-decoration: none;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .link-muted:hover {
+        text-decoration: underline;
+      }
+
+      .btn {
+        width: 100%;
+        border-radius: 8px;
+        padding: 9px 12px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.15s, border-color 0.15s;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #f9fafb;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .btn-secondary {
+        background: var(--btn-secondary-bg);
+        color: #e5e7eb;
+        border: 1px solid var(--btn-secondary-border);
+      }
+
+      .btn-secondary:hover {
+        border-color: #4b5563;
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 24px 20px 22px;
+        }
+
+        .login-title {
+          font-size: 18px;
+        }
+
+        .app-logo-text {
+          font-size: 20px;
+        }
+
+        .form-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .link-muted {
+          align-self: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="app-logo">
+          <div class="app-logo-icon">
+            <span>🧳</span>
+          </div>
+          <span class="app-logo-text">SuitManager Pro</span>
+        </div>
+
+        <h1 class="login-title">Welcome to SuitManager Pro</h1>
+        <p class="login-subtitle">Access your account to manage rentals.</p>
+        <form id="login-form">
+          <!-- New Company Code field -->
+          <div class="form-group">
+            <label class="form-label" for="companyCode">Company ID</label>
+            <input
+              id="companyId"
+              name="companyId"
+              type="text"
+              class="form-input"
+              placeholder="Enter your company ID"
+              autocomplete="organization"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email or Username</label>
+            <input
+              id="email"
+              name="email"
+              type="text"
+              class="form-input"
+              placeholder="Enter your email or username"
+              autocomplete="username"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" id="send-button">
+            Login
+          </button>
+          <div
+            id="login-error"
+            style="
+              display: none;
+              color: #f97373;
+              font-size: 12px;
+              margin-bottom: 12px;
+            "
+          ></div>
+        </form>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById("login-form");
+      const errorBox = document.getElementById("login-error");
+      const sendButton = document.getElementById("send-button");
+
+      function validateForm(values) {
+        if (!values.companyId || !values.companyId.trim()) {
+          return "Company ID is required";
+        }
+        if (!values.email || !values.email.trim()) {
+          return "Email or username is required";
+        }
+
+        // very simple email check if it looks like an email
+        if (values.email.includes("@")) {
+          const basicEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!basicEmailRegex.test(values.email)) {
+            return "Please enter a valid email address";
+          }
+        }
+
+        return null; // no error
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        errorBox.textContent = "";
+        errorBox.style.display = "none";
+
+        const validationError = validateForm(payload);
+        if (validationError) {
+          errorBox.textContent = validationError;
+          errorBox.style.display = "block";
+          return;
+        }
+
+        sendButton.disabled = true;
+
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            errorBox.textContent = data.msg || "Login failed";
+            errorBox.style.display = "block";
+            sendButton.disabled = false;
+            return;
+          }
+
+          window.location.href = data.redirectTo || "/verifyOtp";
+        } catch (err) {
+          errorBox.textContent = "Network error, please try again.";
+          errorBox.style.display = "block";
+          sendButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

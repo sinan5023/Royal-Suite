@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SuitManager Pro - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Main layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-collapse {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        color: var(--text-soft);
+      }
+
+      /* Content area */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      /* Greeting + stats */
+      .greeting-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 14px 16px 10px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .greeting-header {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .greeting-sub {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .stat-card {
+        background: var(--bg-elevated-soft);
+        border-radius: 10px;
+        border: 1px solid #1e2331;
+        padding: 8px 9px;
+        font-size: 11px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .stat-label {
+        color: var(--text-soft);
+        font-size: 10px;
+      }
+
+      .stat-value {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .stat-meta {
+        font-size: 10px;
+        color: var(--success);
+      }
+
+      /* Quick actions */
+      .quick-actions {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .quick-title {
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .quick-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .btn-pill {
+        padding: 5px 10px;
+        border-radius: 999px;
+        border: 1px solid #262b3c;
+        background: #191d2a;
+        font-size: 11px;
+        color: #e5e7eb;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-pill.primary {
+        background: var(--accent);
+        border-color: var(--accent-soft);
+      }
+
+      .btn-pill:hover {
+        opacity: 0.9;
+      }
+
+      /* Main grid: deliveries/returns */
+      .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .main-grid-2col {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 2fr);
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 12px 14px;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
+
+      .card-title {
+        font-weight: 500;
+      }
+
+      .card-tabs {
+        display: inline-flex;
+        border-radius: 999px;
+        background: #181b25;
+        border: 1px solid #232737;
+        font-size: 11px;
+        overflow: hidden;
+      }
+
+      .card-tab {
+        padding: 4px 10px;
+        color: var(--text-soft);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .card-tab.active {
+        background: var(--accent);
+        color: #f9fafb;
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 11px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .filter-input {
+        flex: 1;
+        min-width: 190px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-main);
+        font-size: 11px;
+      }
+
+      .filter-pill {
+        padding: 5px 10px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        font-size: 11px;
+        color: var(--text-soft);
+        cursor: pointer;
+      }
+
+      .filter-pill.active {
+        background: #1c2233;
+        color: #e5e7eb;
+      }
+
+      /* Simple three-column list layout */
+      .columns-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 24px;
+        row-gap: 10px;
+        margin-top: 12px;
+        font-size: 11px;
+      }
+
+      .column-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--text-soft);
+        margin-bottom: 6px;
+      }
+
+      .list-item {
+        margin-bottom: 10px;
+      }
+
+      .list-main {
+        font-size: 11px;
+      }
+
+      .list-sub {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      /* Upcoming Returns table-ish */
+      .returns-list {
+        margin-top: 6px;
+        font-size: 11px;
+      }
+
+      .return-row {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) auto auto;
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid #1a1e2a;
+        gap: 8px;
+      }
+
+      .badge-danger {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #3b1a1f;
+        color: #fecaca;
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+
+      /* Notifications & notes */
+      .notifications-list {
+        margin-top: 8px;
+        font-size: 11px;
+      }
+
+      .notif-item {
+        border-left: 2px solid var(--accent);
+        padding: 6px 8px 6px 10px;
+        margin-bottom: 6px;
+        background: #181b27;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .notif-main {
+        font-size: 11px;
+      }
+
+      .notif-meta {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .notif-icons {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .notes-textarea {
+        width: 100%;
+        min-height: 130px;
+        border-radius: 10px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-main);
+        font-size: 11px;
+        padding: 8px 10px;
+        resize: vertical;
+      }
+
+      .btn-full {
+        margin-top: 10px;
+        width: 100%;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .btn-full:hover {
+        background: var(--accent-soft);
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .stats-row {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .columns-3 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .main-grid-2col {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .stats-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 600px) {
+        .columns-3 {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item active">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/billing" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Billing</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <div class="sidebar-collapse">⬅ Collapse</div>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Greeting + stats -->
+        <section class="greeting-card">
+          <div>
+            <div class="greeting-header">
+              <%= user.greeting %>, <%= user.name %>.
+            </div>
+            <div class="greeting-sub">
+              <%= user.role %> | <%= currentDate %>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Deliveries Today</div>
+              <div class="stat-value"><%= stats.deliveriesToday %></div>
+              <div class="stat-meta"><%= stats.deliveriesChange %></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Returns Due Today</div>
+              <div class="stat-value"><%= stats.returnsDueToday %></div>
+              <div class="stat-meta"><%= stats.returnsChange %></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Overdue Returns</div>
+              <div class="stat-value"><%= stats.overdueReturns %></div>
+              <div class="stat-meta"><%= stats.overdueChange %></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Bookings</div>
+              <div class="stat-value"><%= stats.activeBookings %></div>
+              <div class="stat-meta"><%= stats.activeChange %></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Revenue vs Target</div>
+              <div class="stat-value"><%= stats.revenuePercent %>%</div>
+              <div class="stat-meta"><%= stats.revenueStatus %></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Utilization</div>
+              <div class="stat-value"><%= stats.utilization %>%</div>
+              <div class="stat-meta"><%= stats.utilizationChange %></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick actions -->
+        <section class="quick-actions">
+          <div class="quick-title">Quick Actions</div>
+          <div class="quick-buttons">
+            <a href="/bookings/new" class="btn-pill primary">+ New Booking</a>
+            <a href="/expenses/new" class="btn-pill">+ Add Expense</a>
+            <a href="/customers/new" class="btn-pill">+ Add Customer</a>
+            <a href="/scan" class="btn-pill">📷 Scan Pickup/Return</a>
+          </div>
+        </section>
+
+        <!-- Upcoming deliveries -->
+        <section class="main-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Upcoming Deliveries</div>
+            </div>
+
+            <div class="filter-row">
+              <input class="filter-input" placeholder="Search deliveries..." />
+              <button class="filter-pill">Delivery Method</button>
+              <button class="filter-pill">Assigned Staff</button>
+            </div>
+
+            <div class="columns-3">
+              <div>
+                <div class="column-title">Today</div>
+                <% if (deliveries.today && deliveries.today.length > 0) { %> <%
+                deliveries.today.forEach(delivery => { %>
+                <div class="list-item">
+                  <div class="list-main"><%= delivery.customerName %></div>
+                  <div class="list-sub"><%= delivery.productName %></div>
+                </div>
+                <% }) %> <% } else { %>
+                <div class="list-sub">No deliveries today</div>
+                <% } %>
+              </div>
+
+              <div>
+                <div class="column-title">Tomorrow</div>
+                <% if (deliveries.tomorrow && deliveries.tomorrow.length > 0) {
+                %> <% deliveries.tomorrow.forEach(delivery => { %>
+                <div class="list-item">
+                  <div class="list-main"><%= delivery.customerName %></div>
+                  <div class="list-sub"><%= delivery.productName %></div>
+                </div>
+                <% }) %> <% } else { %>
+                <div class="list-sub">No deliveries tomorrow</div>
+                <% } %>
+              </div>
+
+              <div>
+                <div class="column-title">Day After Tomorrow</div>
+                <% if (deliveries.dayAfter && deliveries.dayAfter.length > 0) {
+                %> <% deliveries.dayAfter.forEach(delivery => { %>
+                <div class="list-item">
+                  <div class="list-main"><%= delivery.customerName %></div>
+                  <div class="list-sub"><%= delivery.productName %></div>
+                </div>
+                <% }) %> <% } else { %>
+                <div class="list-sub">No deliveries</div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upcoming returns + notifications/notes -->
+        <section class="main-grid-2col">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Upcoming Returns</div>
+              <div class="card-tabs">
+                <div class="card-tab active">All</div>
+                <div class="card-tab">Due Today</div>
+                <div class="card-tab">Overdue</div>
+                <div class="card-tab">Next 7 Days</div>
+              </div>
+            </div>
+
+            <div class="returns-list">
+              <% if (returns && returns.length > 0) { %> <%
+              returns.forEach(returnItem => { %>
+              <div class="return-row">
+                <div>
+                  <div class="list-main"><%= returnItem.customerName %></div>
+                  <div class="list-sub"><%= returnItem.productName %></div>
+                </div>
+                <div>
+                  <% if (returnItem.isOverdue) { %>
+                  <span class="badge-danger">Overdue</span>
+                  <% } %>
+                </div>
+                <div class="row-actions">
+                  <span>✏</span>
+                  <span>🔁</span>
+                  <span>⋯</span>
+                </div>
+              </div>
+              <% }) %> <% } else { %>
+              <div class="list-sub">No upcoming returns</div>
+              <% } %>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom: 12px">
+              <div class="card-header">
+                <div class="card-title">Notifications</div>
+                <a
+                  href="/notifications"
+                  style="
+                    font-size: 11px;
+                    color: var(--text-soft);
+                    text-decoration: none;
+                  "
+                >
+                  View All
+                </a>
+              </div>
+
+              <div class="notifications-list">
+                <% if (notifications && notifications.length > 0) { %> <%
+                notifications.forEach(notif => { %>
+                <div class="notif-item">
+                  <div>
+                    <div class="notif-main"><%= notif.message %></div>
+                    <div class="notif-meta"><%= notif.timeAgo %></div>
+                  </div>
+                  <div class="notif-icons">
+                    <span>🔔</span>
+                    <span>⋯</span>
+                  </div>
+                </div>
+                <% }) %> <% } else { %>
+                <div class="list-sub">No new notifications</div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Handover / Today's Notes</div>
+              </div>
+              <form method="POST" action="/dashboard/save-notes">
+                <textarea
+                  class="notes-textarea"
+                  name="notes"
+                  placeholder="Add notes for the next shift here..."
+                >
+<%= todayNotes || '' %></textarea
+                >
+                <button type="submit" class="btn-full">Save Notes</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

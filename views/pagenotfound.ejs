@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SuitManager Pro - 404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-main: #101117;
+        --accent: #4b63ff;
+        --accent-soft: #1f2434;
+        --text-main: #ffffff;
+        --text-muted: #9ca3af;
+        --border-subtle: #1f2230;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #181a24 0, #101117 55%);
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 960px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        gap: 40px;
+        align-items: center;
+      }
+
+      .left {
+        text-align: left;
+      }
+
+      .logo-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: #151827;
+        border: 1px solid #252a3a;
+        font-size: 12px;
+        margin-bottom: 18px;
+      }
+
+      .logo-square {
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+
+      .logo-text {
+        font-weight: 600;
+        color: #bfdbfe;
+      }
+
+      .code-big {
+        font-size: clamp(72px, 11vw, 110px);
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        line-height: 0.9;
+        margin-bottom: 10px;
+      }
+
+      .title {
+        font-size: clamp(22px, 3vw, 28px);
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        color: var(--text-muted);
+        max-width: 480px;
+        margin-bottom: 22px;
+      }
+
+      .hint-box {
+        border-radius: 12px;
+        border: 1px solid var(--border-subtle);
+        background: rgba(15, 17, 23, 0.9);
+        padding: 10px 12px;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 22px;
+      }
+
+      .hint-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6b7280;
+        margin-bottom: 4px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        border-radius: 999px;
+        padding: 9px 18px;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        border-color: #3b4ccc;
+        color: #f9fafb;
+      }
+
+      .btn-primary:hover {
+        background: #3b4ccc;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border-color: #303548;
+        color: var(--text-main);
+      }
+
+      .btn-ghost:hover {
+        background: var(--accent-soft);
+      }
+
+      .right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .orb {
+        position: relative;
+        width: 230px;
+        height: 230px;
+      }
+
+      .orb-circle {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(75, 99, 255, 0.14),
+          transparent 70%
+        );
+        border: 1px solid #262a3d;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      }
+
+      .orb-suitcase {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 96px;
+        height: 96px;
+        transform: translate(-50%, -50%);
+        border-radius: 26px;
+        background: linear-gradient(145deg, #4b63ff, #818cf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        box-shadow: 0 20px 45px rgba(37, 99, 235, 0.65);
+        animation: float 3.2s ease-in-out infinite;
+      }
+
+      .orb-ring {
+        position: absolute;
+        inset: 22px;
+        border-radius: 50%;
+        border: 1px dashed #303549;
+        opacity: 0.9;
+      }
+
+      .orb-dot {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #818cf8;
+        box-shadow: 0 0 10px rgba(129, 140, 248, 0.9);
+        transform-origin: -60px -60px;
+        animation: orbit 10s linear infinite;
+      }
+
+      .orb-dot:nth-child(2) {
+        background: #f97373;
+        box-shadow: 0 0 10px rgba(248, 113, 113, 0.9);
+        animation-duration: 14s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) translateY(0);
+        }
+        50% {
+          transform: translate(-50%, -50%) translateY(-12px);
+        }
+      }
+
+      @keyframes orbit {
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg) translateX(60px);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg) translateX(60px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: minmax(0, 1fr);
+          text-align: center;
+        }
+
+        .left {
+          text-align: center;
+        }
+
+        .subtitle,
+        .hint-box {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .actions {
+          justify-content: center;
+        }
+
+        .orb {
+          margin-top: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="left">
+        <div class="logo-row">
+          <div class="logo-square">🧳</div>
+          <span class="logo-text">SuitManager Pro</span>
+        </div>
+
+        <div class="code-big">404</div>
+        <h1 class="title">Page not found.</h1>
+        <p class="subtitle">
+          This rack is empty. The page you’re looking for might have been moved,
+          renamed, or never existed in this wardrobe.
+        </p>
+
+        <div class="hint-box">
+          <div class="hint-label">Hint</div>
+          <div>
+            Check the URL for typos, or head back to your dashboard or login to
+            continue managing rentals.
+          </div>
+        </div>
+
+        <div class="actions">
+          <button
+            class="btn btn-primary"
+            onclick="window.location.href = '/homeDashboard';"
+          >
+            ← Back to Dashboard
+          </button>
+          <button class="btn btn-ghost" onclick="window.location.href ='/'">
+            Go to Login
+          </button>
+        </div>
+      </section>
+
+      <section class="right">
+        <div class="orb">
+          <div class="orb-circle"></div>
+          <div class="orb-ring"></div>
+          <div class="orb-suitcase">🧳</div>
+          <div class="orb-dot"></div>
+          <div class="orb-dot"></div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
