@@ -1,7 +1,4 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-const OtpStore = require("../models/otpModel");
-const sendOtp = require("../services/otpService");
 const {
   sendOtpService,
   verifyOtpService,
@@ -12,8 +9,9 @@ const sendOtpController = async (req, res) => {
   try {
     const { companyId, email } = req.body;
     const response = await sendOtpService(companyId, email);
+    const { Otptoken } = response;
     if (response.ok) {
-      res.status(200).cookie("otpToken", response.Otptoken).json({
+      res.status(200).cookie("Otptoken", Otptoken).json({
         ok: response.ok,
         message: response.message,
         redirect: response.redirectTo,
@@ -38,29 +36,33 @@ const verifyOtpController = async (req, res) => {
   const { email } = decodedToken;
   const response = await verifyOtpService(otp, email);
   if (response.ok) {
-    res.status(200).cookie("token", token).json({
+    res.status(200).cookie("token", response.token).json({
       ok: response.ok,
       message: response.message,
       redirectTo: response.redirectTo,
     });
+  } else {
+    res.status(403).json({ ok: response.ok, message: response.message });
   }
 };
 
 const resendOtpController = async (req, res) => {
-  const { Otptoken } = req.cookies;
-  const decodedToken = jwt.decode(Otptoken);
-  const { email } = decodedToken;
-  if (!Otptoken) {
-    res.status(401).redirect("/unauthorized");
-  }
-  const response = await resendOtpService(Otptoken, email);
-  if (response.ok) {
-    res
-      .status(200)
-      .cookie("otpToken", response.token)
-      .json({ ok: response.ok, message: response.messsage });
-  } else {
-    res.status(400).json({ ok: response.ok, message: response.messsage });
+  try {
+    const { Otptoken } = req.cookies;
+    const decodedToken = jwt.decode(Otptoken);
+    const { email } = decodedToken;
+    if (!Otptoken) {
+      req.status(403).redirect("/");
+    }
+    const response = await resendOtpService(email);
+    if (response.ok) {
+      res.status(200).cookie("Otptoken", response.Otptoken).json({ ok: response.ok, message: response.messsage });
+    } else if (response.ok===false || !response) {
+      res.status(400).json({ ok: response.ok, message: response.message });
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, message: "error sending an otp" });
+    console.log(error);
   }
 };
 module.exports = {

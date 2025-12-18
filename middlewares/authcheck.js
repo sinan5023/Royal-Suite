@@ -12,10 +12,7 @@ const authCheck = async (req, res, next) => {
     const { _id } = decodedToken;
     const UserCheck = User.findById({ _id: _id });
     if (!UserCheck) {
-      return res.status(404).json({
-        ok: false,
-        msg: "User Not Found",
-      });
+      return res.status(404).render("unauthorized");
     } else {
         jwt.verify(token,process.env.JWT_SECRET)
 

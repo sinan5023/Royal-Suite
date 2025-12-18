@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const OtpStore = require("../models/otpModel");
-const sendOtp = require("./otpService");
+const sendOtp = require("./otpTransportService");
+const otpGenerator = require("./otpGeneratorService");
+const { date } = require("joi");
 
 const sendOtpService = async (companyId, email) => {
   try {
     const user = await User.findOne({ email: email, companyId: companyId });
-    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = await otpGenerator();
     console.log(otp);
     if (!user) {
       return { ok: false, message: "User Not Found" };
@@ -14,7 +16,7 @@ const sendOtpService = async (companyId, email) => {
       if (user.companyId === companyId && email === user.email) {
         const payload = {
           email: user.email,
-          purpose: "verify-otp",
+          purpose: "Otp-Verification",
         };
         await sendOtp(email, otp);
         const token = await jwt.sign(payload, process.env.OTP_TOKEN_SECRET, {
@@ -42,8 +44,9 @@ const sendOtpService = async (companyId, email) => {
 
 const verifyOtpService = async (otp, email) => {
   try {
-    const code = await OtpStore.findOne({ email: email, consumed: false });
-    console.log(code);
+    const code = await OtpStore.findOne({ email: email, consumed: false }).sort(
+      { createdAt: -1 }
+    );
     if (!code) {
       return {
         ok: false,
@@ -53,13 +56,13 @@ const verifyOtpService = async (otp, email) => {
     if (otp === code.otp) {
       const user = await User.findOne({ email: email });
       code.consumed = true;
+      await code.save();
       console.log(user);
       const payload = {
         _id: user._id,
         email: user.email,
         role: user.role,
       };
-      await code.save();
       const token = await jwt.sign(payload, process.env.JWT_SECRET);
       return {
         ok: true,
@@ -75,36 +78,41 @@ const verifyOtpService = async (otp, email) => {
   }
 };
 
-const resendOtpService = async (email, Otptoken) => {
-  const code = await OtpStore.findOne({ email: email });
-  if (!code || code.consumed === true) {
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    await sendOtp(email, otp);
-    const payload = {
-      email: email,
-      purpose: "verify-otp",
-    };
-    const token = await jwt.sign(payload, process.env.OTP_TOKEN_SECRET, {
-      expiresIn: "3m",
-    });
-    OtpStore.create({
-      email,
-      otp,
-      expiresAt: new Date(Date.now() + 2 * 60 * 1000),
-    });
-    return {
-      ok: true,
-      messsage: "Otp sent succesfully",
-      token: token,
-    };
-  } else {
-    await sendOtp(email, code.otp);
-    return {
-      ok: true,
-      messsage: "Otp sent succesfully",
-      token: token,
-    };
-  }
+const resendOtpService = async (email) => {
+  try {
+    const code = await OtpStore.findOne({ email: email, consumed: false }).sort(
+      { createdAt: -1 }
+    );
+    if (!code || code === undefined) {
+      const otp = await otpGenerator();
+      await sendOtp(email, otp);
+      const payload = {
+        email,
+        purpose: "Otp-Verification",
+      };
+      const token = await jwt.sign(payload, process.env.OTP_TOKEN_SECRET, {
+        expiresIn: "3m",
+      });
+      await OtpStore.create({
+        email,
+        otp,
+        expiresAt: new Date(Date.now() + 2 * 60 * 1000)
+      })
+      return {
+        ok:true,
+        message:"Otp Resend Succesfully",
+        Otptoken:token
+      }
+    } else {
+      console.log(code.otp);
+      await sendOtp(email,code.otp)
+      return {
+         ok: true,
+        message: "Otp Resend Succesfully",
+        Otptoken: Otptoken,
+      }
+    }
+  } catch (error) {}
 };
 
 module.exports = { sendOtpService, verifyOtpService, resendOtpService };
