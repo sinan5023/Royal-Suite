@@ -56,7 +56,7 @@ const resendOtpController = async (req, res) => {
     }
     const response = await resendOtpService(email);
     if (response.ok) {
-      res.status(200).cookie("Otptoken", response.Otptoken).json({ ok: response.ok, message: response.messsage });
+      res.status(200).cookie("Otptoken", response.Otptoken).json({ ok:true, message: response.message });
     } else if (response.ok===false || !response) {
       res.status(400).json({ ok: response.ok, message: response.message });
     }

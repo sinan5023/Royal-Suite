@@ -85,6 +85,7 @@ const resendOtpService = async (email) => {
     );
     if (!code || code === undefined) {
       const otp = await otpGenerator();
+      console.log(otp);
       await sendOtp(email, otp);
       const payload = {
         email,
@@ -96,23 +97,32 @@ const resendOtpService = async (email) => {
       await OtpStore.create({
         email,
         otp,
-        expiresAt: new Date(Date.now() + 2 * 60 * 1000)
-      })
+        expiresAt: new Date(Date.now() + 2 * 60 * 1000),
+      });
       return {
-        ok:true,
-        message:"Otp Resend Succesfully",
-        Otptoken:token
-      }
-    } else {
-      console.log(code.otp);
-      await sendOtp(email,code.otp)
-      return {
-         ok: true,
+        ok: true,
         message: "Otp Resend Succesfully",
-        Otptoken: Otptoken,
-      }
+        Otptoken: token,
+      };
+    } else {
+      const payload = {
+        email,
+        purpose: "Otp-Verification",
+      };
+      const token = await jwt.sign(payload, process.env.OTP_TOKEN_SECRET, {
+        expiresIn: "3m",
+      });
+      console.log(code.otp);
+      return {
+        ok: true,
+        message: "Otp Resend Succesfully",
+        Otptoken: token,
+      };
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    return { ok: false, message: "Internal server error" };
+  }
 };
 
 module.exports = { sendOtpService, verifyOtpService, resendOtpService };
