@@ -11,8 +11,9 @@ function validate(schema, options = {}) {
     const { error, value } = schema.validate(req.body, validationOptions);
 
     if (error) {
+      console.log(error)
       return res.status(400).json({
-        success: false,
+        ok: false,
         message: 'Validation error',
         errors: error.details.map((detail) => ({
           field: detail.path.join('.'),

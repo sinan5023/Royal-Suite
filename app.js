@@ -26,7 +26,7 @@ app.use("/customers", customerRoutes);
 //auth api
 app.use("/api/auth", authApi);
 //customer api
-app.use("/api/customer",customerApi)
+app.use("/api/customers",customerApi)
 
 //   }
 
