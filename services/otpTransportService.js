@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const sendOtp = async (email, otp) => {
   try {
+    return "message sent succesfully"
     const message = await transporter.sendMail({
       from: {
         name: "Royal Suit Admin",

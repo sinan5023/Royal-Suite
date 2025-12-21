@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const customer = require("../models/customerModel");
-const { addCustomerService } = require("../");
+const { addCustomerService } = require("../services/customerService");
 
 const addCustomerData = {
   user: {
@@ -19,18 +19,20 @@ const DisplayAddCustomer = async (req, res) => {
 
 const addNewCustomer = async (req, res) => {
   try {
-    console.log(req.body)
     const data  = req.body
     const {email} = data
     const response = await addCustomerService(data,email)
     if(response.ok){
+      res.status(200).json({ok:true,message:"customer created succesfully"})
 
     }
     else{
+      res.status(400).json({ok:false,message:"customer already exists"})
       
     }
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ ok: false, message: error.message });
   }
 };

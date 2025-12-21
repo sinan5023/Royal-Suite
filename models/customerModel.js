@@ -16,11 +16,12 @@ const customerSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Primary mobile is required'],
     trim: true,
-    match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number']
+    match: [/^\+\d{1,3}\d{10}$/, 'Please enter a valid 10-digit mobile number']
   },
   alternateMobile: {
     type: String,
-    trim: true
+    trim: true,
+    match: [/^\+\d{1,3}\d{10}$/, 'Please enter a valid 10-digit mobile number']
   },
   email: {
     type: String,
@@ -103,12 +104,12 @@ customerSchema.virtual('displayId').get(function() {
 });
 
 // Pre-save hook to generate customer code if not provided
-customerSchema.pre('save', async function(next) {
+customerSchema.pre('save', async function () {
   if (!this.customerCode && this.isNew) {
     const count = await mongoose.model('Customer').countDocuments();
     this.customerCode = `CUST${String(count + 1).padStart(6, '0')}`;
   }
-  next();
+  // no next()
 });
 
 // Instance method to increment booking stats0
