@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>View Customer - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-collapse {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        color: var(--text-soft);
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+        margin-top: 2px;
+      }
+
+      .page-header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid #262b3c;
+        color: var(--text-soft);
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      /* Layout similar to add form */
+      .two-column-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 16px;
+      }
+
+      .left-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .panel-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 12px;
+      }
+
+      .panel-title {
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .summary-line {
+        font-size: 12px;
+        color: var(--text-soft);
+        margin-bottom: 4px;
+      }
+
+      .summary-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .summary-badge.active {
+        background: #1e3a2e;
+        color: var(--success);
+      }
+
+      .summary-badge.inactive {
+        background: #3b2831;
+        color: #fecaca;
+      }
+
+      .summary-badge.vip {
+        background: #3b2d1f;
+        color: var(--warning);
+      }
+
+      .summary-badge.blacklisted {
+        background: #3b1a1f;
+        color: var(--danger);
+      }
+
+      /* Detail view boxes */
+      .form-container {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 16px 18px;
+      }
+
+      .form-section {
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--text-main);
+      }
+
+      .detail-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .detail-row.single {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .detail-label {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .detail-value-box {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-main);
+        font-size: 12px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+      }
+
+      .detail-value-box.muted {
+        color: var(--text-muted);
+      }
+
+      .detail-textarea {
+        min-height: 70px;
+        align-items: flex-start;
+        white-space: pre-wrap;
+      }
+
+      .pill {
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        display: inline-block;
+      }
+
+      .pill-whatsapp {
+        background: #075e54;
+        color: #e5e7eb;
+      }
+
+      .pill-off {
+        background: #27272f;
+        color: #9ca3af;
+      }
+
+      @media (max-width: 1024px) {
+        .two-column-layout {
+          grid-template-columns: 1fr;
+        }
+        .left-panel {
+          order: 2;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .detail-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item active">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/billing" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Billing</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <div class="sidebar-collapse">⬅ Collapse</div>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <div class="page-title"><%= customer.fullName %></div>
+            <div class="page-subtitle">
+              Customer ID: <%= customer.customerCode || '—' %> • Status:
+              <span
+                class="summary-badge <%= (customer.status || '').toLowerCase() %>"
+              >
+                <%= customer.status || 'Active' %>
+              </span>
+            </div>
+          </div>
+          <div class="page-header-actions">
+            <a href="/customers" class="btn btn-secondary"
+              >← Back to Customers</a
+            >
+            <a
+              href="/api/customers/<%= customer._id %>/edit"
+              class="btn btn-primary"
+            >
+              ✏ Edit Customer
+            </a>
+          </div>
+        </div>
+
+        <div class="two-column-layout">
+          <!-- Left summary panel -->
+          <div class="left-panel">
+            <div class="panel-card">
+              <div class="panel-title">Overview</div>
+              <div class="summary-line">
+                Primary Mobile:
+                <strong><%= customer.primaryMobile || '—' %></strong>
+              </div>
+              <div class="summary-line">
+                Email:
+                <span><%= customer.email || '—' %></span>
+              </div>
+              <div class="summary-line">
+                Total Bookings:
+                <strong><%= customer.totalBookings || 0 %></strong>
+              </div>
+              <div class="summary-line">
+                Outstanding Balance:
+                <strong>₹ <%= customer.outstandingBalance || 0 %></strong>
+              </div>
+              <div class="summary-line" style="margin-top: 6px">
+                WhatsApp: <% if (customer.whatsappAvailable) { %>
+                <span class="pill pill-whatsapp">Available</span>
+                <% } else { %>
+                <span class="pill pill-off">Not available</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right detail panel -->
+          <div class="form-container">
+            <!-- Personal Information -->
+            <div class="form-section">
+              <div class="section-title">Personal Information</div>
+              <div class="detail-row">
+                <div class="detail-group">
+                  <div class="detail-label">Full Name</div>
+                  <div class="detail-value-box">
+                    <%= customer.fullName || '—' %>
+                  </div>
+                </div>
+                <div class="detail-group">
+                  <div class="detail-label">Gender</div>
+                  <div class="detail-value-box">
+                    <%= customer.gender ?
+                    customer.gender.charAt(0).toUpperCase() +
+                    customer.gender.slice(1) : '—' %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row single">
+                <div class="detail-group">
+                  <div class="detail-label">Date of Birth</div>
+                  <div class="detail-value-box">
+                    <%= customer.dateOfBirthFormatted || customer.dateOfBirth ||
+                    '—' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact & Communication -->
+            <div class="form-section">
+              <div class="section-title">Contact & Communication</div>
+              <div class="detail-row">
+                <div class="detail-group">
+                  <div class="detail-label">Primary Mobile</div>
+                  <div class="detail-value-box">
+                    <%= customer.primaryMobile || '—' %>
+                  </div>
+                </div>
+                <div class="detail-group">
+                  <div class="detail-label">Alternate Phone</div>
+                  <div class="detail-value-box">
+                    <%= customer.alternateMobile || '—' %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-group">
+                  <div class="detail-label">Email</div>
+                  <div class="detail-value-box">
+                    <%= customer.email || '—' %>
+                  </div>
+                </div>
+                <div class="detail-group">
+                  <div class="detail-label">Preferred Contact Channel</div>
+                  <div class="detail-value-box">
+                    <% if (customer.preferredContact) { %> <%=
+                    customer.preferredContact.charAt(0).toUpperCase() +
+                    customer.preferredContact.slice(1) %> <% } else { %> — <% }
+                    %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row single">
+                <div class="detail-group">
+                  <div class="detail-label">WhatsApp Available</div>
+                  <div class="detail-value-box">
+                    <%= customer.whatsappAvailable ? 'Yes' : 'No' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-section">
+              <div class="section-title">Address Information</div>
+              <div class="detail-row single">
+                <div class="detail-group">
+                  <div class="detail-label">Street Address</div>
+                  <div class="detail-value-box">
+                    <%= customer.street || customer.streetAddress || '—' %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-group">
+                  <div class="detail-label">City</div>
+                  <div class="detail-value-box">
+                    <%= customer.city || '—' %>
+                  </div>
+                </div>
+                <div class="detail-group">
+                  <div class="detail-label">State / Region</div>
+                  <div class="detail-value-box">
+                    <%= customer.state || '—' %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-group">
+                  <div class="detail-label">Postal Code</div>
+                  <div class="detail-value-box">
+                    <%= customer.postalCode || '—' %>
+                  </div>
+                </div>
+                <div class="detail-group">
+                  <div class="detail-label">Country</div>
+                  <div class="detail-value-box">
+                    <%= customer.country || '—' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Other Notes -->
+            <div class="form-section">
+              <div class="section-title">Other Notes</div>
+              <div class="detail-row single">
+                <div class="detail-group">
+                  <div class="detail-label">Customer Notes</div>
+                  <div class="detail-value-box detail-textarea">
+                    <%= customer.customerNotes || '—' %>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-row single">
+                <div class="detail-group">
+                  <div class="detail-label">Internal Flags</div>
+                  <div class="detail-value-box detail-textarea">
+                    <%= customer.internalFlags || '—' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

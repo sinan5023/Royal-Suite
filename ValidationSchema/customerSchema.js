@@ -95,7 +95,6 @@ const customerCreateSchema = Joi.object({
     "string.empty": "Country is required",
   }),
 
-  // Notes (optional)
   customerNotes: Joi.string().allow("", null).max(1000),
 
   internalFlags: Joi.string().allow("", null).max(1000),

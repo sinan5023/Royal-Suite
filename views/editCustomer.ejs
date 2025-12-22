@@ -2,8 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Add Customer - SuitManager Pro</title>
+    <title>Edit Customer - SuitManager Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
       :root {
@@ -40,7 +42,6 @@
         flex-direction: column;
       }
 
-      /* Top bar */
       .topbar {
         height: 42px;
         background: #12131b;
@@ -52,13 +53,11 @@
         font-size: 11px;
         color: var(--text-soft);
       }
-
       .topbar-left {
         display: flex;
         align-items: center;
         gap: 8px;
       }
-
       .topbar-logo-pill {
         display: inline-flex;
         align-items: center;
@@ -69,7 +68,6 @@
         border: 1px solid #252a3a;
         font-size: 11px;
       }
-
       .logo-square {
         width: 18px;
         height: 18px;
@@ -80,21 +78,18 @@
         justify-content: center;
         font-size: 11px;
       }
-
       .topbar-center {
         flex: 1;
         text-align: center;
         font-size: 10px;
         color: var(--text-soft);
       }
-
       .topbar-right {
         display: flex;
         align-items: center;
         gap: 10px;
         font-size: 10px;
       }
-
       .topbar-pill {
         padding: 4px 10px;
         border-radius: 999px;
@@ -104,7 +99,6 @@
         align-items: center;
         gap: 6px;
       }
-
       .avatar-circle {
         width: 18px;
         height: 18px;
@@ -116,14 +110,11 @@
         font-size: 10px;
       }
 
-      /* Main layout */
       .layout {
         display: flex;
         flex: 1;
         min-height: 0;
       }
-
-      /* Sidebar */
       .sidebar {
         width: 230px;
         background: var(--sidebar-bg);
@@ -131,7 +122,6 @@
         display: flex;
         flex-direction: column;
       }
-
       .sidebar-header {
         padding: 14px 14px 10px;
         border-bottom: 1px solid #181b27;
@@ -139,7 +129,6 @@
         align-items: center;
         gap: 8px;
       }
-
       .sidebar-header-logo {
         width: 26px;
         height: 26px;
@@ -150,17 +139,14 @@
         justify-content: center;
         font-size: 15px;
       }
-
       .sidebar-header-text {
         font-size: 13px;
         font-weight: 600;
       }
-
       .sidebar-nav {
         padding: 10px 8px;
         flex: 1;
       }
-
       .sidebar-section-title {
         font-size: 11px;
         text-transform: uppercase;
@@ -168,7 +154,6 @@
         padding: 6px 8px;
         letter-spacing: 0.08em;
       }
-
       .sidebar-item {
         display: flex;
         align-items: center;
@@ -181,16 +166,13 @@
         margin-bottom: 4px;
         text-decoration: none;
       }
-
       .sidebar-item:hover {
         background: #191d28;
       }
-
       .sidebar-item.active {
         background: var(--sidebar-active);
         color: #e5e7eb;
       }
-
       .sidebar-icon {
         width: 18px;
         height: 18px;
@@ -201,7 +183,6 @@
         justify-content: center;
         font-size: 11px;
       }
-
       .sidebar-footer {
         padding: 10px;
         border-top: 1px solid #181b27;
@@ -212,176 +193,116 @@
         align-items: center;
       }
 
-      .sidebar-collapse {
-        font-size: 11px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        cursor: pointer;
-        color: var(--text-soft);
-      }
-
-      /* Content area */
       .content {
         flex: 1;
         padding: 14px 18px 18px;
         overflow-y: auto;
       }
 
-      /* Page header */
       .page-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 16px;
       }
-
       .page-title {
         font-size: 18px;
         font-weight: 600;
       }
-
       .page-subtitle {
         font-size: 12px;
         color: var(--text-soft);
         margin-top: 2px;
       }
 
-      /* Two column layout */
+      .btn {
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid #262b3c;
+        color: var(--text-soft);
+      }
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
       .two-column-layout {
         display: grid;
         grid-template-columns: 280px 1fr;
         gap: 16px;
       }
-
-      /* Left panel */
       .left-panel {
         display: flex;
         flex-direction: column;
         gap: 12px;
       }
-
       .panel-card {
         background: var(--bg-elevated);
         border-radius: var(--card-radius);
         border: 1px solid var(--border-subtle);
         padding: 12px;
       }
-
       .panel-title {
         font-size: 12px;
         font-weight: 500;
         margin-bottom: 10px;
       }
-
-      .recent-list {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .recent-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 6px 8px;
-        border-radius: 6px;
-        background: #181b27;
-        font-size: 11px;
-      }
-
-      .recent-name {
-        flex: 1;
-      }
-
-      .recent-id {
-        font-size: 10px;
-        color: var(--text-muted);
-      }
-
-      .badge {
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: 500;
-      }
-
-      .badge-active {
-        background: #1e3a2e;
-        color: var(--success);
-      }
-
-      .badge-blacklisted {
-        background: #3b1a1f;
-        color: var(--danger);
-      }
-
-      .badge-vip {
-        background: #3b2d1f;
-        color: var(--warning);
-      }
-
-      .action-icon {
-        color: var(--text-muted);
+      .summary-line {
         font-size: 12px;
-        cursor: pointer;
+        color: var(--text-soft);
+        margin-bottom: 4px;
       }
 
-      .view-all-link {
-        display: block;
-        text-align: center;
-        font-size: 11px;
-        color: var(--accent);
-        margin-top: 8px;
-        cursor: pointer;
-        text-decoration: none;
-      }
-
-      /* Form area */
       .form-container {
         background: var(--bg-elevated);
         border-radius: var(--card-radius);
         border: 1px solid var(--border-subtle);
         padding: 16px 18px;
       }
-
       .form-section {
         margin-bottom: 20px;
       }
-
-      .form-section:last-child {
-        margin-bottom: 0;
-      }
-
       .section-title {
         font-size: 14px;
         font-weight: 600;
         margin-bottom: 12px;
         color: var(--text-main);
       }
-
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 12px;
       }
-
       .form-row.single {
         grid-template-columns: 1fr;
       }
-
       .form-group {
         display: flex;
         flex-direction: column;
         gap: 6px;
       }
-
       .form-label {
         font-size: 12px;
         color: var(--text-soft);
       }
-
       .required {
         color: var(--danger);
       }
@@ -396,14 +317,12 @@
         color: var(--text-main);
         font-size: 12px;
       }
-
       .form-input:focus,
       .form-select:focus,
       .form-textarea:focus {
         outline: none;
         border-color: var(--accent);
       }
-
       .form-textarea {
         resize: vertical;
         min-height: 80px;
@@ -413,11 +332,9 @@
         display: flex;
         gap: 8px;
       }
-
       .country-code {
         width: 80px;
       }
-
       .form-hint {
         font-size: 10px;
         color: var(--text-muted);
@@ -428,7 +345,6 @@
         align-items: center;
         gap: 8px;
       }
-
       .toggle-switch {
         position: relative;
         width: 40px;
@@ -438,11 +354,9 @@
         cursor: pointer;
         transition: background 0.2s;
       }
-
       .toggle-switch.active {
         background: var(--accent);
       }
-
       .toggle-slider {
         position: absolute;
         top: 2px;
@@ -453,17 +367,14 @@
         border-radius: 999px;
         transition: transform 0.2s;
       }
-
       .toggle-switch.active .toggle-slider {
         transform: translateX(20px);
       }
-
       .toggle-label {
         font-size: 12px;
         color: var(--text-soft);
       }
 
-      /* Footer actions */
       .form-footer {
         display: flex;
         justify-content: space-between;
@@ -472,7 +383,6 @@
         padding-top: 16px;
         border-top: 1px solid var(--border-subtle);
       }
-
       .error-message {
         font-size: 11px;
         color: var(--danger);
@@ -481,65 +391,34 @@
         gap: 6px;
       }
 
-      .footer-actions {
-        display: flex;
-        gap: 10px;
+      .field-error {
+        font-size: 10px;
+        color: var(--danger);
+        margin-top: 2px;
+        display: none;
       }
 
-      .btn {
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .btn-secondary {
-        background: transparent;
-        border: 1px solid #262b3c;
-        color: var(--text-soft);
-      }
-
-      .btn-secondary:hover {
-        background: #191d2a;
-      }
-
-      .btn-primary {
-        background: var(--accent);
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background: var(--accent-soft);
-      }
-
-      .smpro-swal-popup {
+      .swal2-popup.smpro-swal-popup {
+        background: #151821;
         border-radius: 12px;
         border: 1px solid #222633;
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
       }
-
       .smpro-swal-title {
         font-size: 18px;
         font-weight: 600;
       }
-
       .smpro-swal-text {
         font-size: 13px;
-        color: var(--text-soft);
+        color: #9ca3af;
       }
-
       .smpro-swal-confirm {
         border-radius: 8px !important;
         font-size: 13px !important;
         font-weight: 500 !important;
       }
 
-      /* Responsive */
       @media (max-width: 1024px) {
         .two-column-layout {
           grid-template-columns: 1fr;
@@ -548,7 +427,6 @@
           order: 2;
         }
       }
-
       @media (max-width: 768px) {
         .layout {
           flex-direction: column;
@@ -567,9 +445,6 @@
     </style>
   </head>
   <body>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
         <div class="topbar-logo-pill">
@@ -594,7 +469,6 @@
     </header>
 
     <div class="layout">
-      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-header">
           <div class="sidebar-header-logo">🧳</div>
@@ -634,87 +508,95 @@
         </div>
       </aside>
 
-      <!-- Content -->
       <main class="content">
-        <!-- Page header -->
         <div class="page-header">
           <div>
-            <div class="page-title">Customer Onboarding</div>
+            <div class="page-title">Edit Customer</div>
             <div class="page-subtitle">
-              Manage customer details, search for existing clients, or onboard
-              new ones efficiently.
+              Updating <strong><%= customer.fullName %></strong>
+              (ID: <%= customer.customerCode || customer.displayId %>)
             </div>
+          </div>
+          <div>
+            <a href="/api/customers/<%= customer._id %>" class="btn btn-secondary">
+              ← View Customer
+            </a>
           </div>
         </div>
 
-        <!-- Two column layout -->
         <div class="two-column-layout">
-          <!-- Left panel -->
           <div class="left-panel">
-            <!-- Recent Customers -->
             <div class="panel-card">
-              <div class="panel-title">Recent Customers</div>
-              <div class="recent-list">
-                <% if (recentCustomers && recentCustomers.length > 0) { %> <%
-                recentCustomers.forEach(customer => { %>
-                <div class="recent-item">
-                  <div class="recent-name"><%= customer.fullName %></div>
-                  <div class="recent-id"><%= customer.Code %></div>
-                  <span class="badge badge"><%= customer.status %>
-                    <%= customer.statusLabel %></span
-                  >
-                  <span class="action-icon">✏</span>
-                </div>
-                <% }) %> <% } else { %>
-                <div class="form-hint">No recent customers</div>
-                <% } %>
+              <div class="panel-title">Customer Overview</div>
+              <div class="summary-line">
+                Status: <strong><%= customer.status %></strong>
               </div>
-              <a href="/customers" class="view-all-link">View All Customers</a>
+              <div class="summary-line">
+                Total Bookings:
+                <strong><%= customer.totalBookings || 0 %></strong>
+              </div>
+              <div class="summary-line">
+                Outstanding Balance:
+                <strong>₹ <%= customer.outstandingBalance || 0 %></strong>
+              </div>
             </div>
           </div>
 
-          <!-- Form area -->
           <div class="form-container">
-            <form method="POST" action="/customers">
+            <form id="editCustomerForm">
               <!-- Personal Information -->
               <div class="form-section">
                 <div class="section-title">Personal Information</div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Full Name <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Full Name <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="fullName"
                       class="form-input"
-                      placeholder="John Doe"
+                      value="<%= customer.fullName %>"
                       required
                     />
-                    <div class="form-hint">Full Name as required</div>
                   </div>
                   <div class="form-group">
-                    <label class="form-label"
-                      >Gender <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Gender <span class="required">*</span>
+                    </label>
                     <select name="gender" class="form-select" required>
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
+                      <option
+                        value="male"
+                        <%= customer.gender === 'male' ? 'selected' : '' %>
+                      >
+                        Male
+                      </option>
+                      <option
+                        value="female"
+                        <%= customer.gender === 'female' ? 'selected' : '' %>
+                      >
+                        Female
+                      </option>
+                      <option
+                        value="other"
+                        <%= customer.gender === 'other' ? 'selected' : '' %>
+                      >
+                        Other
+                      </option>
                     </select>
                   </div>
                 </div>
                 <div class="form-row single">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Date of Birth <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Date of Birth <span class="required">*</span>
+                    </label>
                     <input
                       type="date"
                       name="dateOfBirth"
                       class="form-input"
-                      placeholder="Pick a date"
+                      value="<%= customer.dateOfBirthISO || customer.dateOfBirth %>"
                       required
                     />
                   </div>
@@ -726,79 +608,137 @@
                 <div class="section-title">Contact & Communication</div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Mobile <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Mobile <span class="required">*</span>
+                    </label>
                     <div class="phone-input-group">
+                      <% 
+                        const primary = customer.primaryMobile || '';
+                        const primaryCode = primary.startsWith('+') ? primary.slice(0, 3) : '+91';
+                        const primaryNumber = primary.startsWith('+') ? primary.slice(primaryCode.length) : primary;
+                      %>
                       <select
                         name="countryCode"
                         class="form-select country-code"
                       >
-                        <option value="+91">🇮🇳 +91</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+44">🇬🇧 +44</option>
+                        <option
+                          value="+91"
+                          <%= primaryCode === '+91' ? 'selected' : '' %>
+                        >
+                          🇮🇳 +91
+                        </option>
+                        <option
+                          value="+1"
+                          <%= primaryCode === '+1' ? 'selected' : '' %>
+                        >
+                          🇺🇸 +1
+                        </option>
+                        <option
+                          value="+44"
+                          <%= primaryCode === '+44' ? 'selected' : '' %>
+                        >
+                          🇬🇧 +44
+                        </option>
                       </select>
                       <input
                         type="tel"
                         name="mobile"
                         class="form-input"
+                        value="<%= primaryNumber %>"
                         placeholder="10-digit mobile number"
                         required
                       />
                     </div>
-                    <div class="form-hint">Primary contact number</div>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Alternate Phone</label>
                     <div class="phone-input-group">
+                      <% 
+                        const alt = customer.alternateMobile || '';
+                        const altCode = alt.startsWith('+') ? alt.slice(0, 3) : '+91';
+                        const altNumber = alt.startsWith('+') ? alt.slice(altCode.length) : alt;
+                      %>
                       <select
                         name="altCountryCode"
                         class="form-select country-code"
                       >
-                        <option value="+91">🇮🇳 +91</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+44">🇬🇧 +44</option>
+                        <option
+                          value="+91"
+                          <%= altCode === '+91' ? 'selected' : '' %>
+                        >
+                          🇮🇳 +91
+                        </option>
+                        <option
+                          value="+1"
+                          <%= altCode === '+1' ? 'selected' : '' %>
+                        >
+                          🇺🇸 +1
+                        </option>
+                        <option
+                          value="+44"
+                          <%= altCode === '+44' ? 'selected' : '' %>
+                        >
+                          🇬🇧 +44
+                        </option>
                       </select>
                       <input
                         type="tel"
                         name="alternatePhone"
                         class="form-input"
+                        value="<%= altNumber %>"
                         placeholder="10-digit mobile number"
                       />
-                    </div>
-                    <div class="form-hint">
-                      Optional alternate contact number
                     </div>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Email <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Email <span class="required">*</span>
+                    </label>
                     <input
                       type="email"
                       name="email"
                       class="form-input"
-                      placeholder="john.doe@example.com"
+                      value="<%= customer.email || '' %>"
                       required
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label"
-                      >Preferred Contact Channel
-                      <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Preferred Contact Channel
+                      <span class="required">*</span>
+                    </label>
                     <select
                       name="preferredContact"
                       class="form-select"
                       required
                     >
                       <option value="">Select Channel</option>
-                      <option value="whatsapp">WhatsApp</option>
-                      <option value="call">Call</option>
-                      <option value="sms">SMS</option>
-                      <option value="email">Email</option>
+                      <option
+                        value="whatsapp"
+                        <%= customer.preferredContact === 'whatsapp' ? 'selected' : '' %>
+                      >
+                        WhatsApp
+                      </option>
+                      <option
+                        value="call"
+                        <%= customer.preferredContact === 'call' ? 'selected' : '' %>
+                      >
+                        Call
+                      </option>
+                      <option
+                        value="sms"
+                        <%= customer.preferredContact === 'sms' ? 'selected' : '' %>
+                      >
+                        SMS
+                      </option>
+                      <option
+                        value="email"
+                        <%= customer.preferredContact === 'email' ? 'selected' : '' %>
+                      >
+                        Email
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -806,8 +746,8 @@
                   <div class="form-group">
                     <div class="toggle-group">
                       <div
-                        class="toggle-switch"
-                        onclick="this.classList.toggle('active')"
+                        class="toggle-switch <%= customer.whatsappAvailable ? 'active' : '' %>"
+                        id="whatsappToggle"
                       >
                         <div class="toggle-slider"></div>
                       </div>
@@ -817,86 +757,113 @@
                 </div>
               </div>
 
-              <!-- Address Information -->
+              <!-- Status & Flags -->
+              <div class="form-section">
+                <div class="section-title">Status & Flags</div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">
+                      Customer Status <span class="required">*</span>
+                    </label>
+                    <select name="status" class="form-select" required>
+                      <option
+                        value="active"
+                        <%= customer.status === 'active' ? 'selected' : '' %>
+                      >
+                        Active
+                      </option>
+                      <option
+                        value="inactive"
+                        <%= customer.status === 'inactive' ? 'selected' : '' %>
+                      >
+                        Inactive
+                      </option>
+                      <option
+                        value="vip"
+                        <%= customer.status === 'vip' ? 'selected' : '' %>
+                      >
+                        VIP
+                      </option>
+                      <option
+                        value="blacklisted"
+                        <%= customer.status === 'blacklisted' ? 'selected' : '' %>
+                      >
+                        Blacklisted
+                      </option>
+                    </select>
+                    <div class="form-hint">
+                      Controls whether the customer can make new bookings and
+                      how they appear in lists.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Address -->
               <div class="form-section">
                 <div class="section-title">Address Information</div>
                 <div class="form-row single">
                   <div class="form-group">
-                    <div class="toggle-group">
-                      <input
-                        type="checkbox"
-                        name="enableDelivery"
-                        id="enableDelivery"
-                      />
-                      <label for="enableDelivery" class="toggle-label">
-                        Enable Delivery Address (Match billing fields as
-                        required)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-row single">
-                  <div class="form-group">
-                    <label class="form-label"
-                      >Street Address <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Street Address <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="streetAddress"
                       class="form-input"
-                      placeholder="123 Main St"
+                      value="<%= customer.street || '' %>"
                       required
                     />
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label"
-                      >City <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      City <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="city"
                       class="form-input"
-                      placeholder="Springfield"
+                      value="<%= customer.city || '' %>"
                       required
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label"
-                      >State/Region <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      State/Region <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="state"
                       class="form-input"
-                      placeholder="State/Region"
+                      value="<%= customer.state || '' %>"
                       required
                     />
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Postal Code <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Postal Code <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="postalCode"
                       class="form-input"
-                      placeholder="123456"
+                      value="<%= customer.postalCode || '' %>"
                       required
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label"
-                      >Country <span class="required">*</span></label
-                    >
+                    <label class="form-label">
+                      Country <span class="required">*</span>
+                    </label>
                     <input
                       type="text"
                       name="country"
                       class="form-input"
-                      placeholder="Country"
+                      value="<%= customer.country || 'India' %>"
                       required
                     />
                   </div>
@@ -908,34 +875,44 @@
                 <div class="section-title">Other Notes</div>
                 <div class="form-row single">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Customer Notes (Visible to staff and customers)</label
-                    >
-                    <textarea
-                      name="customerNotes"
-                      class="form-textarea"
-                      placeholder="e.g. Driver's License: ABC12345, prefers calls over email."
-                    ></textarea>
+                    <label class="form-label">
+                      Tags (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      name="tags"
+                      class="form-input"
+                      value="<%= customer.tags || '' %>"
+                    />
                   </div>
                 </div>
                 <div class="form-row single">
                   <div class="form-group">
-                    <label class="form-label"
-                      >Internal Flags (Visible only to staff)</label
-                    >
+                    <label class="form-label">
+                      Customer Notes (Visible to staff and customers)
+                    </label>
+                    <textarea
+                      name="customerNotes"
+                      class="form-textarea"
+                    ><%= customer.customerNotes || '' %></textarea>
+                  </div>
+                </div>
+                <div class="form-row single">
+                  <div class="form-group">
+                    <label class="form-label">
+                      Internal Flags (Visible only to staff)
+                    </label>
                     <textarea
                       name="internalFlags"
                       class="form-textarea"
-                      placeholder="e.g. High-value client, requires manager approval for discounts."
-                    ></textarea>
+                    ><%= customer.internalFlags || '' %></textarea>
                   </div>
                 </div>
               </div>
 
-              <!-- Footer -->
               <div class="form-footer">
                 <div class="error-message" style="opacity: 0">
-                  ⚠ 2 required fields missing: Full Name, Mobile (10-digits)
+                  ⚠ Please fix the errors above
                 </div>
                 <div class="footer-actions">
                   <button
@@ -943,10 +920,10 @@
                     class="btn btn-secondary"
                     onclick="window.history.back()"
                   >
-                    Switch to Edit Mode
+                    Cancel
                   </button>
                   <button type="submit" class="btn btn-primary">
-                    ✓ Create Customer
+                    ✓ Update Customer
                   </button>
                 </div>
               </div>
@@ -957,275 +934,58 @@
     </div>
 
     <script>
-      // Form validation rules
-      const validationRules = {
-        fullName: {
-          required: true,
-          minLength: 2,
-          message: "Full name is required (min 2 characters)",
-        },
-        gender: {
-          required: true,
-          message: "Gender is required",
-        },
-        // Treat DOB as string and enforce YYYY-MM-DD with 4-digit year
-        dateOfBirth: {
-          required: true,
-          // basic pattern: 4-digit year, 2-digit month, 2-digit day
-          pattern: /^\d{4}-\d{2}-\d{2}$/,
-          message: "Date of birth must be a valid date with 4‑digit year",
-        },
-        mobile: {
-          required: true,
-          pattern: /^[0-9]{10}$/,
-          message: "Mobile must be exactly 10 digits",
-        },
-        email: {
-          required: true,
-          pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/,
-          message: "Please enter a valid email address",
-        },
-        preferredContact: {
-          required: true,
-          message: "Preferred contact channel is required",
-        },
-        alternatePhone: {
-          required: false,
-          pattern: /^[0-9]{10}$/,
-          message: "Alternate phone must be 10 digits",
-        },
-        streetAddress: {
-          required: true,
-          message: "Street address is required",
-        },
-        city: {
-          required: true,
-          message: "City is required",
-        },
-        state: {
-          required: true,
-          message: "State/Region is required",
-        },
-        postalCode: {
-          required: true,
-          pattern: /^[0-9]{6}$/,
-          message: "Postal code must be 6 digits",
-        },
-        country: {
-          required: true,
-          message: "Country is required",
-        },
-        // customerNotes and internalFlags are optional
-      };
-
-      // Add error display elements
-      function addErrorDisplay() {
-        document.querySelectorAll(".form-group").forEach((group) => {
-          const input = group.querySelector("input, select, textarea");
-          if (input && !group.querySelector(".field-error")) {
-            const errorDiv = document.createElement("div");
-            errorDiv.className = "field-error";
-            errorDiv.style.cssText =
-              "font-size: 10px; color: var(--danger); margin-top: 2px; display: none;";
-            group.appendChild(errorDiv);
-          }
-        });
-      }
-
-      function showFieldError(input, message) {
-        const formGroup = input.closest(".form-group");
-        const errorDiv = formGroup.querySelector(".field-error");
-
-        input.style.borderColor = "var(--danger)";
-        if (errorDiv) {
-          errorDiv.textContent = message;
-          errorDiv.style.display = "block";
-        }
-      }
-
-      function clearFieldError(input) {
-        const formGroup = input.closest(".form-group");
-        const errorDiv = formGroup.querySelector(".field-error");
-
-        input.style.borderColor = "#222635";
-        if (errorDiv) {
-          errorDiv.style.display = "none";
-        }
-      }
-
-      // Extra DOB logic: 4-digit year and realistic bounds
-      function validateDobValue(raw) {
-        // Expect YYYY-MM-DD
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return false;
-
-        const [yearStr, monthStr, dayStr] = raw.split("-");
-        const year = Number(yearStr);
-        const month = Number(monthStr);
-        const day = Number(dayStr);
-
-        // year must be 4 digits and between 1900 and current year
-        const currentYear = new Date().getFullYear();
-        if (year < 1900 || year > currentYear) return false;
-
-        // Basic month/day sanity check
-        if (month < 1 || month > 12) return false;
-        if (day < 1 || day > 31) return false;
-
-        return true;
-      }
-
-      // Validate single field
-      function validateField(input) {
-        const name = input.name;
-        const value = input.value.trim();
-        const rule = validationRules[name];
-
-        if (!rule) return true;
-
-        clearFieldError(input);
-
-        // Required check
-        if (rule.required && !value) {
-          showFieldError(input, rule.message);
-          return false;
-        }
-
-        // Skip pattern check if field is optional and empty
-        if (!rule.required && !value) return true;
-
-        // Special case: dateOfBirth with extra year logic
-        if (name === "dateOfBirth") {
-          if (!validateDobValue(value)) {
-            showFieldError(
-              input,
-              "Date of birth must be a valid date with 4‑digit year between 1900 and this year"
-            );
-            return false;
-          }
-          return true;
-        }
-
-        // Pattern check
-        if (rule.pattern && value && !rule.pattern.test(value)) {
-          showFieldError(input, rule.message);
-          return false;
-        }
-
-        // Min length check
-        if (rule.minLength && value.length < rule.minLength) {
-          showFieldError(input, rule.message);
-          return false;
-        }
-
-        return true;
-      }
-
-      function validateForm() {
-        const form = document.querySelector("form");
-        const inputs = form.querySelectorAll(
-          "input[name], select[name], textarea[name]"
-        );
-        let isValid = true;
-        const errors = [];
-
-        inputs.forEach((input) => {
-          if (!validateField(input)) {
-            isValid = false;
-            const rule = validationRules[input.name];
-            if (rule && rule.required) {
-              errors.push(input.name);
-            }
-          }
-        });
-
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("editCustomerForm");
         const errorMsg = document.querySelector(".error-message");
-        if (!isValid && errors.length > 0) {
-          const fieldNames = errors.map((name) => {
-            if (name === "fullName") return "Full Name";
-            if (name === "mobile") return "Mobile";
-            if (name === "email") return "Email";
-            if (name === "gender") return "Gender";
-            if (name === "dateOfBirth") return "Date of Birth";
-            if (name === "preferredContact") return "Preferred Contact";
-            if (name === "streetAddress") return "Street Address";
-            if (name === "city") return "City";
-            if (name === "state") return "State/Region";
-            if (name === "postalCode") return "Postal Code";
-            if (name === "country") return "Country";
-            return name;
-          });
+        const submitBtn = form.querySelector(".btn-primary");
+        const whatsappToggle = document.getElementById("whatsappToggle");
+
+        whatsappToggle.addEventListener("click", () => {
+          whatsappToggle.classList.toggle("active");
+        });
+
+        function showError(message) {
           errorMsg.style.opacity = "1";
-          errorMsg.textContent = `⚠ ${errors.length} required field${
-            errors.length > 1 ? "s" : ""
-          } missing: ${fieldNames.join(", ")}`;
-        } else if (!isValid) {
-          errorMsg.style.opacity = "1";
-          errorMsg.textContent = "⚠ Please fix the errors above";
-        } else {
+          errorMsg.textContent = "⚠ " + message;
+        }
+        function clearError() {
           errorMsg.style.opacity = "0";
         }
-
-        return isValid;
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        addErrorDisplay();
-
-        const form = document.querySelector("form");
-
-        form
-          .querySelectorAll("input[name], select[name], textarea[name]")
-          .forEach((input) => {
-            input.addEventListener("blur", () => validateField(input));
-            input.addEventListener("input", () => {
-              if (input.style.borderColor === "rgb(249, 115, 115)") {
-                clearFieldError(input);
-              }
-            });
-          });
 
         const mobileInput = form.querySelector('input[name="mobile"]');
         mobileInput.addEventListener("input", (e) => {
           e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
         });
-
-        const altPhoneInput = form.querySelector(
-          'input[name="alternatePhone"]'
-        );
-        if (altPhoneInput) {
-          altPhoneInput.addEventListener("input", (e) => {
-            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
-          });
-        }
-
+        const altInput = form.querySelector('input[name="alternatePhone"]');
+        altInput.addEventListener("input", (e) => {
+          e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
+        });
         const postalInput = form.querySelector('input[name="postalCode"]');
-        if (postalInput) {
-          postalInput.addEventListener("input", (e) => {
-            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6);
-          });
-        }
+        postalInput.addEventListener("input", (e) => {
+          e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6);
+        });
 
         form.addEventListener("submit", async (e) => {
           e.preventDefault();
-          if (!validateForm()) return;
+          clearError();
 
-          const errorMsg = document.querySelector(".error-message");
-          const submitBtn = form.querySelector(".btn-primary");
+          if (!mobileInput.value || mobileInput.value.length !== 10) {
+            showError("Primary mobile must be 10 digits");
+            return;
+          }
 
           submitBtn.disabled = true;
-          submitBtn.innerHTML = "<span>⏳</span> Creating...";
+          submitBtn.innerHTML = "<span>⏳</span> Updating...";
 
           const formData = new FormData(form);
           const data = {};
-
           formData.forEach((value, key) => {
             data[key] = typeof value === "string" ? value.trim() : value;
           });
 
-          const whatsappToggle = document.querySelector(".toggle-switch");
           data.whatsappAvailable = whatsappToggle.classList.contains("active");
 
-          data.primaryMobile = data.countryCode + data.mobile;
+          data.primaryMobile = (data.countryCode || "+91") + data.mobile;
           delete data.countryCode;
           delete data.mobile;
 
@@ -1236,13 +996,14 @@
             data.alternateMobile = null;
           }
           delete data.altCountryCode;
+          delete data.alternatePhone;
 
           data.street = data.streetAddress;
           delete data.streetAddress;
 
           try {
-            const response = await fetch("/api/customers", {
-              method: "POST",
+            const response = await fetch("/api/customers/<%= customer._id %>", {
+              method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(data),
               credentials: "include",
@@ -1250,15 +1011,17 @@
 
             const result = await response.json();
 
-            if (response.ok) {
+            if (response.ok && result.ok) {
               await Swal.fire({
-                title: "Customer Created",
-                text: "The customer has been added successfully.",
+                title: "Customer Updated",
+                text:
+                  result.message ||
+                  "The customer has been updated successfully.",
                 icon: "success",
                 background: "#151821",
                 color: "#f9fafb",
                 iconColor: "#22c55e",
-                confirmButtonText: "Go to Customer",
+                confirmButtonText: "Back to Customer",
                 confirmButtonColor: "#4b63ff",
                 customClass: {
                   popup: "smpro-swal-popup",
@@ -1267,21 +1030,17 @@
                   confirmButton: "smpro-swal-confirm",
                 },
               });
-              window.location.href = `/customers`;
+              window.location.href = "/api/customers/<%= customer._id %>";
             } else {
-              errorMsg.style.opacity = "1";
-              errorMsg.textContent = `⚠ ${
-                result.message || "Failed to create customer"
-              }`;
+              showError(result.message || "Failed to update customer");
               submitBtn.disabled = false;
-              submitBtn.innerHTML = "✓ Create Customer";
+              submitBtn.innerHTML = "✓ Update Customer";
             }
-          } catch (error) {
-            console.error("Error creating customer:", error);
-            errorMsg.style.opacity = "1";
-            errorMsg.textContent = "⚠ Network error. Please try again.";
+          } catch (err) {
+            console.error("Error updating customer:", err);
+            showError("Network error. Please try again.");
             submitBtn.disabled = false;
-            submitBtn.innerHTML = "✓ Create Customer";
+            submitBtn.innerHTML = "✓ Update Customer";
           }
         });
       });

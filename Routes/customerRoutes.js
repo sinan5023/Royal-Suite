@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router()
 const authCheck = require("../middlewares/authcheck")
-const {DisplayAddCustomer} = require("../controller/customerController")
+const {displayAddCustomer , displayCustomerDashboard} = require("../controller/customerController")
 
-// router.get("/",authCheck,)
-router.get("/new",authCheck,DisplayAddCustomer)
+router.get("/",authCheck, displayCustomerDashboard)
+router.get("/new",authCheck,displayAddCustomer)
 
 
 module.exports = router

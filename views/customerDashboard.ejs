@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Customers - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- [web:493][web:510] -->
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Main layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-collapse {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        color: var(--text-soft);
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      .page-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .page-header-texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .btn-primary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-icon {
+        font-size: 13px;
+      }
+
+      /* Search row */
+      .search-filter-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 10px;
+      }
+
+      .search-box-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #11131c;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        padding: 6px 10px;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-main);
+        font-size: 12px;
+      }
+
+      /* Table card */
+      .table-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+
+      .table thead {
+        background: #161924;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #1f2330;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .table th {
+        font-size: 11px;
+        color: var(--text-soft);
+        font-weight: 500;
+      }
+
+      .table tbody tr:nth-child(even) {
+        background: #151924;
+      }
+
+      .table tbody tr:nth-child(odd) {
+        background: #141720;
+      }
+
+      .table tbody tr:hover {
+        background: #1b1f2c;
+      }
+
+      .customer-name {
+        color: #e5e7eb;
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+
+      .customer-email {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .status-active {
+        background: #1e3a2e;
+        color: var(--success);
+      }
+
+      .status-inactive {
+        background: #3b2831;
+        color: #fecaca;
+      }
+
+      .status-vip {
+        background: #3b2d1f;
+        color: var(--warning);
+      }
+
+      .status-blacklisted {
+        background: #3b1a1f;
+        color: var(--danger);
+      }
+
+      .numeric-cell {
+        text-align: right;
+      }
+
+      .currency {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .actions-cell {
+        text-align: right;
+        font-size: 11px;
+      }
+
+      .action-btn {
+        border: none;
+        border-radius: 999px;
+        padding: 3px 7px;
+        margin-left: 4px;
+        font-size: 10px;
+        cursor: pointer;
+        background: #11131c;
+        color: var(--text-soft);
+        border: 1px solid #222635;
+      }
+
+      .action-btn.view {
+        color: #60a5fa;
+      }
+
+      .action-btn.edit {
+        color: #facc15;
+      }
+
+      .action-btn.delete {
+        color: #f97373;
+      }
+
+      .action-btn:hover {
+        background: #191d2a;
+      }
+
+      /* Footer / pagination */
+      .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .rows-per-page {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .rows-select {
+        background: #11131c;
+        border: 1px solid #222635;
+        border-radius: 6px;
+        color: var(--text-main);
+        font-size: 11px;
+        padding: 4px 6px;
+      }
+
+      .pagination {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .page-button {
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: #9ca3af;
+        font-size: 11px;
+        cursor: pointer;
+      }
+      .actions-cell {
+        text-align: right;
+        position: relative;
+        width: 60px;
+      }
+
+      /* vertical three-dots button */
+      .more-btn {
+        border: none;
+        background: transparent;
+        color: #9ca3af;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+      }
+
+      .more-btn:hover {
+        color: #e5e7eb;
+      }
+
+      /* dropdown menu */
+      .row-menu {
+        position: absolute;
+        right: 8px;
+        top: 24px;
+        min-width: 120px;
+        background: #11131c;
+        border-radius: 8px;
+        border: 1px solid #222635;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+        z-index: 20;
+        display: none;
+      }
+
+      .row-menu.open {
+        display: block;
+      }
+
+      .row-menu-item {
+        padding: 6px 10px;
+        font-size: 11px;
+        color: #e5e7eb;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .row-menu-item:hover {
+        background: #1f2933;
+      }
+
+      .row-menu-item.delete {
+        color: #f97373;
+      }
+
+      .page-button[disabled] {
+        opacity: 0.4;
+        cursor: default;
+      }
+      /* SuitManager-style SweetAlert2 overrides */
+      .swal2-popup.swal2-suit-popup {
+        background: #151821; /* var(--bg-elevated) */
+        border-radius: 12px;
+        border: 1px solid #222633; /* var(--border-subtle) */
+        color: #f9fafb; /* var(--text-main) */
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af; /* var(--text-soft) */
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821; /* matches card bg */
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .page-button:hover:not([disabled]) {
+        background: #191d2a;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .table {
+          font-size: 11px;
+        }
+        .table th,
+        .table td {
+          padding: 8px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item active">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/billing" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Billing</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <div class="sidebar-collapse">⬅ Collapse</div>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header-row">
+          <div class="page-header-texts">
+            <div class="page-title">Customers</div>
+            <div class="page-subtitle">Manage all registered clients.</div>
+          </div>
+          <a href="/customers/new" class="btn-primary">
+            <span class="btn-icon">👤+</span>
+            <span>Add New Customer</span>
+          </a>
+        </div>
+
+        <!-- Search -->
+        <div class="search-filter-row">
+          <div class="search-box-wrapper">
+            <span>🔍</span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search by name, mobile, or customer ID..."
+            />
+          </div>
+        </div>
+
+        <!-- Table (AJAX filled) -->
+        <div class="table-card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Customer ID / Code</th>
+                <th>Primary Mobile</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th class="numeric-cell">Total Bookings</th>
+                <th class="numeric-cell">Outstanding Balance (₹)</th>
+                <th class="numeric-cell">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customersBody">
+              <!-- rows injected by JS -->
+            </tbody>
+          </table>
+
+          <!-- Footer / pagination -->
+          <div class="table-footer">
+            <div id="summaryText">Showing 0–0 of 0 customers</div>
+            <div>
+              <span class="rows-per-page">
+                <span>Rows per page:</span>
+                <select class="rows-select" id="rowsPerPage">
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </span>
+              <span style="margin-left: 16px" id="pageText"> Page 1 of 1 </span>
+              <span class="pagination" style="margin-left: 12px">
+                <button class="page-button" id="prevPageBtn" disabled>
+                  ‹ Previous
+                </button>
+                <button class="page-button" id="nextPageBtn" disabled>
+                  Next ›
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const state = {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 1,
+        q: "",
+      };
+
+      const tbody = document.getElementById("customersBody");
+      const summaryText = document.getElementById("summaryText");
+      const pageText = document.getElementById("pageText");
+      const prevPageBtn = document.getElementById("prevPageBtn");
+      const nextPageBtn = document.getElementById("nextPageBtn");
+      const rowsPerPage = document.getElementById("rowsPerPage");
+      const searchInput = document.getElementById("searchInput");
+
+      async function fetchCustomers() {
+        const params = new URLSearchParams({
+          page: state.page,
+          limit: state.limit,
+          q: state.q,
+        });
+
+        const res = await fetch("/api/customers?" + params.toString(), {
+          headers: { Accept: "application/json" },
+        });
+
+        const json = await res.json();
+        if (!json.ok) {
+          await Swal.fire({
+            icon: "error",
+            title: "Failed to load customers",
+            text:
+              json.message || "Something went wrong while loading customers.",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+              confirmButton: "swal2-suit-confirm",
+            },
+          });
+          return;
+        } // backend: { ok: true, data, pagination, message? }
+
+        state.total = json.pagination.total;
+        state.totalPages = json.pagination.totalPages;
+        renderTable(json.data);
+        renderFooter(json.pagination);
+      }
+
+      function renderTable(rows) {
+        tbody.innerHTML = "";
+
+        if (!rows.length) {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 8;
+          td.style.textAlign = "center";
+          td.style.padding = "14px";
+          td.textContent = "No customers found.";
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+          return;
+        }
+
+        rows.forEach((c) => {
+          const tr = document.createElement("tr");
+          tr.dataset.id = c.id;
+
+          // name + email
+          const tdName = document.createElement("td");
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "customer-name";
+          nameDiv.textContent = c.name;
+          const emailDiv = document.createElement("div");
+          emailDiv.className = "customer-email";
+          emailDiv.textContent = c.email || "";
+          tdName.appendChild(nameDiv);
+          tdName.appendChild(emailDiv);
+          tr.appendChild(tdName);
+
+          // code
+          const tdCode = document.createElement("td");
+          tdCode.textContent = c.code || "-";
+          tr.appendChild(tdCode);
+
+          // mobile
+          const tdMobile = document.createElement("td");
+          tdMobile.textContent = c.primaryMobile || "-";
+          tr.appendChild(tdMobile);
+
+          // email column
+          const tdEmail = document.createElement("td");
+          tdEmail.textContent = c.email || "-";
+          tr.appendChild(tdEmail);
+
+          // status
+          const tdStatus = document.createElement("td");
+          const spanStatus = document.createElement("span");
+          spanStatus.classList.add("status-badge");
+          const status = (c.status || "").toLowerCase();
+          if (status === "active") spanStatus.classList.add("status-active");
+          else if (status === "inactive")
+            spanStatus.classList.add("status-inactive");
+          else if (status === "vip") spanStatus.classList.add("status-vip");
+          else if (status === "blacklisted")
+            spanStatus.classList.add("status-blacklisted");
+          spanStatus.textContent = c.status || "Active";
+          tdStatus.appendChild(spanStatus);
+          tr.appendChild(tdStatus);
+
+          // total bookings
+          const tdBookings = document.createElement("td");
+          tdBookings.className = "numeric-cell";
+          tdBookings.textContent = c.totalBookings ?? 0;
+          tr.appendChild(tdBookings);
+
+          // outstanding balance
+          const tdBalance = document.createElement("td");
+          tdBalance.className = "numeric-cell currency";
+          tdBalance.textContent = c.outstandingBalance
+            ? c.outstandingBalance.toLocaleString("en-IN")
+            : "0";
+          tr.appendChild(tdBalance);
+
+          // actions: vertical dots + dropdown menu
+          const tdActions = document.createElement("td");
+          tdActions.className = "actions-cell";
+
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "more-btn";
+          btn.innerHTML = "&#8942;"; // vertical ellipsis
+          btn.dataset.action = "menu";
+          btn.dataset.id = c.id;
+
+          const menu = document.createElement("div");
+          menu.className = "row-menu";
+          menu.innerHTML = `
+        <div class="row-menu-item" data-action="view" data-id="${c.id}">View</div>
+        <div class="row-menu-item" data-action="edit" data-id="${c.id}">Edit</div>
+        <div class="row-menu-item delete" data-action="delete" data-id="${c.id}">Delete</div>
+      `;
+
+          tdActions.appendChild(btn);
+          tdActions.appendChild(menu);
+          tr.appendChild(tdActions);
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderFooter(p) {
+        if (p.total === 0) {
+          summaryText.textContent = "Showing 0–0 of 0 customers";
+        } else {
+          summaryText.textContent = `Showing ${p.from}–${p.to} of ${p.total} customers`;
+        }
+        pageText.textContent = `Page ${p.page} of ${p.totalPages}`;
+        prevPageBtn.disabled = p.page <= 1;
+        nextPageBtn.disabled = p.page >= p.totalPages;
+      }
+
+      prevPageBtn.addEventListener("click", () => {
+        if (state.page <= 1) return;
+        state.page -= 1;
+        fetchCustomers();
+      });
+
+      nextPageBtn.addEventListener("click", () => {
+        if (state.page >= state.totalPages) return;
+        state.page += 1;
+        fetchCustomers();
+      });
+
+      rowsPerPage.addEventListener("change", () => {
+        state.limit = parseInt(rowsPerPage.value, 10) || 10;
+        state.page = 1;
+        fetchCustomers();
+      });
+
+      // search debounce
+      let searchTimer;
+      searchInput.addEventListener("input", () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          state.q = searchInput.value.trim();
+          state.page = 1;
+          fetchCustomers();
+        }, 300);
+      });
+
+      // --- actions: dots menu + SweetAlert delete ---
+
+      function closeAllMenus() {
+        document
+          .querySelectorAll(".row-menu.open")
+          .forEach((menu) => menu.classList.remove("open"));
+      }
+
+      tbody.addEventListener("click", async (e) => {
+        const menuBtn = e.target.closest(".more-btn");
+        const menuItem = e.target.closest(".row-menu-item");
+
+        // toggle dropdown
+        if (menuBtn) {
+          const cell = menuBtn.parentElement;
+          const menu = cell.querySelector(".row-menu");
+          const isOpen = menu.classList.contains("open");
+          closeAllMenus();
+          if (!isOpen) menu.classList.add("open");
+          e.stopPropagation();
+          return;
+        }
+
+        if (!menuItem) return;
+
+        const action = menuItem.dataset.action;
+        const id = menuItem.dataset.id;
+        closeAllMenus();
+
+        if (action === "view") {
+          window.location.href = `api/customers/${id}`;
+          return;
+        }
+
+        if (action === "edit") {
+          window.location.href = `api/customers/${id}/edit`;
+          return;
+        }
+
+        if (action === "delete") {
+          const result = await Swal.fire({
+            title: "Delete customer?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            background: "#151821", // card background
+            color: "#f9fafb", // text color
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#f97373", // your danger color
+            cancelButtonColor: "#222635", // subtle border color
+            customClass: {
+              popup: "swal2-suit-popup",
+              confirmButton: "swal2-suit-confirm",
+              cancelButton: "swal2-suit-cancel",
+            },
+          }); // { ok: true, message: "..." } still handled the same
+
+          if (!result.isConfirmed) return;
+
+          try {
+            const res = await fetch(`/api/customers/${id}`, {
+              method: "DELETE",
+              headers: { Accept: "application/json" },
+            });
+
+            const json = await res.json();
+
+            // backend: { ok: true, message: "..." }
+            if (!json.ok) {
+              await Swal.fire({
+                icon: "error",
+                title: "Delete failed",
+                text: json.message || "Something went wrong while deleting.",
+                background: "#151821",
+                color: "#f9fafb",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#4b63ff",
+                customClass: {
+                  popup: "swal2-suit-popup",
+                  confirmButton: "swal2-suit-confirm",
+                },
+              });
+              return;
+            }
+
+            await Swal.fire({
+              icon: "success",
+              title: "Deleted",
+              text: json.message || "Customer deleted successfully.",
+              background: "#151821",
+              color: "#f9fafb",
+              confirmButtonColor: "#4b63ff",
+              customClass: {
+                popup: "swal2-suit-popup",
+                confirmButton: "swal2-suit-confirm",
+              },
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+            fetchCustomers();
+          } catch (err) {
+            console.error(err);
+            await Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Something went wrong while deleting.",
+            });
+          }
+        }
+      });
+
+      // close menus when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".actions-cell")) {
+          closeAllMenus();
+        }
+      });
+
+      // initial load
+      fetchCustomers();
+    </script>
+  </body>
+</html>

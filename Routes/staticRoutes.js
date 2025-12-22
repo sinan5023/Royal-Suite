@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", (req, res) => {
   res.render("loginPage");
 });
-router.get("/homeDashboard", authCheck, displayDashboard);
+router.get("/dashboard", authCheck, displayDashboard);
 router.get("/unauthorized", (req, res) => {
   res.render("unauthorized");
 });
