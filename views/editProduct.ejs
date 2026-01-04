@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Product - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: #11131b;
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #6b7280;
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: #6b7280;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px 24px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+      }
+
+      .page-title-section {
+        flex: 1;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .section-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 14px 16px 16px;
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #e5e7eb;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 20px;
+      }
+
+      .form-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-item.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+
+      .form-label .required {
+        color: var(--danger);
+        margin-left: 2px;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        background: #0d0f14;
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--text-main);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        border-color: var(--accent);
+      }
+
+      .form-input::placeholder,
+      .form-textarea::placeholder {
+        color: var(--text-muted);
+      }
+
+      .form-textarea {
+        min-height: 80px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .form-select {
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+      .photo-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.existing-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.photo-card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.photo-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.photo-card:hover .photo-card-overlay {
+  opacity: 1;
+}
+
+.photo-delete-btn {
+  background: var(--danger);
+  border: none;
+  border-radius: 999px;
+  color: white;
+  padding: 8px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.photo-delete-btn:hover {
+  background: #e55f5f;
+}
+
+.photo-upload-area {
+  border: 2px dashed var(--border-subtle);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.photo-upload-area:hover {
+  border-color: var(--accent);
+  background: rgba(75, 99, 255, 0.05);
+}
+
+.photo-upload-area.dragover {
+  border-color: var(--accent);
+  background: rgba(75, 99, 255, 0.1);
+}
+
+.upload-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.upload-text {
+  font-size: 13px;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.photo-upload-input {
+  display: none;
+}
+
+.preview-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preview-card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--accent);
+}
+
+.preview-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(249, 115, 115, 0.9);
+  border: none;
+  border-radius: 999px;
+  color: white;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-remove:hover {
+  background: var(--danger);
+}
+
+.empty-photos {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  background: #0d0f14;
+  border-radius: 8px;
+  border: 1px dashed var(--border-subtle);
+}
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .page-header {
+          flex-direction: column;
+          gap: 12px;
+        }
+        .page-actions {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item active">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header">
+          <div class="page-title-section">
+            <h1 class="page-title">Edit Product</h1>
+            <div class="page-subtitle">
+              Update product details and inventory information
+            </div>
+          </div>
+          <div class="page-actions">
+            <a href="/inventory/<%= product._id || product.productId %>" class="btn-secondary">
+              ← Cancel
+            </a>
+          </div>
+        </div>
+
+        <form id="editProductForm">
+          <!-- Basic Identification -->
+          <section class="section-card">
+            <div class="section-title">Basic Identification</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">SKU <span class="required">*</span></label>
+                <input
+                  type="text"
+                  name="sku"
+                  class="form-input"
+                  value="<%= product.sku || '' %>"
+                  placeholder="Enter SKU code"
+                  required
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Display Name <span class="required">*</span></label>
+                <input
+                  type="text"
+                  name="displayName"
+                  class="form-input"
+                  value="<%= product.displayName || '' %>"
+                  placeholder="Enter product name"
+                  required
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Category <span class="required">*</span></label>
+                <select name="category" class="form-select" required>
+                  <option value="">Select category</option>
+                  <% ['Tuxedo', 'Sherwani', 'Three-Piece Suit', 'Two-Piece Suit', 'Blazer', 'Waistcoat', 'Wedding Suit', 'Party Wear'].forEach(function(cat) { %>
+                    <option value="<%= cat %>" <%= product.category === cat ? 'selected' : '' %>><%= cat %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">Branch <span class="required">*</span></label>
+                <input
+                  type="text"
+                  name="branch"
+                  class="form-input"
+                  value="<%= product.branch || '' %>"
+                  placeholder="Enter branch name"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+
+          <!-- Photos Section -->
+<section class="section-card">
+  <div class="section-title">Product Photos</div>
+  <div class="photo-upload-section">
+    <!-- Existing Photos -->
+    <div>
+      <div class="form-label" style="margin-bottom: 8px;">Current Photos</div>
+      <% if (product.photos && product.photos.length > 0) { %>
+        <div class="existing-photos" id="existingPhotos">
+          <% product.photos.forEach((photo, index) => { %>
+            <div class="photo-card" style="background-image: url('<%= photo %>')" data-photo-url="<%= photo %>">
+              <div class="photo-card-overlay">
+                <button type="button" class="photo-delete-btn" onclick="deleteExistingPhoto('<%= photo %>', this)">
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-photos" id="emptyPhotosMessage">
+          📷 No photos uploaded yet
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Upload New Photos -->
+    <div>
+      <div class="form-label" style="margin-bottom: 8px;">Add New Photos</div>
+      <div class="photo-upload-area" id="uploadArea">
+        <div class="upload-icon">📸</div>
+        <div class="upload-text">Click to upload or drag and drop</div>
+        <div class="upload-hint">PNG, JPG, WEBP up to 5MB each</div>
+      </div>
+      <input
+        type="file"
+        id="photoInput"
+        class="photo-upload-input"
+        accept="image/png,image/jpeg,image/jpg,image/webp"
+        multiple
+      />
+      
+      <!-- Preview New Photos -->
+      <div class="preview-photos" id="previewPhotos"></div>
+    </div>
+  </div>
+</section>
+
+
+          <!-- Size & Fit Details -->
+          <section class="section-card">
+            <div class="section-title">Size & Fit Details</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">Size <span class="required">*</span></label>
+                <select name="size" class="form-select" required>
+                  <option value="">Select size</option>
+                  <% ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '36', '38', '40', '42', '44', '46', '48'].forEach(function(size) { %>
+                    <option value="<%= size %>" <%= product.size === size ? 'selected' : '' %>><%= size %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">Height Range</label>
+                <input
+                  type="text"
+                  name="heightRange"
+                  class="form-input"
+                  value="<%= product.heightRange || '' %>"
+                  placeholder="e.g., 5'8'' - 6'0''"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Chest (inches)</label>
+                <input
+                  type="text"
+                  name="chest"
+                  class="form-input"
+                  value="<%= product.chest || '' %>"
+                  placeholder="e.g., 38"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Waist (inches)</label>
+                <input
+                  type="text"
+                  name="waist"
+                  class="form-input"
+                  value="<%= product.waist || '' %>"
+                  placeholder="e.g., 32"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Fabric</label>
+                <input
+                  type="text"
+                  name="fabric"
+                  class="form-input"
+                  value="<%= product.fabric || '' %>"
+                  placeholder="e.g., Wool, Cotton"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Color</label>
+                <input
+                  type="text"
+                  name="color"
+                  class="form-input"
+                  value="<%= product.color || '' %>"
+                  placeholder="e.g., Black, Navy"
+                />
+              </div>
+              <div class="form-item full-width">
+                <label class="form-label">Other Measurements</label>
+                <textarea
+                  name="otherMeasurements"
+                  class="form-textarea"
+                  placeholder="Additional measurements or notes"
+                ><%= product.otherMeasurements || '' %></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Rental & Pricing -->
+          <section class="section-card">
+            <div class="section-title">Rental & Pricing</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">Base Rental Price (₹) <span class="required">*</span></label>
+                <input
+                  type="number"
+                  name="baseRent"
+                  class="form-input"
+                  value="<%= product.baseRent || '' %>"
+                  placeholder="Enter base rent"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Extra Day Charge (₹)</label>
+                <input
+                  type="number"
+                  name="extraDayCharge"
+                  class="form-input"
+                  value="<%= product.extraDayCharge || '' %>"
+                  placeholder="Enter extra day charge"
+                  min="0"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Security Deposit (₹) <span class="required">*</span></label>
+                <input
+                  type="number"
+                  name="securityDeposit"
+                  class="form-input"
+                  value="<%= product.securityDeposit || '' %>"
+                  placeholder="Enter security deposit"
+                  min="0"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Operational Data -->
+          <section class="section-card">
+            <div class="section-title">Operational Data</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">Storage Location <span class="required">*</span></label>
+                <input
+                  type="text"
+                  name="storageLocation"
+                  class="form-input"
+                  value="<%= product.storageLocation || '' %>"
+                  placeholder="e.g., Rack A-12"
+                  required
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Barcode / RFID Tag</label>
+                <input
+                  type="text"
+                  name="barcode"
+                  class="form-input"
+                  value="<%= product.barcode || '' %>"
+                  placeholder="Enter barcode"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Date Added</label>
+                <input
+                  type="date"
+                  name="dateAdded"
+                  class="form-input"
+                  value="<%= product.dateAdded || '' %>"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Times Rented</label>
+                <input
+                  type="number"
+                  name="timesRented"
+                  class="form-input"
+                  value="<%= product.timesRented || 0 %>"
+                  min="0"
+                  readonly
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Condition & Lifecycle -->
+          <section class="section-card">
+            <div class="section-title">Condition & Lifecycle</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">Condition Grade <span class="required">*</span></label>
+                <select name="conditionGrade" class="form-select" required>
+                  <option value="">Select condition</option>
+                  <% ['Excellent', 'Good', 'Fair', 'Worn'].forEach(function(cond) { %>
+                    <option value="<%= cond %>" <%= product.conditionGrade === cond ? 'selected' : '' %>><%= cond %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">Status <span class="required">*</span></label>
+                <select name="status" class="form-select" required>
+                  <option value="">Select status</option>
+                  <% ['available', 'rented', 'maintenance', 'retired', 'damaged'].forEach(function(stat) { %>
+                    <option value="<%= stat %>" <%= product.status === stat ? 'selected' : '' %>><%= stat.charAt(0).toUpperCase() + stat.slice(1) %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">Last Inspection Date</label>
+                <input
+                  type="date"
+                  name="lastInspectionDate"
+                  class="form-input"
+                  value="<%= product.lastInspectionDate || '' %>"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Next Maintenance Due</label>
+                <input
+                  type="date"
+                  name="nextMaintenanceDue"
+                  class="form-input"
+                  value="<%= product.nextMaintenanceDue || '' %>"
+                />
+              </div>
+              <div class="form-item">
+                <label class="form-label">Retired</label>
+                <select name="isRetired" class="form-select">
+                  <option value="false" <%= product.isRetired === false || product.isRetired === 'false' ? 'selected' : '' %>>No</option>
+                  <option value="true" <%= product.isRetired === true || product.isRetired === 'true' ? 'selected' : '' %>>Yes</option>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">Disposal Value (₹)</label>
+                <input
+                  type="number"
+                  name="disposalValue"
+                  class="form-input"
+                  value="<%= product.disposalValue || '' %>"
+                  placeholder="Enter disposal value"
+                  min="0"
+                />
+              </div>
+              <div class="form-item full-width">
+                <label class="form-label">Retirement Reason</label>
+                <input
+                  type="text"
+                  name="retirementReason"
+                  class="form-input"
+                  value="<%= product.retirementReason || '' %>"
+                  placeholder="Reason for retirement (if applicable)"
+                />
+              </div>
+              <div class="form-item full-width">
+                <label class="form-label">Notes</label>
+                <textarea
+                  name="retirementNotes"
+                  class="form-textarea"
+                  placeholder="Additional notes or comments"
+                ><%= product.retirementNotes || '' %></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <a href="/inventory/<%= product._id || product.productId %>" class="btn-secondary">
+              Cancel
+            </a>
+            <button type="submit" class="btn-primary" id="saveBtn">
+              💾 Save Changes
+            </button>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script>
+      const productId = '<%= product._id || product.productId %>';
+      const form = document.getElementById('editProductForm');
+      const saveBtn = document.getElementById('saveBtn');
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Disable button
+        saveBtn.disabled = true;
+        saveBtn.textContent = '⏳ Saving...';
+
+        // Collect form data
+        const formData = new FormData(form);
+        const data = {};
+        
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+
+        try {
+          const res = await fetch('/api/inventory/' + productId, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          const json = await res.json();
+
+          if (!res.ok || !json.ok) {
+            throw new Error(json.message || 'Failed to update product');
+          }
+
+          await Swal.fire({
+            icon: 'success',
+            title: 'Product Updated',
+            text: 'The product has been updated successfully.',
+            confirmButtonText: 'View Product',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
+            customClass: {
+              popup: 'swal2-suit-popup',
+              confirmButton: 'swal2-suit-confirm'
+            }
+          });
+
+          window.location.href = '/inventory/' + productId;
+        } catch (error) {
+          console.error('Error:', error);
+          
+          await Swal.fire({
+            icon: 'error',
+            title: 'Update Failed',
+            text: error.message || 'Something went wrong while updating the product.',
+            confirmButtonText: 'OK',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
+            customClass: {
+              popup: 'swal2-suit-popup',
+              confirmButton: 'swal2-suit-confirm'
+            }
+          });
+
+          // Re-enable button
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Save Changes';
+        }
+      });
+
+      // Photo Management
+const uploadArea = document.getElementById('uploadArea');
+const photoInput = document.getElementById('photoInput');
+const previewPhotos = document.getElementById('previewPhotos');
+const existingPhotos = document.getElementById('existingPhotos');
+const emptyPhotosMessage = document.getElementById('emptyPhotosMessage');
+
+let newPhotosToUpload = [];
+let photosToDelete = [];
+
+// Click to upload
+uploadArea.addEventListener('click', () => {
+  photoInput.click();
+});
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files);
+  handleFiles(files);
+});
+
+// File input change
+photoInput.addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  handleFiles(files);
+});
+
+// Handle selected files
+function handleFiles(files) {
+  const validFiles = files.filter(file => {
+    const isValidType = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file.type);
+    const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+    
+    if (!isValidType) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type',
+        text: 'Only PNG, JPG, and WEBP images are allowed.',
+        confirmButtonText: 'OK',
+        background: '#151821',
+        color: '#f9fafb',
+        confirmButtonColor: '#4b63ff',
+        customClass: {
+          popup: 'swal2-suit-popup',
+          confirmButton: 'swal2-suit-confirm'
+        }
+      });
+      return false;
+    }
+    
+    if (!isValidSize) {
+      Swal.fire({
+        icon: 'error',
+        title: 'File Too Large',
+        text: file.name + ' is larger than 5MB.',
+        confirmButtonText: 'OK',
+        background: '#151821',
+        color: '#f9fafb',
+        confirmButtonColor: '#4b63ff',
+        customClass: {
+          popup: 'swal2-suit-popup',
+          confirmButton: 'swal2-suit-confirm'
+        }
+      });
+      return false;
+    }
+    
+    return true;
+  });
+
+  validFiles.forEach(file => {
+    newPhotosToUpload.push(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const previewCard = document.createElement('div');
+      previewCard.className = 'preview-card';
+      previewCard.style.backgroundImage = `url(${e.target.result})`;
+      previewCard.dataset.fileName = file.name;
+      
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'preview-remove';
+      removeBtn.innerHTML = '×';
+      removeBtn.type = 'button';
+      removeBtn.onclick = () => removePreview(file.name);
+      
+      previewCard.appendChild(removeBtn);
+      previewPhotos.appendChild(previewCard);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Remove preview photo
+function removePreview(fileName) {
+  newPhotosToUpload = newPhotosToUpload.filter(f => f.name !== fileName);
+  
+  const previewCards = previewPhotos.querySelectorAll('.preview-card');
+  previewCards.forEach(card => {
+    if (card.dataset.fileName === fileName) {
+      card.remove();
+    }
+  });
+}
+
+// Delete existing photo
+function deleteExistingPhoto(photoUrl, button) {
+  Swal.fire({
+    title: 'Delete Photo?',
+    text: 'This photo will be removed from the product.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete',
+    cancelButtonText: 'Cancel',
+    background: '#151821',
+    color: '#f9fafb',
+    confirmButtonColor: '#f97373',
+    cancelButtonColor: '#222635',
+    customClass: {
+      popup: 'swal2-suit-popup',
+      confirmButton: 'swal2-suit-confirm',
+      cancelButton: 'swal2-suit-cancel'
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      photosToDelete.push(photoUrl);
+      
+      // Remove from UI
+      const photoCard = button.closest('.photo-card');
+      photoCard.remove();
+      
+      // Check if no photos left
+      const remainingPhotos = document.querySelectorAll('.photo-card');
+      if (remainingPhotos.length === 0) {
+        existingPhotos.innerHTML = '<div class="empty-photos">📷 No photos uploaded yet</div>';
+      }
+    }
+  });
+}
+
+// Update form submission
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Disable button
+  saveBtn.disabled = true;
+  saveBtn.textContent = '⏳ Saving...';
+
+  try {
+    // Step 1: Delete old photos
+    if (photosToDelete.length > 0) {
+      for (const photoUrl of photosToDelete) {
+        await fetch('/api/inventory/' + productId + '/photos', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ photoUrl })
+        });
+      }
+    }
+
+    // Step 2: Upload new photos
+    let uploadedPhotoUrls = [];
+    if (newPhotosToUpload.length > 0) {
+      const photoFormData = new FormData();
+      newPhotosToUpload.forEach(file => {
+        photoFormData.append('photos', file);
+      });
+
+      const photoRes = await fetch('/api/inventory/' + productId + '/photos', {
+        method: 'POST',
+        body: photoFormData
+      });
+
+      const photoJson = await photoRes.json();
+      if (photoJson.ok && photoJson.data && photoJson.data.photos) {
+        uploadedPhotoUrls = photoJson.data.photos;
+      }
+    }
+
+    // Step 3: Update product data
+    const formData = new FormData(form);
+    const data = {};
+    
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    const res = await fetch('/api/inventory/' + productId, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json.ok) {
+      throw new Error(json.message || 'Failed to update product');
+    }
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Product Updated',
+      text: 'The product has been updated successfully.',
+      confirmButtonText: 'View Product',
+      background: '#151821',
+      color: '#f9fafb',
+      confirmButtonColor: '#4b63ff',
+      customClass: {
+        popup: 'swal2-suit-popup',
+        confirmButton: 'swal2-suit-confirm'
+      }
+    });
+
+    window.location.href = '/inventory/' + productId;
+  } catch (error) {
+    console.error('Error:', error);
+    
+    await Swal.fire({
+      icon: 'error',
+      title: 'Update Failed',
+      text: error.message || 'Something went wrong while updating the product.',
+      confirmButtonText: 'OK',
+      background: '#151821',
+      color: '#f9fafb',
+      confirmButtonColor: '#4b63ff',
+      customClass: {
+        popup: 'swal2-suit-popup',
+        confirmButton: 'swal2-suit-confirm'
+      }
+    });
+
+    // Re-enable button
+    saveBtn.disabled = false;
+    saveBtn.textContent = '💾 Save Changes';
+  }
+});
+
+    </script>
+  </body>
+</html>

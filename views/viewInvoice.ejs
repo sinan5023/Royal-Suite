@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoice <%= invoice.invoiceNumber %> - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --info: #60a5fa;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Main layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .sidebar-collapse {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        color: var(--text-soft);
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      .page-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .page-header-texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .page-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #f9fafb;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-secondary {
+        background: #11131c;
+        color: var(--text-soft);
+        border: 1px solid #222635;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #f9fafb;
+      }
+
+      .btn-danger:hover {
+        background: #e35555;
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+      }
+
+      .btn-success:hover {
+        background: #1ea84e;
+      }
+
+      /* Status Badge */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .status-open {
+        background: rgba(251, 191, 36, 0.15);
+        color: var(--warning);
+        border: 1px solid rgba(251, 191, 36, 0.4);
+      }
+
+      .status-closed {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+      }
+
+      .status-paid {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.4);
+      }
+
+      .status-draft {
+        background: rgba(156, 163, 175, 0.15);
+        color: #9ca3af;
+        border: 1px solid rgba(156, 163, 175, 0.4);
+      }
+
+      .status-issued {
+        background: rgba(96, 165, 250, 0.15);
+        color: var(--info);
+        border: 1px solid rgba(96, 165, 250, 0.4);
+      }
+
+      .status-overdue {
+        background: rgba(249, 115, 115, 0.15);
+        color: var(--danger);
+        border: 1px solid rgba(249, 115, 115, 0.4);
+      }
+
+      .status-partially-paid {
+        background: rgba(251, 191, 36, 0.15);
+        color: var(--warning);
+        border: 1px solid rgba(251, 191, 36, 0.4);
+      }
+
+      .status-cancelled {
+        background: rgba(249, 115, 115, 0.15);
+        color: var(--danger);
+        border: 1px solid rgba(249, 115, 115, 0.4);
+      }
+
+      /* Alert Banner */
+      .alert-banner {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .alert-banner.warning {
+        border-left: 4px solid var(--warning);
+        background: rgba(251, 191, 36, 0.05);
+      }
+
+      .alert-banner.success {
+        border-left: 4px solid var(--success);
+        background: rgba(34, 197, 94, 0.05);
+      }
+
+      .alert-content {
+        flex: 1;
+      }
+
+      .alert-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--text-main);
+      }
+
+      .alert-message {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .alert-amount {
+        font-size: 24px;
+        font-weight: 700;
+        margin-left: 20px;
+      }
+
+      .alert-banner.warning .alert-amount {
+        color: var(--warning);
+      }
+
+      .alert-banner.success .alert-amount {
+        color: var(--success);
+      }
+
+      /* Invoice Card */
+      .invoice-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+
+      /* Invoice Header */
+      .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--border-subtle);
+      }
+
+      .company-info h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--accent);
+      }
+
+      .company-info p {
+        font-size: 12px;
+        color: var(--text-soft);
+        line-height: 1.8;
+      }
+
+      .invoice-meta {
+        text-align: right;
+      }
+
+      .invoice-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 8px;
+        font-family: 'Courier New', monospace;
+      }
+
+      /* Billing Details */
+      .billing-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+        padding: 20px;
+        background: #11131c;
+        border-radius: 8px;
+      }
+
+      .detail-section h3 {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 10px;
+        letter-spacing: 0.08em;
+      }
+
+      .detail-section p {
+        font-size: 13px;
+        color: var(--text-main);
+        line-height: 1.8;
+        margin: 0;
+      }
+
+      .detail-section .label {
+        color: var(--text-soft);
+        font-size: 12px;
+      }
+
+      .detail-section .value {
+        color: var(--text-main);
+        font-weight: 500;
+      }
+
+      /* Items Table */
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+      }
+
+      .items-table thead {
+        background: #161924;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .items-table th {
+        padding: 12px;
+        text-align: left;
+        font-size: 11px;
+        color: var(--text-soft);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .items-table th.right {
+        text-align: right;
+      }
+
+      .items-table tbody tr {
+        border-bottom: 1px solid var(--border-subtle);
+        transition: background 0.2s;
+      }
+
+      .items-table tbody tr:hover {
+        background: #11131c;
+      }
+
+      .items-table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .items-table td {
+        padding: 14px 12px;
+        font-size: 13px;
+        color: var(--text-main);
+      }
+
+      .items-table td.right {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .item-name {
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .item-sku {
+        font-size: 11px;
+        color: var(--text-soft);
+        margin-top: 2px;
+      }
+
+      /* Totals Section */
+      .totals-section {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+
+      .totals-table {
+        min-width: 380px;
+        background: #11131c;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .totals-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 13px;
+      }
+
+      .totals-row.subtotal {
+        color: var(--text-soft);
+      }
+
+      .totals-row.discount {
+        color: var(--success);
+      }
+
+      .totals-row.tax {
+        color: var(--text-soft);
+      }
+
+      .totals-row.total {
+        border-top: 2px solid var(--accent);
+        padding-top: 16px;
+        margin-top: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .totals-row .label {
+        color: inherit;
+      }
+
+      .totals-row .value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+
+      .totals-row.total .value {
+        color: var(--accent);
+        font-size: 24px;
+      }
+
+      /* Payment Info */
+      .payment-info {
+        margin-top: 32px;
+        padding: 20px;
+        background: #11131c;
+        border-radius: 8px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .info-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .info-value.success {
+        color: var(--success);
+      }
+
+      .info-value.warning {
+        color: var(--warning);
+      }
+
+      .info-value.danger {
+        color: var(--danger);
+      }
+
+      /* Notes */
+      .notes-section {
+        margin-top: 24px;
+        padding: 20px;
+        background: #11131c;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent);
+      }
+
+      .notes-section h3 {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .notes-section p {
+        font-size: 13px;
+        color: var(--text-main);
+        line-height: 1.8;
+        white-space: pre-wrap;
+      }
+
+      /* Payments History */
+      .payments-history {
+        margin-top: 24px;
+      }
+
+      .payments-history h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .payment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        background: #11131c;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border-left: 3px solid var(--success);
+        transition: all 0.2s;
+      }
+
+      .payment-item:hover {
+        background: #161924;
+        transform: translateX(4px);
+      }
+
+      .payment-item-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .payment-date {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .payment-method {
+        font-size: 13px;
+        color: var(--text-main);
+        font-weight: 500;
+      }
+
+      .payment-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--success);
+      }
+
+      @media print {
+        .topbar,
+        .sidebar,
+        .btn-group,
+        .alert-banner {
+          display: none !important;
+        }
+        
+        .content {
+          padding: 0;
+        }
+        
+        .invoice-card {
+          border: none;
+          box-shadow: none;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        
+        .content {
+          order: 1;
+        }
+        
+        .billing-details,
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .invoice-header {
+          flex-direction: column;
+          gap: 16px;
+        }
+        
+        .invoice-meta {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item active">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <div class="sidebar-collapse">⬅ Collapse</div>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header-row">
+          <div class="page-header-texts">
+            <div class="page-title-row">
+              <div class="page-title">Invoice #<%= invoice.invoiceNumber %></div>
+              <span class="status-badge status-<%= invoice.status.toLowerCase().replace(/\s+/g, '-') %>">
+                <%= invoice.status %>
+              </span>
+              <% 
+                const isOpen = invoice.balanceDue > 0;
+                const billStatus = isOpen ? 'open' : 'closed';
+              %>
+              <span class="status-badge status-<%= billStatus %>">
+                <% if (isOpen) { %>
+                  🔓 OPEN
+                <% } else { %>
+                  🔒 CLOSED
+                <% } %>
+              </span>
+            </div>
+            <div class="page-subtitle">
+              Created on <%= new Date(invoice.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+          </div>
+          <div class="btn-group">
+            <% if (invoice.status !== 'Paid' && invoice.status !== 'Cancelled') { %>
+              <a href="/invoices/<%= invoice._id %>/edit" class="btn btn-secondary">
+                <span>✏️</span>
+                <span>Edit</span>
+              </a>
+            <% } %>
+            <button class="btn btn-primary" onclick="window.print()">
+              <span>🖨️</span>
+              <span>Print</span>
+            </button>
+            <button class="btn btn-secondary" onclick="goBack()">
+              <span>←</span>
+              <span>Back</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert Banner for Outstanding Balance -->
+        <% if (invoice.balanceDue > 0 && invoice.status !== 'Cancelled') { %>
+        <div class="alert-banner warning">
+          <div class="alert-content">
+            <div class="alert-title">💳 Outstanding Payment</div>
+            <div class="alert-message">
+              This invoice has an outstanding balance that needs to be settled
+            </div>
+          </div>
+          <div class="alert-amount">
+            ₹<%= invoice.balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+          </div>
+          <button class="btn btn-success" onclick="recordPayment()" style="margin-left: 16px;">
+            <span>💰</span>
+            <span>Record Payment</span>
+          </button>
+        </div>
+        <% } else if (invoice.balanceDue === 0 && invoice.status === 'Paid') { %>
+        <div class="alert-banner success">
+          <div class="alert-content">
+            <div class="alert-title">✅ Fully Paid</div>
+            <div class="alert-message">
+              This invoice has been completely settled. No outstanding balance.
+            </div>
+          </div>
+          <div class="alert-amount">
+            ₹0.00
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Invoice Card -->
+        <div class="invoice-card">
+          <!-- Invoice Header -->
+          <div class="invoice-header">
+            <div class="company-info">
+              <h1>🧳 SuitManager Pro</h1>
+              <p>
+                Royal Suits<br/>
+                Kozhikode, Kerala<br/>
+                Phone: +91 123 456 7890<br/>
+                Email: info@royalsuits.com
+              </p>
+            </div>
+            <div class="invoice-meta">
+              <div class="invoice-number">#<%= invoice.invoiceNumber %></div>
+              <p style="font-size: 12px; color: var(--text-soft); margin-top: 8px;">
+                <strong>Issue Date:</strong> <%= new Date(invoice.issueDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              </p>
+              <p style="font-size: 12px; color: var(--text-soft);">
+                <strong>Due Date:</strong> <%= new Date(invoice.dueDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              </p>
+            </div>
+          </div>
+
+          <!-- Billing Details -->
+          <div class="billing-details">
+            <div class="detail-section">
+              <h3>📍 Bill To</h3>
+              <p>
+                <strong><%= invoice.billTo.name %></strong><br/>
+                <%= invoice.billTo.street || invoice.billTo.address || '' %><br/>
+                <%= invoice.billTo.city %>, <%= invoice.billTo.state %> <%= invoice.billTo.postalCode %><br/>
+                <%= invoice.billTo.country || 'India' %><br/>
+                📞 <%= invoice.billTo.phone %><br/>
+                <% if (invoice.billTo.email) { %>
+                ✉️ <%= invoice.billTo.email %>
+                <% } %>
+              </p>
+            </div>
+
+            <div class="detail-section">
+              <h3>📦 Booking Details</h3>
+              <p>
+                <span class="label">Booking Code:</span> <span class="value"><%= invoice.bookingId?.bookingCode || 'N/A' %></span><br/>
+                <% if (invoice.bookingId?.eventDate) { %>
+                <span class="label">Event Date:</span> <span class="value"><%= new Date(invoice.bookingId.eventDate).toLocaleDateString('en-IN') %></span><br/>
+                <% } %>
+                <% if (invoice.bookingId?.pickupDate) { %>
+                <span class="label">Pickup:</span> <span class="value"><%= new Date(invoice.bookingId.pickupDate).toLocaleDateString('en-IN') %></span><br/>
+                <% } %>
+                <% if (invoice.bookingId?.expectedReturnDate) { %>
+                <span class="label">Return:</span> <span class="value"><%= new Date(invoice.bookingId.expectedReturnDate).toLocaleDateString('en-IN') %></span>
+                <% } %>
+              </p>
+            </div>
+
+            <div class="detail-section">
+              <h3>📋 Payment Terms</h3>
+              <p>
+                <span class="value"><%= invoice.paymentTerms || 'Due on Receipt' %></span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Items Table -->
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th class="right">Qty</th>
+                <th class="right">Days</th>
+                <th class="right">Rate/Day</th>
+                <th class="right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% invoice.items.forEach(function(item) { %>
+              <tr>
+                <td>
+                  <div class="item-name"><%= item.productName %></div>
+                  <div class="item-sku">SKU: <%= item.sku %></div>
+                </td>
+                <td class="right"><%= item.quantity %></td>
+                <td class="right"><%= item.rentalDays %></td>
+                <td class="right">₹<%= item.rentalPrice.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></td>
+                <td class="right">₹<%= item.subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+
+          <!-- Totals -->
+          <div class="totals-section">
+            <div class="totals-table">
+              <div class="totals-row subtotal">
+                <span class="label">Subtotal:</span>
+                <span class="value">₹<%= invoice.subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+              
+              <% if (invoice.discountValue && invoice.discountValue > 0) { %>
+              <div class="totals-row discount">
+                <span class="label">Discount (<%= invoice.discountType === 'Percentage' ? invoice.discountValue + '%' : 'Fixed' %>):</span>
+                <span class="value">
+                  -₹<%= (invoice.discountType === 'Percentage' ? (invoice.subtotal * invoice.discountValue / 100) : invoice.discountValue).toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+                </span>
+              </div>
+              <% } %>
+              
+              <div class="totals-row tax">
+                <span class="label">Tax (<%= invoice.taxRate %>%):</span>
+                <span class="value">₹<%= invoice.taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+              
+              <% if (invoice.securityDeposit && invoice.securityDeposit > 0) { %>
+              <div class="totals-row">
+                <span class="label">Security Deposit:</span>
+                <span class="value">₹<%= invoice.securityDeposit.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+              <% } %>
+              
+              <% if (invoice.lateFees && invoice.lateFees > 0) { %>
+              <div class="totals-row">
+                <span class="label">Late Fees:</span>
+                <span class="value">₹<%= invoice.lateFees.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+              <% } %>
+              
+              <div class="totals-row total">
+                <span class="label">Total Amount:</span>
+                <span class="value">₹<%= invoice.totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Info -->
+          <div class="payment-info">
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">💰 Amount Paid</span>
+                <span class="info-value success">₹<%= invoice.amountPaid.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">⏳ Balance Due</span>
+                <span class="info-value <%= invoice.balanceDue > 0 ? 'warning' : 'success' %>">
+                  ₹<%= invoice.balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">📊 Status</span>
+                <span class="info-value">
+                  <%= invoice.status %>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment History -->
+          <% if (invoice.payments && invoice.payments.length > 0) { %>
+          <div class="payments-history">
+            <h3>💳 Payment History (<%= invoice.payments.length %>)</h3>
+            <% invoice.payments.forEach(function(payment) { %>
+            <div class="payment-item">
+              <div class="payment-item-info">
+                <span class="payment-date">
+                  <%= new Date(payment.paymentDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                </span>
+                <span class="payment-method">💳 <%= payment.method %></span>
+                <% if (payment.notes) { %>
+                <span class="payment-method" style="font-size: 11px; color: var(--text-soft);"><%= payment.notes %></span>
+                <% } %>
+              </div>
+              <span class="payment-amount">₹<%= payment.amount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+
+          <!-- Notes -->
+          <% if (invoice.invoiceNotes) { %>
+          <div class="notes-section">
+            <h3>📝 Notes</h3>
+            <p><%= invoice.invoiceNotes %></p>
+          </div>
+          <% } %>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+
+      // Record Payment Function
+      async function recordPayment() {
+        const balanceDue = <%= invoice.balanceDue || 0 %>;
+        const invoiceId = '<%= invoice._id %>';
+
+        // Check if already fully paid
+        if (balanceDue <= 0) {
+          await Swal.fire({
+            icon: 'info',
+            title: 'Already Paid',
+            text: 'This invoice has been fully paid. No outstanding balance.',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
+          });
+          return;
+        }
+
+        const result = await Swal.fire({
+          title: "💳 Record Payment",
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              <div style="
+                background: rgba(251, 191, 36, 0.1);
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                padding: 16px;
+                border-radius: 8px;
+                margin-bottom: 16px;
+                text-align: center;
+              ">
+                <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;">Outstanding Balance</div>
+                <div style="font-size: 28px; font-weight: 700; color: #fbbf24; margin-top: 4px;">
+                  ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
+                Payment Amount <span style="color: #f97373;">*</span>
+              </label>
+              <input
+                id="paymentAmount"
+                type="number"
+                class="swal2-input"
+                placeholder="Enter amount"
+                value="${balanceDue.toFixed(2)}"
+                min="0.01"
+                max="${balanceDue}"
+                step="0.01"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 12px;
+                  border-radius: 8px;
+                  font-size: 14px;
+                  font-weight: 500;
+                "
+              >
+              <div style="margin-top: 6px; font-size: 11px; color: #6b7280;">
+                Maximum: ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Payment Method <span style="color: #f97373;">*</span>
+              </label>
+              <select
+                id="paymentMethod"
+                class="swal2-input"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 12px;
+                  border-radius: 8px;
+                  font-size: 14px;
+                "
+              >
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Payment Notes (Optional)
+              </label>
+              <textarea
+                id="paymentNotes"
+                class="swal2-textarea"
+                placeholder="Add any notes about this payment..."
+                style="
+                  width: 100%;
+                  height: 80px;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "💰 Record Payment",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#22c55e",
+          cancelButtonColor: "#6b7280",
+          background: "#151821",
+          color: "#f9fafb",
+          width: "540px",
+          preConfirm: () => {
+            const amount = parseFloat(document.getElementById("paymentAmount").value);
+            const method = document.getElementById("paymentMethod").value;
+            const notes = document.getElementById("paymentNotes").value;
+
+            if (!amount || amount <= 0) {
+              Swal.showValidationMessage("Please enter a valid amount");
+              return false;
+            }
+
+            if (amount > balanceDue) {
+              Swal.showValidationMessage(
+                `Amount cannot exceed balance due (₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })})`
+              );
+              return false;
+            }
+
+            return { amount, method, notes };
+          },
+        });
+
+        if (!result.isConfirmed) return;
+
+        // Show loading
+        Swal.fire({
+          title: 'Processing Payment...',
+          html: 'Please wait while we record your payment',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        try {
+          const response = await fetch(`/api/invoices/${invoiceId}/payment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result.value),
+          });
+
+          const data = await response.json();
+
+          if (!data.ok) {
+            throw new Error(data.message || 'Failed to record payment');
+          }
+
+          const newBalanceDue = balanceDue - result.value.amount;
+          const isFullyPaid = newBalanceDue === 0;
+
+          await Swal.fire({
+            icon: "success",
+            title: isFullyPaid ? "🎉 Invoice Fully Paid!" : "✅ Payment Recorded!",
+            html: `
+              <div style="text-align: center; margin-top: 16px;">
+                <div style="font-size: 14px; color: #9ca3af; margin-bottom: 12px;">
+                  ₹${result.value.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} paid via ${result.value.method}
+                </div>
+                <div style="
+                  background: rgba(34, 197, 94, 0.1);
+                  border: 1px solid rgba(34, 197, 94, 0.3);
+                  padding: 16px;
+                  border-radius: 8px;
+                  margin-top: 16px;
+                ">
+                  <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">
+                    ${isFullyPaid ? 'Invoice Status' : 'Remaining Balance'}
+                  </div>
+                  <div style="font-size: 24px; font-weight: 700; color: #22c55e; margin-top: 6px;">
+                    ${isFullyPaid ? 'FULLY PAID ✓' : '₹' + newBalanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              </div>
+            `,
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            confirmButtonText: "Done",
+          });
+
+          // Reload page to show updated data
+          location.reload();
+
+        } catch (error) {
+          console.error('Error recording payment:', error);
+          await Swal.fire({
+            icon: "error",
+            title: "Payment Failed",
+            text: error.message || 'Failed to record payment. Please try again.',
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

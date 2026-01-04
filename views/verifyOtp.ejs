@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Verify OTP - SuitManager Pro</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -13,33 +13,119 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
 
       body {
         font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-        background: linear-gradient(135deg, #1a1d29 0%, #0f1117 100%);
+        background: #0f1117;
         color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 100vh;
         padding: 20px;
+        position: relative;
+        overflow: hidden;
+        touch-action: manipulation;
+      }
+
+      /* Animated background */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: -100%;
+        background: radial-gradient(
+          circle at 30% 50%,
+          rgba(75, 99, 255, 0.08) 0%,
+          transparent 50%
+        ),
+        radial-gradient(
+          circle at 70% 60%,
+          rgba(129, 140, 248, 0.06) 0%,
+          transparent 50%
+        );
+        animation: gradient-move 15s ease infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes gradient-move {
+        0%, 100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-20px, 30px) scale(0.9);
+        }
+      }
+
+      /* Floating particles */
+      .bg-particle {
+        position: fixed;
+        width: 4px;
+        height: 4px;
+        background: rgba(75, 99, 255, 0.3);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .bg-particle:nth-child(1) {
+        top: 20%;
+        left: 15%;
+        animation: float-particle 12s infinite ease-in-out;
+      }
+
+      .bg-particle:nth-child(2) {
+        top: 60%;
+        left: 80%;
+        animation: float-particle 15s infinite ease-in-out 2s;
+      }
+
+      .bg-particle:nth-child(3) {
+        top: 40%;
+        left: 50%;
+        animation: float-particle 18s infinite ease-in-out 4s;
+      }
+
+      .bg-particle:nth-child(4) {
+        top: 75%;
+        left: 25%;
+        animation: float-particle 14s infinite ease-in-out 6s;
+      }
+
+      @keyframes float-particle {
+        0%, 100% {
+          transform: translate(0, 0);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(20px, -40px);
+          opacity: 0.7;
+        }
       }
 
       .verify-container {
-        background-color: #0f1117;
-        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(20, 21, 31, 0.95), rgba(15, 17, 23, 0.95));
+        border-radius: 20px;
         padding: 50px 40px;
-        max-width: 480px;
+        max-width: 520px;
         width: 100%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        animation: slideUp 0.5s ease-out;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6),
+                    0 0 0 1px rgba(75, 99, 255, 0.1);
+        animation: slideUp 0.6s ease-out;
+        position: relative;
+        z-index: 1;
+        backdrop-filter: blur(10px);
       }
 
       @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(30px);
+          transform: translateY(40px);
         }
         to {
           opacity: 1;
@@ -51,36 +137,53 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        margin-bottom: 30px;
+        gap: 12px;
+        margin-bottom: 32px;
+        animation: fade-in-down 0.6s ease-out;
+      }
+
+      @keyframes fade-in-down {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       .logo-icon {
-        width: 48px;
-        height: 48px;
-        background-color: #3b82f6;
-        border-radius: 12px;
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, #4b63ff, #3b82f6);
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-        animation: bounce 1s ease-in-out;
+        font-size: 26px;
+        animation: pulse-glow 3s ease-in-out infinite;
+        box-shadow: 0 8px 24px rgba(75, 99, 255, 0.4);
       }
 
-      @keyframes bounce {
-        0%,
-        100% {
+      @keyframes pulse-glow {
+        0%, 100% {
+          box-shadow: 0 8px 24px rgba(75, 99, 255, 0.4);
           transform: scale(1);
         }
         50% {
-          transform: scale(1.1);
+          box-shadow: 0 8px 30px rgba(75, 99, 255, 0.6);
+          transform: scale(1.05);
         }
       }
 
       .logo-text {
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 700;
-        color: #60a5fa;
+        background: linear-gradient(135deg, #60a5fa, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       h1 {
@@ -88,116 +191,159 @@
         font-weight: 700;
         text-align: center;
         margin-bottom: 12px;
+        animation: fade-in 0.8s ease-out;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .subtitle {
         font-size: 14px;
         color: #9ca3af;
         text-align: center;
-        margin-bottom: 40px;
-        line-height: 1.5;
+        margin-bottom: 36px;
+        line-height: 1.6;
+        animation: fade-in 1s ease-out;
       }
 
       .otp-container {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         justify-content: center;
-        margin-bottom: 30px;
+        margin-bottom: 32px;
+        animation: fade-in 1.2s ease-out;
       }
 
       .otp-input {
         width: 56px;
-        height: 64px;
+        height: 68px;
         background-color: #1a1d29;
         border: 2px solid #2d3748;
-        border-radius: 12px;
-        font-size: 24px;
+        border-radius: 14px;
+        font-size: 28px;
         font-weight: 600;
         color: #ffffff;
         text-align: center;
         outline: none;
         transition: all 0.3s ease;
-        caret-color: #3b82f6;
+        caret-color: #4b63ff;
+        touch-action: manipulation;
       }
 
       .otp-input:focus {
-        border-color: #3b82f6;
+        border-color: #4b63ff;
         background-color: #1e2433;
-        transform: scale(1.05);
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        transform: scale(1.08);
+        box-shadow: 0 0 0 4px rgba(75, 99, 255, 0.15);
       }
 
       .otp-input:not(:placeholder-shown) {
-        border-color: #3b82f6;
+        border-color: #4b63ff;
         background-color: #1e2433;
+      }
+
+      .otp-input.filled {
+        border-color: #10b981;
+        background-color: rgba(16, 185, 129, 0.05);
       }
 
       .otp-input.error {
         border-color: #ef4444;
+        background-color: rgba(239, 68, 68, 0.05);
         animation: shake 0.5s;
       }
 
       @keyframes shake {
-        0%,
-        100% {
+        0%, 100% {
           transform: translateX(0);
         }
         25% {
-          transform: translateX(-10px);
+          transform: translateX(-8px);
         }
         75% {
-          transform: translateX(10px);
+          transform: translateX(8px);
         }
       }
 
       .verify-btn {
         width: 100%;
         padding: 16px;
-        background-color: #3b82f6;
+        background: linear-gradient(135deg, #4b63ff, #3b82f6);
         color: #ffffff;
         border: none;
-        border-radius: 12px;
+        border-radius: 14px;
         font-size: 16px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(75, 99, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+        animation: fade-in 1.4s ease-out;
+        touch-action: manipulation;
       }
 
-      .verify-btn:hover {
-        background-color: #2563eb;
+      .verify-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+        transform: translate(-50%, -50%);
+      }
+
+      .verify-btn:hover:not(:disabled)::before {
+        width: 400px;
+        height: 400px;
+      }
+
+      .verify-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, #394dd9, #2563eb);
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 8px 25px rgba(75, 99, 255, 0.4);
       }
 
-      .verify-btn:active {
+      .verify-btn:active:not(:disabled) {
         transform: translateY(0);
       }
 
       .verify-btn:disabled {
-        background-color: #374151;
+        background: #374151;
         cursor: not-allowed;
         transform: none;
+        box-shadow: none;
       }
 
       .verify-btn.loading {
         position: relative;
         color: transparent;
+        pointer-events: none;
       }
 
       .verify-btn.loading::after {
         content: "";
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
         top: 50%;
         left: 50%;
-        margin-left: -10px;
-        margin-top: -10px;
-        border: 3px solid #ffffff;
+        margin-left: -11px;
+        margin-top: -11px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
-        border-top-color: transparent;
-        animation: spin 0.8s linear infinite;
+        border-top-color: #ffffff;
+        animation: spin 0.7s linear infinite;
       }
 
       @keyframes spin {
@@ -210,6 +356,8 @@
         text-align: center;
         color: #9ca3af;
         font-size: 14px;
+        animation: fade-in 1.6s ease-out;
+        line-height: 1.8;
       }
 
       .resend-btn {
@@ -219,34 +367,38 @@
         cursor: pointer;
         font-weight: 600;
         text-decoration: none;
-        transition: color 0.2s;
+        transition: all 0.2s;
+        padding: 4px 8px;
+        border-radius: 6px;
+        touch-action: manipulation;
       }
 
-      .resend-btn:hover {
+      .resend-btn:hover:not(:disabled) {
         color: #3b82f6;
-        text-decoration: underline;
+        background: rgba(59, 130, 246, 0.1);
       }
 
       .resend-btn:disabled {
         color: #4b5563;
         cursor: not-allowed;
-        text-decoration: none;
+        background: transparent;
       }
 
       .message {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 24px;
         font-size: 14px;
         text-align: center;
-        animation: slideDown 0.3s ease-out;
+        animation: slideDown 0.4s ease-out;
         display: none;
+        font-weight: 500;
       }
 
       @keyframes slideDown {
         from {
           opacity: 0;
-          transform: translateY(-10px);
+          transform: translateY(-15px);
         }
         to {
           opacity: 1;
@@ -255,39 +407,368 @@
       }
 
       .message.success {
-        background-color: rgba(16, 185, 129, 0.1);
-        border: 1px solid #10b981;
+        background-color: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.4);
         color: #10b981;
         display: block;
       }
 
       .message.error {
-        background-color: rgba(239, 68, 68, 0.1);
-        border: 1px solid #ef4444;
+        background-color: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
         color: #ef4444;
         display: block;
       }
 
       .timer {
+        display: inline-block;
         color: #60a5fa;
-        font-weight: 600;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        min-width: 50px;
+        text-align: left;
       }
 
-      /* Paste icon animation */
-      @keyframes pasteSuccess {
-        0% {
-          transform: scale(1);
+      .timer.warning {
+        color: #fbbf24;
+        animation: pulse-warning 1s ease-in-out infinite;
+      }
+
+      @keyframes pulse-warning {
+        0%, 100% {
+          opacity: 1;
         }
         50% {
-          transform: scale(1.2);
+          opacity: 0.7;
         }
-        100% {
+      }
+
+      /* Paste hint */
+      .paste-hint {
+        text-align: center;
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: -24px;
+        margin-bottom: 24px;
+        animation: fade-in 1.8s ease-out;
+      }
+
+      .paste-hint-icon {
+        display: inline-block;
+        margin-right: 4px;
+      }
+
+      /* Success Redirect Overlay */
+      .success-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.98);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      .success-overlay.active {
+        display: flex;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .success-content {
+        text-align: center;
+        animation: scaleIn 0.5s ease-out;
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
           transform: scale(1);
+        }
+      }
+
+      .success-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 24px;
+        background: linear-gradient(135deg, #10b981, #22c55e);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.4);
+        animation: successPulse 1.5s ease-in-out infinite, successRotate 0.6s ease-out;
+      }
+
+      @keyframes successPulse {
+        0%, 100% {
+          box-shadow: 0 20px 60px rgba(16, 185, 129, 0.4);
+        }
+        50% {
+          box-shadow: 0 20px 80px rgba(16, 185, 129, 0.6);
+        }
+      }
+
+      @keyframes successRotate {
+        from {
+          transform: rotate(-180deg) scale(0);
+        }
+        to {
+          transform: rotate(0deg) scale(1);
+        }
+      }
+
+      .success-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #10b981, #22c55e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeInUp 0.6s ease-out 0.2s backwards;
+      }
+
+      .success-message {
+        font-size: 16px;
+        color: #9ca3af;
+        margin-bottom: 32px;
+        animation: fadeInUp 0.6s ease-out 0.4s backwards;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .success-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        animation: fadeInUp 0.6s ease-out 0.6s backwards;
+      }
+
+      .loader-dot {
+        width: 12px;
+        height: 12px;
+        background: #4b63ff;
+        border-radius: 50%;
+        animation: loaderBounce 1.4s ease-in-out infinite;
+      }
+
+      .loader-dot:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .loader-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .loader-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes loaderBounce {
+        0%, 80%, 100% {
+          transform: scale(0.8);
+          opacity: 0.5;
+        }
+        40% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+
+      /* Tablet and iPad optimization */
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .verify-container {
+          max-width: 600px;
+          padding: 60px 50px;
+        }
+
+        .otp-input {
+          width: 70px;
+          height: 80px;
+          font-size: 32px;
+        }
+
+        .verify-btn {
+          padding: 18px;
+          font-size: 18px;
+        }
+
+        h1 {
+          font-size: 32px;
+        }
+
+        .subtitle {
+          font-size: 16px;
+        }
+
+        .success-icon {
+          width: 140px;
+          height: 140px;
+          font-size: 70px;
+        }
+
+        .success-title {
+          font-size: 36px;
+        }
+      }
+
+      /* Mobile optimization */
+      @media (max-width: 480px) {
+        .verify-container {
+          padding: 36px 24px;
+          border-radius: 16px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        .logo-icon {
+          width: 44px;
+          height: 44px;
+          font-size: 22px;
+        }
+
+        .logo-text {
+          font-size: 22px;
+        }
+
+        .otp-container {
+          gap: 8px;
+        }
+
+        .otp-input {
+          width: 48px;
+          height: 58px;
+          font-size: 24px;
+        }
+
+        .subtitle {
+          font-size: 13px;
+        }
+
+        .resend-section {
+          font-size: 13px;
+        }
+
+        .success-icon {
+          width: 100px;
+          height: 100px;
+          font-size: 50px;
+        }
+
+        .success-title {
+          font-size: 26px;
+        }
+
+        .success-message {
+          font-size: 14px;
+        }
+      }
+
+      /* Small mobile screens */
+      @media (max-width: 360px) {
+        .otp-input {
+          width: 42px;
+          height: 54px;
+          font-size: 22px;
+        }
+
+        .otp-container {
+          gap: 6px;
+        }
+      }
+
+      /* Landscape tablet */
+      @media (min-width: 768px) and (max-height: 600px) and (orientation: landscape) {
+        body {
+          padding: 10px;
+        }
+
+        .verify-container {
+          padding: 30px 40px;
+        }
+
+        h1 {
+          font-size: 24px;
+          margin-bottom: 8px;
+        }
+
+        .subtitle {
+          margin-bottom: 20px;
+        }
+
+        .otp-container {
+          margin-bottom: 20px;
+        }
+
+        .logo {
+          margin-bottom: 20px;
+        }
+
+        .success-icon {
+          width: 80px;
+          height: 80px;
+          font-size: 40px;
+          margin-bottom: 16px;
+        }
+
+        .success-title {
+          font-size: 24px;
+        }
+
+        .success-message {
+          font-size: 14px;
+          margin-bottom: 20px;
         }
       }
     </style>
   </head>
   <body>
+    <!-- Background particles -->
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="success-overlay">
+      <div class="success-content">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Verification Successful!</h2>
+        <p class="success-message">Redirecting you to dashboard...</p>
+        <div class="success-loader">
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="verify-container">
       <div class="logo">
         <div class="logo-icon">💼</div>
@@ -309,7 +790,7 @@
           maxlength="1"
           pattern="[0-9]"
           inputmode="numeric"
-          autocomplete="off"
+          autocomplete="one-time-code"
         />
         <input
           type="text"
@@ -353,11 +834,17 @@
         />
       </div>
 
+      <div class="paste-hint">
+        <span class="paste-hint-icon">📋</span>
+        <span>Tip: You can paste the entire 6-digit code</span>
+      </div>
+
       <button id="verifyBtn" class="verify-btn">Verify OTP</button>
 
       <div class="resend-section">
         Didn't receive the code?
         <button id="resendBtn" class="resend-btn">Resend OTP</button>
+        <br>
         <span id="timer" class="timer"></span>
       </div>
     </div>
@@ -368,9 +855,10 @@
       const resendBtn = document.getElementById("resendBtn");
       const messageDiv = document.getElementById("message");
       const timerSpan = document.getElementById("timer");
+      const successOverlay = document.getElementById("successOverlay");
 
       let resendTimer;
-      let resendCountdown = 150;
+      let resendCountdown = 120; // 2 MINUTES (120 seconds)
 
       // Auto-focus first input
       inputs[0].focus();
@@ -387,28 +875,42 @@
             return;
           }
 
+          // Add filled class
+          if (value.length === 1) {
+            e.target.classList.add('filled');
+            e.target.classList.remove('error');
+          } else {
+            e.target.classList.remove('filled');
+          }
+
           // Move to next input if value entered
           if (value.length === 1 && index < inputs.length - 1) {
             inputs[index + 1].focus();
           }
 
-          // Auto-submit when all fields filled
-          if (index === inputs.length - 1 && value.length === 1) {
-            checkAllFilled();
-          }
+          // Check if all filled
+          checkAllFilled();
         });
 
         // Keydown event - handle backspace
         input.addEventListener("keydown", (e) => {
-          if (e.key === "Backspace" && !e.target.value && index > 0) {
-            inputs[index - 1].focus();
+          if (e.key === "Backspace") {
+            if (!e.target.value && index > 0) {
+              inputs[index - 1].focus();
+              inputs[index - 1].value = "";
+              inputs[index - 1].classList.remove('filled');
+            } else {
+              e.target.value = "";
+              e.target.classList.remove('filled');
+            }
+            checkAllFilled();
           }
         });
 
-        // Paste event - handle paste across all fields
+        // ENHANCED PASTE - Works on ALL inputs
         input.addEventListener("paste", (e) => {
           e.preventDefault();
-          const pastedData = e.clipboardData.getData("text").trim();
+          const pastedData = e.clipboardData.getData("text").trim().replace(/\s/g, '');
 
           // Only allow numeric paste
           if (!/^\d+$/.test(pastedData)) {
@@ -418,15 +920,26 @@
 
           // Fill all inputs with pasted data
           const digits = pastedData.split("").slice(0, 6);
+          
+          // Clear all inputs first
+          inputs.forEach(inp => {
+            inp.value = "";
+            inp.classList.remove('filled', 'error');
+          });
+
+          // Fill with pasted digits
           digits.forEach((digit, i) => {
             if (inputs[i]) {
               inputs[i].value = digit;
+              inputs[i].classList.add('filled');
             }
           });
 
-          // Focus last filled input
-          const lastIndex = Math.min(digits.length - 1, inputs.length - 1);
-          inputs[lastIndex].focus();
+          // Focus last filled input or last input
+          const lastIndex = Math.min(digits.length, inputs.length) - 1;
+          if (lastIndex >= 0) {
+            inputs[lastIndex].focus();
+          }
 
           checkAllFilled();
         });
@@ -434,6 +947,11 @@
         // Select all on focus for easy replacement
         input.addEventListener("focus", (e) => {
           e.target.select();
+        });
+
+        // Touch optimization for tablets
+        input.addEventListener("touchstart", (e) => {
+          e.target.focus();
         });
       });
 
@@ -456,9 +974,10 @@
       function clearOTP() {
         inputs.forEach((input) => {
           input.value = "";
-          input.classList.remove("error");
+          input.classList.remove("error", "filled");
         });
         inputs[0].focus();
+        checkAllFilled();
       }
 
       // Show message
@@ -472,7 +991,7 @@
         }, 5000);
       }
 
-      // Verify OTP
+      // Verify OTP (API call unchanged)
       verifyBtn.addEventListener("click", async () => {
         const otp = getOTP();
 
@@ -497,30 +1016,31 @@
           const data = await response.json();
 
           if (response.ok) {
-            showMessage("OTP verified successfully! Redirecting...", "success");
+            // Show animated success overlay
+            successOverlay.classList.add('active');
 
-            // Redirect after success
+            // Redirect after animation
             setTimeout(() => {
               window.location.href = data.redirectTo || "/dashboard";
-            }, 1500);
+            }, 2000);
           } else {
             showMessage(
               data.message || "Invalid OTP. Please try again.",
               "error"
             );
             inputs.forEach((input) => input.classList.add("error"));
-            clearOTP();
+            setTimeout(() => clearOTP(), 500);
           }
         } catch (error) {
           showMessage("Network error. Please check your connection.", "error");
           console.error("Error:", error);
         } finally {
           verifyBtn.classList.remove("loading");
-          verifyBtn.disabled = false;
+          checkAllFilled();
         }
       });
 
-      // Resend OTP
+      // Resend OTP (API call unchanged)
       resendBtn.addEventListener("click", async () => {
         if (resendBtn.disabled) return;
 
@@ -547,19 +1067,32 @@
         }
       });
 
-      // Start resend timer
+      // Start 2-minute resend timer
       function startResendTimer() {
-        resendCountdown = 1;
+        resendCountdown = 120; // 2 minutes = 120 seconds
         resendBtn.disabled = true;
 
         resendTimer = setInterval(() => {
           resendCountdown--;
-          timerSpan.textContent = `(${resendCountdown}s)`;
+          
+          const minutes = Math.floor(resendCountdown / 60);
+          const seconds = resendCountdown % 60;
+          const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+          
+          timerSpan.textContent = `Resend available in ${timeString}`;
+          
+          // Warning color for last 30 seconds
+          if (resendCountdown <= 30) {
+            timerSpan.classList.add('warning');
+          } else {
+            timerSpan.classList.remove('warning');
+          }
 
           if (resendCountdown <= 0) {
             clearInterval(resendTimer);
             resendBtn.disabled = false;
             timerSpan.textContent = "";
+            timerSpan.classList.remove('warning');
           }
         }, 1000);
       }
@@ -573,6 +1106,16 @@
           verifyBtn.click();
         }
       });
+
+      // Prevent zoom on double-tap for iOS
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
     </script>
   </body>
 </html>

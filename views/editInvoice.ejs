@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Invoice #<%= invoice.invoiceNumber %> - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-card: #1a1d28;
+        --sidebar-bg: #11131b;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Topbar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left,
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 18px 24px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+        margin-top: 4px;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #f9fafb;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-secondary {
+        background: #11131c;
+        color: var(--text-soft);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-danger:hover {
+        background: #d65f5f;
+      }
+
+      /* Form Layout */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--card-radius);
+        padding: 18px;
+      }
+
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #e5e7eb;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-soft);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+
+      .form-label .required {
+        color: var(--danger);
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        color: var(--text-main);
+        font-size: 13px;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* Items Table */
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+
+      .items-table thead {
+        background: #161924;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .items-table th {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 11px;
+        color: var(--text-soft);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .items-table th.right {
+        text-align: right;
+      }
+
+      .items-table tbody tr {
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .items-table tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .items-table td {
+        padding: 12px;
+        font-size: 13px;
+        color: var(--text-main);
+      }
+
+      .items-table td.right {
+        text-align: right;
+      }
+
+      .items-table input {
+        width: 100%;
+        padding: 6px 8px;
+        background: var(--bg-main);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        color: var(--text-main);
+        font-size: 12px;
+      }
+
+      .remove-item-btn {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .add-item-btn {
+        margin-top: 12px;
+        padding: 8px 14px;
+        background: var(--bg-card);
+        border: 1px dashed var(--border-subtle);
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .add-item-btn:hover {
+        background: #11131c;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* Summary */
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 13px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .summary-row:last-child {
+        border-bottom: none;
+      }
+
+      .summary-row.total {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--success);
+        padding-top: 12px;
+        margin-top: 8px;
+        border-top: 2px solid var(--border-subtle);
+      }
+
+      .summary-label {
+        color: var(--text-soft);
+      }
+
+      .summary-value {
+        color: var(--text-main);
+        font-weight: 500;
+      }
+
+      .read-only {
+        background: #0d0f14 !important;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 1200px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/invoices" class="sidebar-item active">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <main class="content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Edit Invoice #<%= invoice.invoiceNumber %></h1>
+            <p class="page-subtitle">
+              Update invoice details and payment information
+            </p>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="goBack()">
+              ← Cancel
+            </button>
+            <button type="button" class="btn btn-primary" onclick="saveInvoice()">
+              💾 Save Changes
+            </button>
+          </div>
+        </div>
+
+        <form id="invoiceForm">
+          <div class="form-grid">
+            <!-- Left Column -->
+            <div>
+              <!-- Customer & Billing Info -->
+              <div class="card">
+                <div class="card-title">👤 Customer & Billing Information</div>
+
+                <div class="form-group">
+                  <label class="form-label">Customer Name <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    class="form-input read-only"
+                    value="<%= invoice.billTo.name %>"
+                    readonly
+                  />
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input
+                      type="text"
+                      name="billTo.phone"
+                      class="form-input"
+                      value="<%= invoice.billTo.phone %>"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input
+                      type="email"
+                      name="billTo.email"
+                      class="form-input"
+                      value="<%= invoice.billTo.email || '' %>"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Street Address</label>
+                  <input
+                    type="text"
+                    name="billTo.street"
+                    class="form-input"
+                    value="<%= invoice.billTo.street || invoice.billTo.address || '' %>"
+                  />
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input
+                      type="text"
+                      name="billTo.city"
+                      class="form-input"
+                      value="<%= invoice.billTo.city %>"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">State</label>
+                    <input
+                      type="text"
+                      name="billTo.state"
+                      class="form-input"
+                      value="<%= invoice.billTo.state %>"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Postal Code</label>
+                    <input
+                      type="text"
+                      name="billTo.postalCode"
+                      class="form-input"
+                      value="<%= invoice.billTo.postalCode %>"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <input
+                      type="text"
+                      name="billTo.country"
+                      class="form-input"
+                      value="<%= invoice.billTo.country || 'India' %>"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Invoice Items -->
+              <div class="card" style="margin-top: 16px">
+                <div class="card-title">🧥 Invoice Items</div>
+
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th>Product Name</th>
+                      <th>SKU</th>
+                      <th class="right">Qty</th>
+                      <th class="right">Days</th>
+                      <th class="right">Rate/Day</th>
+                      <th class="right">Amount</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="itemsTableBody">
+                    <% invoice.items.forEach((item, index) => { %>
+                    <tr data-index="<%= index %>">
+                      <td>
+                        <input
+                          type="text"
+                          name="items[<%= index %>][productName]"
+                          value="<%= item.productName %>"
+                          required
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="items[<%= index %>][sku]"
+                          value="<%= item.sku %>"
+                          required
+                        />
+                      </td>
+                      <td class="right">
+                        <input
+                          type="number"
+                          name="items[<%= index %>][quantity]"
+                          value="<%= item.quantity %>"
+                          min="1"
+                          required
+                          onchange="calculateTotals()"
+                        />
+                      </td>
+                      <td class="right">
+                        <input
+                          type="number"
+                          name="items[<%= index %>][rentalDays]"
+                          value="<%= item.rentalDays %>"
+                          min="1"
+                          required
+                          onchange="calculateTotals()"
+                        />
+                      </td>
+                      <td class="right">
+                        <input
+                          type="number"
+                          name="items[<%= index %>][rentalPrice]"
+                          value="<%= item.rentalPrice %>"
+                          step="0.01"
+                          min="0"
+                          required
+                          onchange="calculateTotals()"
+                        />
+                      </td>
+                      <td class="right" id="itemAmount<%= index %>">
+                        ₹<%= item.subtotal.toFixed(2) %>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="remove-item-btn"
+                          onclick="removeItem(<%= index %>)"
+                        >
+                          ×
+                        </button>
+                      </td>
+                    </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+
+                <button type="button" class="add-item-btn" onclick="addItem()">
+                  + Add Item
+                </button>
+              </div>
+
+              <!-- Notes -->
+              <div class="card" style="margin-top: 16px">
+                <div class="card-title">📝 Notes</div>
+
+                <div class="form-group">
+                  <label class="form-label">Invoice Notes (Visible to Customer)</label>
+                  <textarea
+                    name="invoiceNotes"
+                    class="form-textarea"
+                    placeholder="Payment terms, thank you message, etc."
+                  ><%= invoice.invoiceNotes || '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Internal Notes (Staff Only)</label>
+                  <textarea
+                    name="internalNotes"
+                    class="form-textarea"
+                    placeholder="Internal notes for staff..."
+                  ><%= invoice.internalNotes || '' %></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+              <!-- Invoice Details -->
+              <div class="card">
+                <div class="card-title">📄 Invoice Details</div>
+
+                <div class="form-group">
+                  <label class="form-label">Invoice Number</label>
+                  <input
+                    type="text"
+                    class="form-input read-only"
+                    value="<%= invoice.invoiceNumber %>"
+                    readonly
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Issue Date</label>
+                  <input
+                    type="date"
+                    name="issueDate"
+                    class="form-input"
+                    value="<%= new Date(invoice.issueDate).toISOString().split('T')[0] %>"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Due Date</label>
+                  <input
+                    type="date"
+                    name="dueDate"
+                    class="form-input"
+                    value="<%= new Date(invoice.dueDate).toISOString().split('T')[0] %>"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Payment Terms</label>
+                  <select name="paymentTerms" class="form-select">
+                    <option value="Due on Receipt" <%= invoice.paymentTerms === 'Due on Receipt' ? 'selected' : '' %>>Due on Receipt</option>
+                    <option value="Net 7" <%= invoice.paymentTerms === 'Net 7' ? 'selected' : '' %>>Net 7 Days</option>
+                    <option value="Net 15" <%= invoice.paymentTerms === 'Net 15' ? 'selected' : '' %>>Net 15 Days</option>
+                    <option value="Net 30" <%= invoice.paymentTerms === 'Net 30' ? 'selected' : '' %>>Net 30 Days</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Status</label>
+                  <select name="status" class="form-select">
+                    <option value="Draft" <%= invoice.status === 'Draft' ? 'selected' : '' %>>Draft</option>
+                    <option value="Issued" <%= invoice.status === 'Issued' ? 'selected' : '' %>>Issued</option>
+                    <option value="Partially Paid" <%= invoice.status === 'Partially Paid' ? 'selected' : '' %>>Partially Paid</option>
+                    <option value="Paid" <%= invoice.status === 'Paid' ? 'selected' : '' %>>Paid</option>
+                    <option value="Overdue" <%= invoice.status === 'Overdue' ? 'selected' : '' %>>Overdue</option>
+                    <option value="Cancelled" <%= invoice.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Pricing -->
+              <div class="card" style="margin-top: 16px">
+                <div class="card-title">💰 Pricing</div>
+
+                <div class="form-group">
+                  <label class="form-label">Discount Type</label>
+                  <select name="discountType" class="form-select" onchange="calculateTotals()">
+                    <option value="None" <%= invoice.discountType === 'None' ? 'selected' : '' %>>None</option>
+                    <option value="Percentage" <%= invoice.discountType === 'Percentage' ? 'selected' : '' %>>Percentage</option>
+                    <option value="Fixed" <%= invoice.discountType === 'Fixed' ? 'selected' : '' %>>Fixed Amount</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Discount Value</label>
+                  <input
+                    type="number"
+                    name="discountValue"
+                    class="form-input"
+                    value="<%= invoice.discountValue || 0 %>"
+                    step="0.01"
+                    min="0"
+                    onchange="calculateTotals()"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Tax Rate (%)</label>
+                  <input
+                    type="number"
+                    name="taxRate"
+                    class="form-input"
+                    value="<%= invoice.taxRate %>"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    onchange="calculateTotals()"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Security Deposit</label>
+                  <input
+                    type="number"
+                    name="securityDeposit"
+                    class="form-input"
+                    value="<%= invoice.securityDeposit || 0 %>"
+                    step="0.01"
+                    min="0"
+                    onchange="calculateTotals()"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Late Fees</label>
+                  <input
+                    type="number"
+                    name="lateFees"
+                    class="form-input"
+                    value="<%= invoice.lateFees || 0 %>"
+                    step="0.01"
+                    min="0"
+                    onchange="calculateTotals()"
+                  />
+                </div>
+              </div>
+
+              <!-- Summary -->
+              <div class="card" style="margin-top: 16px">
+                <div class="card-title">📊 Summary</div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Subtotal:</span>
+                  <span class="summary-value" id="summarySubtotal">₹<%= invoice.subtotal.toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Discount:</span>
+                  <span class="summary-value" id="summaryDiscount">₹0.00</span>
+                </div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Tax:</span>
+                  <span class="summary-value" id="summaryTax">₹<%= invoice.taxAmount.toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Security Deposit:</span>
+                  <span class="summary-value" id="summaryDeposit">₹<%= (invoice.securityDeposit || 0).toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Late Fees:</span>
+                  <span class="summary-value" id="summaryLateFees">₹<%= (invoice.lateFees || 0).toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row total">
+                  <span class="summary-label">Total Amount:</span>
+                  <span class="summary-value" id="summaryTotal">₹<%= invoice.totalAmount.toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row">
+                  <span class="summary-label">Amount Paid:</span>
+                  <span class="summary-value" style="color: var(--success)">₹<%= invoice.amountPaid.toFixed(2) %></span>
+                </div>
+
+                <div class="summary-row" style="color: var(--warning)">
+                  <span class="summary-label">Balance Due:</span>
+                  <span class="summary-value">₹<%= invoice.balanceDue.toFixed(2) %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+    <script>
+  let itemCounter = <%= invoice.items.length %>;
+  const invoiceStatus = '<%= invoice.status %>';
+  const invoiceId = '<%= invoice._id %>';
+
+  function goBack() {
+    window.history.back();
+  }
+
+  function addItem() {
+    const tbody = document.getElementById('itemsTableBody');
+    const row = document.createElement('tr');
+    row.setAttribute('data-index', itemCounter);
+    row.innerHTML = `
+      <td>
+        <input type="text" name="items[${itemCounter}][productName]" placeholder="Product name" required />
+      </td>
+      <td>
+        <input type="text" name="items[${itemCounter}][sku]" placeholder="SKU" required />
+      </td>
+      <td class="right">
+        <input type="number" name="items[${itemCounter}][quantity]" value="1" min="1" required onchange="calculateTotals()" />
+      </td>
+      <td class="right">
+        <input type="number" name="items[${itemCounter}][rentalDays]" value="1" min="1" required onchange="calculateTotals()" />
+      </td>
+      <td class="right">
+        <input type="number" name="items[${itemCounter}][rentalPrice]" value="0" step="0.01" min="0" required onchange="calculateTotals()" />
+      </td>
+      <td class="right" id="itemAmount${itemCounter}">₹0.00</td>
+      <td>
+        <button type="button" class="remove-item-btn" onclick="removeItem(${itemCounter})">×</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+    itemCounter++;
+    calculateTotals();
+  }
+
+  function removeItem(index) {
+    const row = document.querySelector(`tr[data-index="${index}"]`);
+    if (row) {
+      row.remove();
+      calculateTotals();
+    }
+  }
+
+  function calculateTotals() {
+    let subtotal = 0;
+    const rows = document.querySelectorAll('#itemsTableBody tr');
+
+    rows.forEach((row) => {
+      const index = row.getAttribute('data-index');
+      const qty = parseFloat(row.querySelector(`input[name="items[${index}][quantity]"]`)?.value || 0);
+      const days = parseFloat(row.querySelector(`input[name="items[${index}][rentalDays]"]`)?.value || 0);
+      const price = parseFloat(row.querySelector(`input[name="items[${index}][rentalPrice]"]`)?.value || 0);
+      const itemTotal = qty * days * price;
+      
+      const amountCell = document.getElementById(`itemAmount${index}`);
+      if (amountCell) {
+        amountCell.textContent = `₹${itemTotal.toFixed(2)}`;
+      }
+      
+      subtotal += itemTotal;
+    });
+
+    // Get discount
+    const discountType = document.querySelector('select[name="discountType"]').value;
+    const discountValue = parseFloat(document.querySelector('input[name="discountValue"]').value || 0);
+    let discountAmount = 0;
+    
+    if (discountType === 'Percentage') {
+      discountAmount = (subtotal * discountValue) / 100;
+    } else if (discountType === 'Fixed') {
+      discountAmount = discountValue;
+    }
+
+    // Calculate tax
+    const taxRate = parseFloat(document.querySelector('input[name="taxRate"]').value || 0);
+    const taxableAmount = subtotal - discountAmount;
+    const taxAmount = (taxableAmount * taxRate) / 100;
+
+    // Other fees
+    const securityDeposit = parseFloat(document.querySelector('input[name="securityDeposit"]').value || 0);
+    const lateFees = parseFloat(document.querySelector('input[name="lateFees"]').value || 0);
+
+    // Total
+    const totalAmount = taxableAmount + taxAmount + securityDeposit + lateFees;
+
+    // Update UI
+    document.getElementById('summarySubtotal').textContent = `₹${subtotal.toFixed(2)}`;
+    document.getElementById('summaryDiscount').textContent = `-₹${discountAmount.toFixed(2)}`;
+    document.getElementById('summaryTax').textContent = `₹${taxAmount.toFixed(2)}`;
+    document.getElementById('summaryDeposit').textContent = `₹${securityDeposit.toFixed(2)}`;
+    document.getElementById('summaryLateFees').textContent = `₹${lateFees.toFixed(2)}`;
+    document.getElementById('summaryTotal').textContent = `₹${totalAmount.toFixed(2)}`;
+  }
+
+  async function saveInvoice() {
+    const form = document.getElementById('invoiceForm');
+    const formData = new FormData(form);
+    
+    // Build invoice object
+    const invoiceData = {
+      billTo: {
+        name: '<%= invoice.billTo.name %>',
+        phone: formData.get('billTo.phone'),
+        email: formData.get('billTo.email'),
+        street: formData.get('billTo.street'),
+        city: formData.get('billTo.city'),
+        state: formData.get('billTo.state'),
+        postalCode: formData.get('billTo.postalCode'),
+        country: formData.get('billTo.country'),
+      },
+      items: [],
+      issueDate: formData.get('issueDate'),
+      dueDate: formData.get('dueDate'),
+      paymentTerms: formData.get('paymentTerms'),
+      status: formData.get('status'),
+      discountType: formData.get('discountType'),
+      discountValue: parseFloat(formData.get('discountValue') || 0),
+      taxRate: parseFloat(formData.get('taxRate') || 0),
+      securityDeposit: parseFloat(formData.get('securityDeposit') || 0),
+      lateFees: parseFloat(formData.get('lateFees') || 0),
+      invoiceNotes: formData.get('invoiceNotes'),
+      internalNotes: formData.get('internalNotes'),
+    };
+
+    // Extract items
+    const rows = document.querySelectorAll('#itemsTableBody tr');
+    rows.forEach((row) => {
+      const index = row.getAttribute('data-index');
+      const qty = parseFloat(row.querySelector(`input[name="items[${index}][quantity]"]`)?.value || 0);
+      const days = parseFloat(row.querySelector(`input[name="items[${index}][rentalDays]"]`)?.value || 0);
+      const price = parseFloat(row.querySelector(`input[name="items[${index}][rentalPrice]"]`)?.value || 0);
+      
+      invoiceData.items.push({
+        productName: row.querySelector(`input[name="items[${index}][productName]"]`)?.value,
+        sku: row.querySelector(`input[name="items[${index}][sku]"]`)?.value,
+        quantity: qty,
+        rentalDays: days,
+        rentalPrice: price,
+        subtotal: qty * days * price,
+      });
+    });
+
+    // Validate
+    if (invoiceData.items.length === 0) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'No Items',
+        text: 'Please add at least one item to the invoice.',
+        background: '#151821',
+        color: '#f9fafb',
+        confirmButtonColor: '#4b63ff',
+      });
+      return;
+    }
+
+    // Show loading
+    Swal.fire({
+      title: 'Updating Invoice...',
+      html: 'Please wait while we save your changes',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      const response = await fetch('/api/invoices/<%= invoice._id %>', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(invoiceData),
+      });
+
+      const data = await response.json();
+
+      // ✅ CHECK FOR PAID/LOCKED INVOICE ERROR
+      if (!data.ok) {
+        // Check if it's a "paid invoice" or "cannot edit" error
+        const errorMsg = data.message || '';
+        const isPaidError = errorMsg.toLowerCase().includes('paid') || 
+                           errorMsg.toLowerCase().includes('cannot edit') ||
+                           errorMsg.toLowerCase().includes('locked') ||
+                           response.status === 403;
+
+        if (isPaidError) {
+          await Swal.fire({
+            icon: 'warning',
+            title: 'Cannot Edit Invoice',
+            html: `
+              <div style="text-align: center; margin-top: 12px;">
+                <p style="color: var(--text-soft); margin-bottom: 12px; font-size: 14px;">
+                  ${data.message}
+                </p>
+                <div style="
+                  background: rgba(249, 115, 115, 0.1);
+                  border: 1px solid rgba(249, 115, 115, 0.3);
+                  padding: 16px;
+                  border-radius: 8px;
+                  margin: 16px 0;
+                ">
+                  <div style="font-size: 14px; color: var(--danger); font-weight: 500;">
+                    ❌ Paid or cancelled invoices cannot be modified
+                  </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 12px;">
+                  You will be redirected to view the invoice.
+                </p>
+              </div>
+            `,
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
+            confirmButtonText: '📄 View Invoice',
+          }).then(() => {
+            window.location.href = `/invoices/<%= invoice._id %>`;
+          });
+          return;
+        }
+
+        // Other errors
+        throw new Error(data.message || 'Failed to update invoice');
+      }
+
+      // ✅ SUCCESS
+      await Swal.fire({
+        icon: 'success',
+        title: 'Invoice Updated!',
+        text: 'Invoice has been updated successfully.',
+        background: '#151821',
+        color: '#f9fafb',
+        confirmButtonColor: '#4b63ff',
+      });
+
+      window.location.href = `/invoices/<%= invoice._id %>`;
+
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: error.message || 'Failed to update invoice. Please try again.',
+        background: '#151821',
+        color: '#f9fafb',
+        confirmButtonColor: '#4b63ff',
+      });
+    }
+  }
+
+  // Initial calculation
+  calculateTotals();
+</script>
+
+  </body>
+</html>

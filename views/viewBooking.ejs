@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Booking Details - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-card: #1a1d28;
+        --sidebar-bg: #11131b;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left,
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .page-header-left {
+        flex: 1;
+      }
+
+      .page-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .booking-code {
+        font-size: 16px;
+        color: var(--text-soft);
+        font-family: "Courier New", monospace;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .status-badge.confirmed {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .status-badge.draft {
+        background: rgba(156, 163, 175, 0.1);
+        color: var(--text-soft);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .status-badge.completed {
+        background: rgba(75, 99, 255, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(75, 99, 255, 0.3);
+      }
+
+      .status-badge.cancelled {
+        background: rgba(249, 115, 115, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(249, 115, 115, 0.3);
+      }
+
+      .status-badge.paid {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .status-badge.partially-paid {
+        background: rgba(251, 191, 36, 0.1);
+        color: var(--warning);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+      }
+
+      .status-badge.unpaid {
+        background: rgba(249, 115, 115, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(249, 115, 115, 0.3);
+      }
+
+      .status-badge.picked-up {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .status-badge.not-picked-up {
+        background: rgba(251, 191, 36, 0.1);
+        color: var(--warning);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+      }
+
+      .status-badge.returned {
+        background: rgba(34, 197, 94, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .status-badge.not-returned {
+        background: rgba(156, 163, 175, 0.1);
+        color: var(--text-soft);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .status-badge.overdue {
+        background: rgba(249, 115, 115, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(249, 115, 115, 0.3);
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #f9fafb;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-secondary {
+        background: #11131c;
+        color: var(--text-soft);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .btn-danger:hover {
+        background: #d65f5f;
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+      }
+
+      .btn-success:hover {
+        background: #1ea84e;
+      }
+
+      .details-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--card-radius);
+        padding: 16px 18px;
+      }
+
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 14px;
+        color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .info-item.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .info-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-size: 13px;
+        color: var(--text-main);
+        font-weight: 400;
+      }
+
+      .info-value.link {
+        color: var(--accent);
+        cursor: pointer;
+        text-decoration: underline;
+      }
+
+      .products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .product-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        gap: 12px;
+      }
+
+      .product-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 6px;
+        background: #1a1d28;
+        background-size: cover;
+        background-position: center;
+        flex-shrink: 0;
+      }
+
+      .product-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .product-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-main);
+      }
+
+      .product-sku {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .product-details {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      .product-price {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .product-unit-price {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .product-total-price {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--success);
+      }
+
+      .payment-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 13px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .payment-row:last-child {
+        border-bottom: none;
+      }
+
+      .payment-row.total {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--success);
+        padding-top: 12px;
+        margin-top: 8px;
+        border-top: 2px solid var(--border-subtle);
+      }
+
+      .payment-row.balance-due {
+        color: var(--warning);
+      }
+
+      .payment-label {
+        color: var(--text-soft);
+      }
+
+      .payment-value {
+        color: var(--text-main);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .payment-row.total .payment-label,
+      .payment-row.balance-due .payment-label {
+        color: var(--text-main);
+      }
+
+      .notes-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 12px;
+      }
+
+      .notes-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-soft);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .notes-content {
+        font-size: 12px;
+        color: var(--text-main);
+        line-height: 1.6;
+      }
+
+      @media (max-width: 1200px) {
+        .details-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item active">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <main class="content">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <div class="page-title-row">
+              <h1 class="page-title">Booking Details</h1>
+              <span class="booking-code">#<%= booking.bookingCode %></span>
+              <span
+                class="status-badge <%= booking.bookingStatus.toLowerCase() %>"
+              >
+                <%= booking.bookingStatus %>
+              </span>
+              <span
+                class="status-badge <%= booking.paymentStatus.toLowerCase().replace(' ', '-') %>"
+              >
+                <%= booking.paymentStatus %>
+              </span>
+            </div>
+            <p class="page-subtitle">
+              Created on <%= new
+              Date(booking.createdAt).toLocaleDateString('en-IN', { year:
+              'numeric', month: 'long', day: 'numeric' }) %>
+            </p>
+          </div>
+          <div class="page-actions">
+            <a
+              href="/bookings/<%= booking._id %>/edit"
+              class="btn btn-secondary"
+              id="editBookingBtn"
+            >
+              ✏️ Edit
+            </a>
+            <button class="btn btn-primary" onclick="printBooking()">
+              🖨️ Print
+            </button>
+            <button class="btn btn-danger" onclick="cancelBooking()">
+              ❌ Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="details-grid">
+          <!-- Left Column -->
+          <div>
+            <!-- Customer & Event Details -->
+            <div class="card">
+              <div class="card-title">👤 Customer & Event Details</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Customer Name</span>
+                  <span
+                    class="info-value link"
+                    onclick="window.location.href='/customers/<%= booking.customerId._id %>'"
+                  >
+                    <%= booking.customerId.name %>
+                  </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Mobile</span>
+                  <span class="info-value"
+                    ><%= booking.customerId.primaryMobile || 'N/A' %></span
+                  >
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Email</span>
+                  <span class="info-value"
+                    ><%= booking.customerId.email || 'N/A' %></span
+                  >
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Event Type</span>
+                  <span class="info-value"><%= booking.eventType %></span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Event Date</span>
+                  <span class="info-value">
+                    <%= new Date(booking.eventDate).toLocaleDateString('en-IN',
+                    { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Event Venue</span>
+                  <span class="info-value"
+                    ><%= booking.eventVenue || 'N/A' %></span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Pickup & Return Details -->
+            <div class="card" style="margin-top: 16px">
+              <div class="card-title">📅 Pickup & Return Details</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Pickup Date</span>
+                  <span class="info-value">
+                    <%= new Date(booking.pickupDate).toLocaleDateString('en-IN',
+                    { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Pickup Status</span>
+                  <span class="info-value">
+                    <span
+                      class="status-badge <%= booking.pickupStatus.toLowerCase().replace(' ', '-') %>"
+                    >
+                      <%= booking.pickupStatus %>
+                    </span>
+                  </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Expected Return Date</span>
+                  <span class="info-value">
+                    <%= new
+                    Date(booking.expectedReturnDate).toLocaleDateString('en-IN',
+                    { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Return Status</span>
+                  <span class="info-value">
+                    <span
+                      class="status-badge <%= booking.returnStatus.toLowerCase().replace(' ', '-') %>"
+                    >
+                      <%= booking.returnStatus %>
+                    </span>
+                  </span>
+                </div>
+                <% if (booking.actualReturnDate) { %>
+                <div class="info-item">
+                  <span class="info-label">Actual Return Date</span>
+                  <span class="info-value">
+                    <%= new
+                    Date(booking.actualReturnDate).toLocaleDateString('en-IN', {
+                    year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </span>
+                </div>
+                <% } %>
+                <div class="info-item">
+                  <span class="info-label">Pickup Method</span>
+                  <span class="info-value"><%= booking.pickupMethod %></span>
+                </div>
+                <% if (booking.pickupTimeWindow) { %>
+                <div class="info-item full-width">
+                  <span class="info-label">Pickup Time Window</span>
+                  <span class="info-value"
+                    ><%= booking.pickupTimeWindow %></span
+                  >
+                </div>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Booked Items -->
+            <div class="card" style="margin-top: 16px">
+              <div class="card-title">
+                🧥 Booked Items (<%= booking.items.length %>)
+              </div>
+              <div class="products-list">
+                <% booking.items.forEach(item => { %>
+                <div class="product-item">
+                  <div
+                    class="product-image"
+                    style="
+                      background-image: url('<%= item.productId.photos && item.productId.photos[0] ? item.productId.photos[0] : '' %>');
+                    "
+                  ></div>
+                  <div class="product-info">
+                    <div class="product-name">
+                      <%= item.productName || item.productId.displayName %>
+                    </div>
+                    <div class="product-sku">
+                      SKU: <%= item.sku || item.productId.sku %>
+                    </div>
+                    <div class="product-details">
+                      Quantity: <%= item.quantity %> × ₹<%=
+                      item.rentalPrice.toLocaleString('en-IN') %>/day <% const
+                      pickup = new Date(booking.pickupDate); const returnDate =
+                      new Date(booking.expectedReturnDate); const days =
+                      Math.ceil((returnDate - pickup) / (1000 * 60 * 60 * 24));
+                      %> × <%= days %> days
+                    </div>
+                  </div>
+                  <div class="product-price">
+                    <div class="product-unit-price">
+                      ₹<%= item.rentalPrice.toLocaleString('en-IN') %>/day
+                    </div>
+                    <div class="product-total-price">
+                      ₹<%= (item.rentalPrice * item.quantity *
+                      days).toLocaleString('en-IN') %>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <% if (booking.customerNotes) { %>
+            <div class="notes-section" style="margin-top: 16px">
+              <div class="notes-title">📝 Customer Notes</div>
+              <div class="notes-content"><%= booking.customerNotes %></div>
+            </div>
+            <% } %> <% if (booking.internalNotes) { %>
+            <div class="notes-section" style="margin-top: 12px">
+              <div class="notes-title">🔒 Internal Notes (Staff Only)</div>
+              <div class="notes-content"><%= booking.internalNotes %></div>
+            </div>
+            <% } %>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Payment Summary -->
+            <div class="card">
+              <div class="card-title">💰 Payment Summary</div>
+
+              <div class="payment-row">
+                <span class="payment-label">Subtotal</span>
+                <span class="payment-value"
+                  >₹<%= booking.subtotal.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %></span
+                >
+              </div>
+
+              <% if (booking.discountType !== 'None' && booking.discountValue >
+              0) { %>
+              <div class="payment-row">
+                <span class="payment-label">
+                  Discount (<%= booking.discountType %> <% if
+                  (booking.discountType === 'Percentage') { %> - <%=
+                  booking.discountValue %>%<% } %>)
+                </span>
+                <span class="payment-value" style="color: var(--success)">
+                  - ₹<%= (booking.discountType === 'Percentage' ?
+                  (booking.subtotal * booking.discountValue / 100) :
+                  booking.discountValue ).toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %>
+                </span>
+              </div>
+              <% } %>
+
+              <div class="payment-row">
+                <span class="payment-label">Tax (<%= booking.taxRate %>%)</span>
+                <span class="payment-value"
+                  >₹<%= booking.taxAmount.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %></span
+                >
+              </div>
+
+              <div class="payment-row">
+                <span class="payment-label">Security Deposit</span>
+                <span class="payment-value"
+                  >₹<%= booking.securityDeposit.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %></span
+                >
+              </div>
+
+              <div class="payment-row total">
+                <span class="payment-label">Total Amount</span>
+                <span class="payment-value"
+                  >₹<%= booking.totalAmount.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %></span
+                >
+              </div>
+
+              <div class="payment-row">
+                <span class="payment-label">Amount Paid</span>
+                <span class="payment-value" style="color: var(--success)">
+                  ₹<%= booking.amountPaid.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %>
+                </span>
+              </div>
+
+              <div class="payment-row balance-due">
+                <span class="payment-label">Balance Due</span>
+                <span class="payment-value"
+                  >₹<%= booking.balanceDue.toLocaleString('en-IN', {
+                  minimumFractionDigits: 2 }) %></span
+                >
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card" style="margin-top: 16px">
+              <div class="card-title">⚡ Quick Actions</div>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <% if (booking.bookingStatus === 'Confirmed') { %> <% if
+                (booking.pickupStatus === 'Not Picked Up') { %>
+                <button
+                  class="btn btn-success"
+                  onclick="markAsPickedUp()"
+                  style="width: 100%"
+                >
+                  ✅ Mark as Picked Up
+                </button>
+                <% } %> <% if (booking.pickupStatus === 'Picked Up' &&
+                booking.returnStatus === 'Not Returned') { %>
+                <button
+                  class="btn btn-success"
+                  onclick="markAsReturned()"
+                  style="width: 100%"
+                >
+                  🔄 Mark as Returned
+                </button>
+                <% } %> <% } %>
+
+                <!-- Only show payment button if no invoice exists -->
+                <% if (booking.balanceDue > 0 && !booking.invoiceId) { %>
+                <button class="btn btn-primary" onclick="recordPayment()">
+                  <span>💳</span>
+                  <span>Record Payment</span>
+                </button>
+                <% } else if (booking.invoiceId) { %>
+                <a
+                  href="/invoices/<%= booking.invoiceId %>"
+                  class="btn btn-primary"
+                >
+                  <span>📄</span>
+                  <span>View Invoice</span>
+                </a>
+                <% } %>
+
+                <!-- Invoice Action Button (Dynamically Updated) -->
+                <div id="invoiceActionButton"></div>
+
+                <button
+                  class="btn btn-secondary"
+                  onclick="sendReminder()"
+                  style="width: 100%"
+                >
+                  📧 Send Reminder
+                </button>
+              </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="card" style="margin-top: 16px">
+              <div class="card-title">📜 Timeline</div>
+              <div
+                style="
+                  font-size: 11px;
+                  color: var(--text-soft);
+                  line-height: 1.8;
+                "
+              >
+                <div
+                  style="
+                    padding: 8px 0;
+                    border-bottom: 1px solid var(--border-subtle);
+                  "
+                >
+                  <strong>Created:</strong> <%= new
+                  Date(booking.createdAt).toLocaleString('en-IN') %>
+                </div>
+                <div
+                  style="
+                    padding: 8px 0;
+                    border-bottom: 1px solid var(--border-subtle);
+                  "
+                >
+                  <strong>Last Updated:</strong> <%= new
+                  Date(booking.updatedAt).toLocaleString('en-IN') %>
+                </div>
+                <% const pickup = new Date(booking.pickupDate); const returnDate
+                = new Date(booking.expectedReturnDate); const days =
+                Math.ceil((returnDate - pickup) / (1000 * 60 * 60 * 24)); %>
+                <div style="padding: 8px 0">
+                  <strong>Rental Duration:</strong> <%= days %> days
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // ===== CHECK INVOICE STATUS ON PAGE LOAD =====
+      async function checkInvoiceStatus() {
+        try {
+          const bookingId = '<%= booking._id %>';
+          const response = await fetch(`/api/bookings/${bookingId}/invoice-check`);
+          const data = await response.json();
+
+          const invoiceButton = document.getElementById('invoiceActionButton');
+
+          if (data.exists && data.invoice) {
+            // Invoice exists - Show "View Invoice" button
+            invoiceButton.innerHTML = `
+              <a
+                href="/invoices/${data.invoice._id}"
+                class="btn btn-primary"
+                style="width: 100%; background: #4b63ff; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;"
+              >
+                📄 View Invoice (${data.invoice.invoiceNumber})
+              </a>
+            `;
+          } else {
+            // No invoice - Show "Generate Invoice" button
+            const bookingStatus = '<%= booking.bookingStatus %>';
+            if (bookingStatus === 'Confirmed' || bookingStatus === 'Completed') {
+              invoiceButton.innerHTML = `
+                <button
+                  class="btn btn-success"
+                  onclick="generateInvoice()"
+                  style="width: 100%; background: #22c55e;"
+                >
+                  ➕ Generate Invoice
+                </button>
+              `;
+            } else {
+              invoiceButton.innerHTML = `
+                <div style="
+                  padding: 12px;
+                  background: rgba(156, 163, 175, 0.1);
+                  border: 1px solid var(--border-subtle);
+                  border-radius: 999px;
+                  font-size: 11px;
+                  color: var(--text-muted);
+                  text-align: center;
+                ">
+                  Invoice can be generated once booking is confirmed
+                </div>
+              `;
+            }
+          }
+        } catch (error) {
+          console.error('Error checking invoice status:', error);
+        }
+      }
+
+      // ===== DISABLE EDIT BUTTON IF INVOICE EXISTS =====
+      async function checkEditPermission() {
+        try {
+          const bookingId = '<%= booking._id %>';
+          const response = await fetch(`/api/bookings/${bookingId}/invoice-check`);
+          const data = await response.json();
+
+          if (data.exists) {
+            const editBtn = document.getElementById('editBookingBtn');
+            editBtn.style.opacity = '0.5';
+            editBtn.style.pointerEvents = 'none';
+            editBtn.style.cursor = 'not-allowed';
+            editBtn.title = 'Cannot edit - Invoice has been generated';
+
+            editBtn.onclick = (e) => {
+              e.preventDefault();
+              Swal.fire({
+                icon: 'warning',
+                title: 'Cannot Edit',
+                html: `
+                  Invoice <strong>${data.invoice.invoiceNumber}</strong> has been generated.<br/>
+                  <a href="/invoices/${data.invoice._id}" style="color: #4b63ff;">View Invoice →</a>
+                `,
+                background: '#151821',
+                color: '#f9fafb',
+                confirmButtonColor: '#4b63ff',
+              });
+            };
+          }
+        } catch (error) {
+          console.error('Error checking edit permission:', error);
+        }
+      }
+
+      // ===== GENERATE INVOICE FUNCTION =====
+      async function generateInvoice() {
+        const bookingId = '<%= booking._id %>';
+        const bookingCode = '<%= booking.bookingCode %>';
+        const balanceDue = <%= booking.balanceDue || 0 %>;
+
+        const result = await Swal.fire({
+          title: 'Generate Invoice?',
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              <p style="font-size: 13px; color: #9ca3af; margin-bottom: 16px;">
+                Convert booking <strong style="color: #f9fafb;">${bookingCode}</strong> to an invoice?
+              </p>
+
+              ${balanceDue > 0 ? `
+                <div style="
+                  background: rgba(251, 191, 36, 0.1);
+                  border: 1px solid rgba(251, 191, 36, 0.3);
+                  padding: 12px;
+                  border-radius: 8px;
+                  margin-bottom: 16px;
+                ">
+                  <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">Outstanding Balance</div>
+                  <div style="font-size: 18px; font-weight: 600; color: #fbbf24; margin-top: 4px;">
+                    ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              ` : ''}
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
+                Payment Terms
+              </label>
+              <select
+                id="paymentTerms"
+                class="swal2-select"
+                style="
+                  width: 100%;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                "
+              >
+                <option value="Due on Receipt">Due on Receipt</option>
+                <option value="Net 7">Net 7 Days</option>
+                <option value="Net 15">Net 15 Days</option>
+                <option value="Net 30">Net 30 Days</option>
+              </select>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Invoice Notes (Optional)
+              </label>
+              <textarea
+                id="invoiceNotes"
+                class="swal2-textarea"
+                placeholder="Add any notes for the customer..."
+                style="
+                  width: 100%;
+                  height: 80px;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                  resize: vertical;
+                "
+              ></textarea>
+
+              <div style="
+                margin-top: 16px;
+                padding: 12px;
+                background: rgba(249, 115, 115, 0.1);
+                border: 1px solid rgba(249, 115, 115, 0.3);
+                border-radius: 8px;
+                font-size: 11px;
+                color: #f97373;
+                text-align: center;
+              ">
+                ⚠️ Once invoice is generated, booking cannot be edited
+              </div>
+            </div>
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: '✅ Generate Invoice',
+          cancelButtonText: 'Cancel',
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          background: '#151821',
+          color: '#f9fafb',
+          width: '500px',
+          preConfirm: () => {
+            const paymentTerms = document.getElementById('paymentTerms').value;
+            const invoiceNotes = document.getElementById('invoiceNotes').value;
+            return { paymentTerms, invoiceNotes };
+          }
+        });
+
+        if (!result.isConfirmed) return;
+
+        Swal.fire({
+          title: 'Generating Invoice...',
+          html: 'Please wait while we create your invoice',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        try {
+          const response = await fetch('/api/invoices/generate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              bookingId: bookingId,
+              paymentTerms: result.value.paymentTerms,
+              invoiceNotes: result.value.invoiceNotes,
+              internalNotes: `Generated from booking ${bookingCode}`,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.message || 'Failed to generate invoice');
+          }
+
+          await Swal.fire({
+            icon: 'success',
+            title: 'Invoice Generated!',
+            html: `
+              <div style="text-align: center; margin-top: 16px;">
+                <div style="
+                  background: rgba(75, 99, 255, 0.1);
+                  border: 1px solid rgba(75, 99, 255, 0.3);
+                  padding: 16px;
+                  border-radius: 8px;
+                  margin-bottom: 16px;
+                ">
+                  <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">Invoice Number</div>
+                  <div style="font-size: 20px; font-weight: 600; color: #4b63ff; margin-top: 4px; font-family: monospace;">
+                    ${data.data.invoiceNumber}
+                  </div>
+                </div>
+
+                <p style="font-size: 13px; color: #9ca3af;">
+                  Invoice has been generated successfully!
+                </p>
+              </div>
+            `,
+            confirmButtonText: '📄 View Invoice',
+            showCancelButton: true,
+            cancelButtonText: 'Stay Here',
+            confirmButtonColor: '#4b63ff',
+            cancelButtonColor: '#6b7280',
+            background: '#151821',
+            color: '#f9fafb',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = `/invoices/${data.data._id}`;
+            } else {
+              location.reload();
+            }
+          });
+
+        } catch (error) {
+          console.error('Error generating invoice:', error);
+          await Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: error.message || 'Failed to generate invoice. Please try again.',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
+          });
+        }
+      }
+
+      // ===== EXISTING FUNCTIONS =====
+      async function markAsPickedUp() {
+        const result = await Swal.fire({
+          title: "Mark as Picked Up?",
+          text: "Confirm that the customer has picked up the items.",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#22c55e",
+          cancelButtonColor: "#6b7280",
+          confirmButtonText: "Yes, Mark as Picked Up",
+          background: "#151821",
+          color: "#f9fafb",
+        });
+
+        if (result.isConfirmed) {
+          try {
+            const res = await fetch(
+              "/api/bookings/<%= booking._id %>/pickup",
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+              }
+            );
+            const data = await res.json();
+
+            if (data.ok) {
+              Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Booking marked as picked up.",
+                background: "#151821",
+                color: "#f9fafb",
+              }).then(() => location.reload());
+            } else {
+              throw new Error(data.message);
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: error.message,
+              background: "#151821",
+              color: "#f9fafb",
+            });
+          }
+        }
+      }
+
+      async function markAsReturned() {
+        const securityDeposit = <%= booking.securityDeposit || 0 %>;
+        const balanceDue = <%= booking.balanceDue || 0 %>;
+        const expectedReturnDate = new Date('<%= booking.expectedReturnDate %>');
+        const today = new Date();
+        const isOverdue = today > expectedReturnDate;
+
+        let lateFeeEstimate = 0;
+        if (isOverdue) {
+          const daysLate = Math.ceil((today - expectedReturnDate) / (1000 * 60 * 60 * 24));
+          <% booking.items.forEach(item => { %>
+            lateFeeEstimate += (<%= item.rentalPrice %> * 0.5) * <%= item.quantity %> * daysLate;
+          <% }); %>
+        }
+
+        const step1 = await Swal.fire({
+          title: 'Mark as Returned?',
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              ${isOverdue ? `
+                <div style="
+                  background: rgba(249, 115, 115, 0.1);
+                  border: 1px solid rgba(249, 115, 115, 0.3);
+                  padding: 12px;
+                  border-radius: 8px;
+                  margin-bottom: 16px;
+                  text-align: center;
+                ">
+                  <div style="font-size: 12px; color: #f97373; font-weight: 600;">⚠️ OVERDUE RETURN</div>
+                  <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">
+                    ${Math.ceil((today - expectedReturnDate) / (1000 * 60 * 60 * 24))} day(s) late
+                  </div>
+                  <div style="font-size: 13px; color: #f97373; margin-top: 8px;">
+                    Estimated Late Fee: ₹${lateFeeEstimate.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              ` : ''}
+
+              <div style="
+                background: rgba(251, 191, 36, 0.1);
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 16px;
+                text-align: center;
+              ">
+                <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">Security Deposit to Refund</div>
+                <div style="font-size: 20px; font-weight: 600; color: #fbbf24; margin-top: 4px;">
+                  ₹${securityDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              ${balanceDue > 0 ? `
+                <div style="
+                  background: rgba(249, 115, 115, 0.1);
+                  border: 1px solid rgba(249, 115, 115, 0.3);
+                  padding: 12px;
+                  border-radius: 8px;
+                  margin-bottom: 16px;
+                  text-align: center;
+                ">
+                  <div style="font-size: 11px; color: #9ca3af;">⚠️ Outstanding Balance</div>
+                  <div style="font-size: 16px; font-weight: 600; color: #f97373; margin-top: 4px;">
+                    ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </div>
+                  <div style="font-size: 10px; color: #9ca3af; margin-top: 4px;">
+                    Please collect payment before refunding deposit
+                  </div>
+                </div>
+              ` : ''}
+
+              <p style="font-size: 13px; color: #9ca3af; margin-bottom: 12px;">
+                Confirm that all items have been returned by the customer.
+              </p>
+            </div>
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Continue →',
+          cancelButtonText: 'Cancel',
+          background: '#151821',
+          color: '#f9fafb',
+        });
+
+        if (!step1.isConfirmed) return;
+
+        const step2 = await Swal.fire({
+          title: 'Refund Security Deposit',
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              <div style="
+                background: rgba(251, 191, 36, 0.1);
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 16px;
+                text-align: center;
+              ">
+                <div style="font-size: 11px; color: #9ca3af;">Total Security Deposit</div>
+                <div style="font-size: 20px; font-weight: 600; color: #fbbf24; margin-top: 4px;">
+                  ₹${securityDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
+                Refund Amount <span style="color: #f97373;">*</span>
+              </label>
+              <input
+                id="refundAmount"
+                type="number"
+                class="swal2-input"
+                value="${securityDeposit}"
+                placeholder="Enter refund amount"
+                min="0"
+                max="${securityDeposit}"
+                step="0.01"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                "
+              >
+              <div style="margin-top: 4px; font-size: 11px; color: #6b7280;">
+                💡 Enter less than full amount if deducting for damages
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Refund Method <span style="color: #f97373;">*</span>
+              </label>
+              <select
+                id="refundMethod"
+                class="swal2-input"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                "
+              >
+                <option value="Cash">Cash</option>
+                <option value="UPI">UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Card">Card</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Damage/Deduction Notes (if any)
+              </label>
+              <textarea
+                id="damageNotes"
+                class="swal2-textarea"
+                placeholder="Enter reason for any deductions from security deposit..."
+                style="
+                  width: 100%;
+                  height: 80px;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: '💰 Confirm Refund',
+          cancelButtonText: '← Back',
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          background: '#151821',
+          color: '#f9fafb',
+          width: '500px',
+          preConfirm: () => {
+            const refundAmount = parseFloat(document.getElementById('refundAmount').value);
+            const refundMethod = document.getElementById('refundMethod').value;
+            const damageNotes = document.getElementById('damageNotes').value;
+
+            if (!refundAmount && refundAmount !== 0) {
+              Swal.showValidationMessage('Please enter refund amount');
+              return false;
+            }
+
+            if (refundAmount < 0) {
+              Swal.showValidationMessage('Refund amount cannot be negative');
+              return false;
+            }
+
+            if (refundAmount > securityDeposit) {
+              Swal.showValidationMessage(
+                `Refund cannot exceed security deposit (₹${securityDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })})`
+              );
+              return false;
+            }
+
+            if (refundAmount < securityDeposit && !damageNotes.trim()) {
+              Swal.showValidationMessage('Please provide reason for deduction');
+              return false;
+            }
+
+            return {
+              securityDepositReturned: refundAmount,
+              refundMethod,
+              damageNotes: damageNotes.trim()
+            };
+          },
+        });
+
+        if (!step2.isConfirmed) return;
+
+        const deduction = securityDeposit - step2.value.securityDepositReturned;
+
+        const step3 = await Swal.fire({
+          title: 'Confirm Return & Refund',
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              <div style="
+                background: rgba(34, 197, 94, 0.1);
+                border: 1px solid rgba(34, 197, 94, 0.3);
+                padding: 16px;
+                border-radius: 8px;
+              ">
+                <div style="font-size: 13px; color: #9ca3af; margin-bottom: 12px;">
+                  <strong>Refund Summary:</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                  <span style="color: #9ca3af;">Security Deposit:</span>
+                  <span style="color: #f9fafb;">₹${securityDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+
+                ${deduction > 0 ? `
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                    <span style="color: #f97373;">Deduction:</span>
+                    <span style="color: #f97373;">- ₹${deduction.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                ` : ''}
+
+                <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-top: 12px;
+                  padding-top: 12px;
+                  border-top: 1px solid rgba(34, 197, 94, 0.3);
+                  font-size: 16px;
+                  font-weight: 600;
+                ">
+                  <span style="color: #22c55e;">Refund Amount:</span>
+                  <span style="color: #22c55e;">₹${step2.value.securityDepositReturned.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+
+                <div style="margin-top: 8px; font-size: 11px; color: #9ca3af;">
+                  via ${step2.value.refundMethod}
+                </div>
+
+                ${step2.value.damageNotes ? `
+                  <div style="
+                    margin-top: 12px;
+                    padding-top: 12px;
+                    border-top: 1px solid rgba(34, 197, 94, 0.3);
+                    font-size: 11px;
+                    color: #9ca3af;
+                  ">
+                    <strong>Notes:</strong><br/>
+                    ${step2.value.damageNotes}
+                  </div>
+                ` : ''}
+              </div>
+
+              <p style="font-size: 12px; color: #9ca3af; margin-top: 16px; text-align: center;">
+                This action will mark the booking as completed and record the security deposit refund.
+              </p>
+            </div>
+          `,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: '✅ Complete Return',
+          cancelButtonText: '← Back',
+          background: '#151821',
+          color: '#f9fafb',
+        });
+
+        if (!step3.isConfirmed) return;
+
+        try {
+          const res = await fetch('/api/bookings/<%= booking._id %>/return', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(step2.value)
+          });
+
+          const data = await res.json();
+
+          if (data.ok) {
+            await Swal.fire({
+              icon: 'success',
+              title: 'Return Completed!',
+              html: `
+                <div style="text-align: center; margin-top: 12px;">
+                  <div style="font-size: 14px; color: #22c55e; margin-bottom: 16px;">
+                    ✅ Booking marked as returned
+                  </div>
+
+                  ${data.lateFee > 0 ? `
+                    <div style="
+                      background: rgba(251, 191, 36, 0.1);
+                      border: 1px solid rgba(251, 191, 36, 0.3);
+                      padding: 12px;
+                      border-radius: 8px;
+                      margin-bottom: 12px;
+                    ">
+                      <div style="font-size: 11px; color: #9ca3af;">Late Fee Applied</div>
+                      <div style="font-size: 16px; font-weight: 600; color: #fbbf24; margin-top: 4px;">
+                        ₹${data.lateFee.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                  ` : ''}
+
+                  <div style="
+                    background: rgba(34, 197, 94, 0.1);
+                    border: 1px solid rgba(34, 197, 94, 0.3);
+                    padding: 12px;
+                    border-radius: 8px;
+                  ">
+                    <div style="font-size: 11px; color: #9ca3af;">Security Deposit Refunded</div>
+                    <div style="font-size: 18px; font-weight: 600; color: #22c55e; margin-top: 4px;">
+                      ₹${data.securityDepositRefunded.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                </div>
+              `,
+              background: '#151821',
+              color: '#f9fafb',
+              confirmButtonColor: '#4b63ff',
+            });
+
+            location.reload();
+          } else {
+            throw new Error(data.message);
+          }
+        } catch (error) {
+          await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,
+            background: '#151821',
+            color: '#f9fafb',
+          });
+        }
+      }
+
+      function recordPayment() {
+        const balanceDue = <%= booking.balanceDue || 0 %>;
+
+        Swal.fire({
+          title: "Record Payment",
+          html: `
+            <div style="text-align: left; margin-top: 16px;">
+              <div style="
+                background: rgba(251, 191, 36, 0.1);
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 16px;
+                text-align: center;
+              ">
+                <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;">Balance Due</div>
+                <div style="font-size: 20px; font-weight: 600; color: #fbbf24; margin-top: 4px;">
+                  ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
+                Payment Amount <span style="color: #f97373;">*</span>
+              </label>
+              <input
+                id="paymentAmount"
+                type="number"
+                class="swal2-input"
+                placeholder="Enter amount"
+                min="0"
+                max="${balanceDue}"
+                step="0.01"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                "
+              >
+              <div style="margin-top: 4px; font-size: 11px; color: #6b7280;">
+                Maximum: ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+
+              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                Payment Method <span style="color: #f97373;">*</span>
+              </label>
+              <select
+                id="paymentMethod"
+                class="swal2-input"
+                style="
+                  width: 100%;
+                  margin: 0;
+                  background: #0d0f14;
+                  border: 1px solid #222633;
+                  color: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                "
+              >
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "💳 Record Payment",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#4b63ff",
+          cancelButtonColor: "#6b7280",
+          background: "#151821",
+          color: "#f9fafb",
+          width: "500px",
+          preConfirm: () => {
+            const amount = parseFloat(document.getElementById("paymentAmount").value);
+            const method = document.getElementById("paymentMethod").value;
+
+            if (!amount || amount <= 0) {
+              Swal.showValidationMessage("Please enter a valid amount");
+              return false;
+            }
+
+            if (amount > balanceDue) {
+              Swal.showValidationMessage(
+                `Amount cannot exceed balance due (₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`
+              );
+              return false;
+            }
+
+            return { amount, method };
+          },
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const res = await fetch(
+                "/api/bookings/<%= booking._id %>/payment",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(result.value),
+                }
+              );
+              const data = await res.json();
+
+              if (data.ok) {
+                const newBalanceDue = balanceDue - result.value.amount;
+
+                await Swal.fire({
+                  icon: "success",
+                  title: "Payment Recorded!",
+                  html: `
+                    <div style="text-align: center; margin-top: 12px;">
+                      <div style="font-size: 14px; color: #9ca3af; margin-bottom: 8px;">
+                        ₹${result.value.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} paid via ${result.value.method}
+                      </div>
+                      <div style="
+                        background: rgba(34, 197, 94, 0.1);
+                        border: 1px solid rgba(34, 197, 94, 0.3);
+                        padding: 12px;
+                        border-radius: 8px;
+                        margin-top: 12px;
+                      ">
+                        <div style="font-size: 11px; color: #9ca3af;">New Balance Due</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #22c55e; margin-top: 4px;">
+                          ₹${newBalanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                    </div>
+                  `,
+                  background: "#151821",
+                  color: "#f9fafb",
+                  confirmButtonColor: "#4b63ff",
+                });
+
+                location.reload();
+              } else {
+                throw new Error(data.message);
+              }
+            } catch (error) {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message,
+                background: "#151821",
+                color: "#f9fafb",
+              });
+            }
+          }
+        });
+      }
+
+      function sendReminder() {
+        const customerName = '<%= booking.customerId.name || booking.customerId.fullName %>';
+        const bookingCode = '<%= booking.bookingCode %>';
+        const eventDate = '<%= new Date(booking.eventDate).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }) %>';
+        const pickupDate = '<%= new Date(booking.pickupDate).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }) %>';
+        const returnDate = '<%= new Date(booking.expectedReturnDate).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }) %>';
+        const balanceDue = '₹<%= booking.balanceDue.toLocaleString("en-IN") %>';
+        const pickupStatus = '<%= booking.pickupStatus %>';
+        const customerMobile = '<%= booking.customerId.primaryMobile %>';
+
+        const cleanMobile = customerMobile.replace(/\D/g, '');
+        const phoneNumber = cleanMobile.startsWith('91') ? cleanMobile : '91' + cleanMobile;
+
+        let message = '';
+
+        if (pickupStatus === 'Not Picked Up') {
+          message = `Hello ${customerName},\n\n` +
+            `This is a reminder for your booking *${bookingCode}*.\n\n` +
+            `📅 Event Date: ${eventDate}\n` +
+            `📦 Pickup Date: ${pickupDate}\n` +
+            `🔄 Return Date: ${returnDate}\n\n` +
+            `Your items are ready for pickup!\n\n` +
+            `💰 Balance Due: ${balanceDue}\n\n` +
+            `Please contact us if you have any questions.\n\n` +
+            `Thank you!\n` +
+            `*SuitManager Pro*`;
+        } else if (pickupStatus === 'Picked Up') {
+          message = `Hello ${customerName},\n\n` +
+            `This is a reminder for your booking *${bookingCode}*.\n\n` +
+            `📅 Event Date: ${eventDate}\n` +
+            `🔄 Return Date: ${returnDate}\n\n` +
+            `Please remember to return the items on or before the return date.\n\n` +
+            `💰 Balance Due: ${balanceDue}\n\n` +
+            `Thank you!\n` +
+            `*SuitManager Pro*`;
+        }
+
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappUrl, '_blank');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'WhatsApp Opened!',
+          text: 'Message is ready to send',
+          background: '#151821',
+          color: '#f9fafb',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+
+      function cancelBooking() {
+        Swal.fire({
+          title: "Cancel Booking?",
+          text: "This action cannot be undone. Are you sure?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#f97373",
+          cancelButtonColor: "#6b7280",
+          confirmButtonText: "Yes, Cancel Booking",
+          background: "#151821",
+          color: "#f9fafb",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const res = await fetch("/api/bookings/<%= booking._id %>", {
+                method: "DELETE",
+              });
+              const data = await res.json();
+
+              if (data.ok) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Cancelled!",
+                  text: "Booking has been cancelled.",
+                  background: "#151821",
+                  color: "#f9fafb",
+                }).then(() => (window.location.href = "/bookings"));
+              } else {
+                throw new Error(data.message);
+              }
+            } catch (error) {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message,
+                background: "#151821",
+                color: "#f9fafb",
+              });
+            }
+          }
+        });
+      }
+
+      function printBooking() {
+        window.print();
+      }
+
+      // ===== RUN ON PAGE LOAD =====
+      window.addEventListener('DOMContentLoaded', () => {
+        checkInvoiceStatus();
+        checkEditPermission();
+      });
+    </script>
+  </body>
+</html>

@@ -11,6 +11,64 @@ const {
 } = require("../services/customerService");
 const { escapeXML } = require("ejs");
 
+
+
+/**
+ * Search customers for Select2 dropdown
+ * @route GET /api/customers/search
+ */
+const searchCustomers = async (req, res) => {
+  try {
+    const { q = '', page = 1, limit = 20 } = req.query;
+    
+    const query = {};
+    
+    // Search by name, mobile, or email
+    if (q && q.trim() !== '') {
+      query.$or = [
+        { fullName: new RegExp(q, 'i') },
+        { primaryMobile: new RegExp(q, 'i') },
+        { email: new RegExp(q, 'i') },
+        { code: new RegExp(q, 'i') }
+      ];
+    }
+    
+    // Exclude blacklisted customers
+    query.status = { $ne: 'blacklisted' };
+    
+    const total = await Customer.countDocuments(query);
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const customers = await Customer.find(query)
+      .select('_id fullName primaryMobile email code')
+      .sort({ name: 1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean();
+    
+    res.json({
+      ok: true,
+      data: customers,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('Error searching customers:', error);
+    res.status(500).json({
+      ok: false,
+      message: 'Failed to search customers',
+      error: error.message
+    });
+  }
+};
+
+
+
+
 const displayCustomerDashboard = async (req, res) => {
   data = {
     user: {
@@ -156,6 +214,7 @@ module.exports = {
   viewCustomerDetails,
   editCustomerDetails,
   updateCustomer,
-  deleteCustomer
+  deleteCustomer,
+  searchCustomers
 
 };

@@ -623,9 +623,9 @@
             <div class="sidebar-icon">📋</div>
             <span>Inventory</span>
           </a>
-          <a href="/billing" class="sidebar-item">
+          <a href="/invoices" class="sidebar-item">
             <div class="sidebar-icon">💼</div>
-            <span>Billing</span>
+            <span>Invoices</span>
           </a>
         </div>
         <div class="sidebar-footer">
@@ -660,8 +660,8 @@
                 <div class="recent-item">
                   <div class="recent-name"><%= customer.fullName %></div>
                   <div class="recent-id"><%= customer.Code %></div>
-                  <span class="badge badge"><%= customer.status %>
-                    <%= customer.statusLabel %></span
+                  <span class="badge badge"
+                    ><%= customer.status %> <%= customer.statusLabel %></span
                   >
                   <span class="action-icon">✏</span>
                 </div>

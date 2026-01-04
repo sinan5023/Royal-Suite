@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add New Suit Product - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: #11131b;
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #6b7280;
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: #6b7280;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px 24px;
+        overflow-y: auto;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .section-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 14px 16px 16px;
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 14px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 11px;
+      }
+
+      .field label {
+        color: var(--text-soft);
+      }
+
+      .field label .required {
+        color: var(--danger);
+        margin-left: 2px;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        background: #11131c;
+        border-radius: 8px;
+        border: 1px solid #222635;
+        color: var(--text-main);
+        font-size: 12px;
+        padding: 8px 10px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: var(--accent);
+      }
+
+      .field input.error,
+      .field select.error,
+      .field textarea.error {
+        border-color: var(--danger);
+      }
+
+      .field input:disabled,
+      .field select:disabled,
+      .field textarea:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #0a0c10;
+      }
+
+      .field textarea {
+        min-height: 70px;
+        resize: vertical;
+      }
+
+      .error-message {
+        font-size: 10px;
+        color: var(--danger);
+        margin-top: -2px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .photos-dropzone {
+        border: 1px dashed #374151;
+        border-radius: 10px;
+        background: #11131c;
+        padding: 18px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-soft);
+        cursor: pointer;
+      }
+
+      .photos-preview-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .photo-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        background-size: cover;
+        background-position: center;
+        border: 1px solid #222635;
+        position: relative;
+      }
+
+      .photo-remove-btn {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(15, 23, 42, 0.9);
+        color: #f97373;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .btn-primary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-secondary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .btn-danger-outline {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--danger);
+        background: transparent;
+        color: var(--danger);
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .section-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item active">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <h1 class="page-title">Add New Suit Product</h1>
+
+        <!-- Form: multipart for Multer -->
+        <form
+          id="productForm"
+          action="/api/inventory"
+          method="POST"
+          enctype="multipart/form-data"
+          novalidate
+        >
+          <!-- Basic Identification -->
+          <section class="section-card">
+            <div class="section-title">Basic Identification</div>
+            <div class="section-grid">
+              <div class="field">
+                <label for="sku">SKU <span class="required">*</span></label>
+                <input id="sku" name="sku" type="text" required />
+                <span class="error-message" data-error="sku">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="displayName">Display Name <span class="required">*</span></label>
+                <input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  required
+                />
+                <span class="error-message" data-error="displayName">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="category">Category <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                  <option value="">Select a category</option>
+                  <% categories.forEach(function (c) { %>
+                  <option value="<%= c %>"><%= c %></option>
+                  <% }) %>
+                </select>
+                <span class="error-message" data-error="category">Please select a category</span>
+              </div>
+              <div class="field">
+                <label for="branch">Branch <span class="required">*</span></label>
+                <input id="branch" name="branch" type="text" required />
+                <span class="error-message" data-error="branch">This field is required</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Size & Fit Details -->
+          <section class="section-card">
+            <div class="section-title">Size & Fit Details</div>
+            <div class="section-grid">
+              <div class="field">
+                <label for="size">Size <span class="required">*</span></label>
+                <input id="size" name="size" type="text" required />
+                <span class="error-message" data-error="size">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="heightRange">Height Range <span class="required">*</span></label>
+                <input id="heightRange" name="heightRange" type="text" required />
+                <span class="error-message" data-error="heightRange">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="chest">Chest <span class="required">*</span></label>
+                <input id="chest" name="chest" type="text" required />
+                <span class="error-message" data-error="chest">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="waist">Waist <span class="required">*</span></label>
+                <input id="waist" name="waist" type="text" required />
+                <span class="error-message" data-error="waist">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="fabric">Fabric <span class="required">*</span></label>
+                <input id="fabric" name="fabric" type="text" required />
+                <span class="error-message" data-error="fabric">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="color">Color <span class="required">*</span></label>
+                <input id="color" name="color" type="text" required />
+                <span class="error-message" data-error="color">This field is required</span>
+              </div>
+              <div class="field" style="grid-column: 1 / -1">
+                <label for="otherMeasurements">Other Measurements</label>
+                <textarea
+                  id="otherMeasurements"
+                  name="otherMeasurements"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Rental Pricing -->
+          <section class="section-card">
+            <div class="section-title">Rental & Pricing</div>
+            <div class="section-grid">
+              <div class="field">
+                <label for="baseRent">Base Rental Price (₹) <span class="required">*</span></label>
+                <input
+                  id="baseRent"
+                  name="baseRent"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+                <span class="error-message" data-error="baseRent">Please enter a valid price</span>
+              </div>
+              <div class="field">
+                <label for="extraDayCharge">Extra Day Charge (₹) <span class="required">*</span></label>
+                <input
+                  id="extraDayCharge"
+                  name="extraDayCharge"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+                <span class="error-message" data-error="extraDayCharge">Please enter a valid charge</span>
+              </div>
+              <div class="field">
+                <label for="securityDeposit">Security Deposit (₹) <span class="required">*</span></label>
+                <input
+                  id="securityDeposit"
+                  name="securityDeposit"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+                <span class="error-message" data-error="securityDeposit">Please enter a valid deposit</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Operational Data -->
+          <section class="section-card">
+            <div class="section-title">Operational Data</div>
+            <div class="section-grid">
+              <div class="field">
+                <label for="storageLocation">Storage Location <span class="required">*</span></label>
+                <input
+                  id="storageLocation"
+                  name="storageLocation"
+                  type="text"
+                  required
+                />
+                <span class="error-message" data-error="storageLocation">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="barcode">Barcode / RFID Tag <span class="required">*</span></label>
+                <input id="barcode" name="barcode" type="text" required />
+                <span class="error-message" data-error="barcode">This field is required</span>
+              </div>
+              <div class="field">
+                <label for="dateAdded">Date Added <span class="required">*</span></label>
+                <input id="dateAdded" name="dateAdded" type="date" required />
+                <span class="error-message" data-error="dateAdded">Please select a date</span>
+              </div>
+              <div class="field">
+                <label for="timesRented">Times Rented <span class="required">*</span></label>
+                <input
+                  id="timesRented"
+                  name="timesRented"
+                  type="number"
+                  min="0"
+                  value="0"
+                  required
+                />
+                <span class="error-message" data-error="timesRented">Please enter a valid number</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Condition & Lifecycle -->
+          <section class="section-card">
+            <div class="section-title">Condition & Lifecycle</div>
+            <div class="section-grid">
+              <div class="field">
+                <label for="conditionGrade">Condition Grade <span class="required">*</span></label>
+                <select id="conditionGrade" name="conditionGrade" required>
+                  <option value="">Select condition grade</option>
+                  <option value="Excellent">Excellent</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Worn">Worn</option>
+                </select>
+                <span class="error-message" data-error="conditionGrade">Please select a condition grade</span>
+              </div>
+              <div class="field">
+                <label for="status">Status <span class="required">*</span></label>
+                <select id="status" name="status" required>
+                  <option value="">Select status</option>
+                  <option value="available">Available</option>
+                  <option value="rented">Rented</option>
+                  <option value="maintenance">Under Maintenance</option>
+                  <option value="damaged">Damaged</option>
+                  <option value="retired">Retired</option>
+                </select>
+                <span class="error-message" data-error="status">Please select a status</span>
+              </div>
+              <div class="field">
+                <label for="lastInspectionDate">Last Inspection Date <span class="required">*</span></label>
+                <input
+                  id="lastInspectionDate"
+                  name="lastInspectionDate"
+                  type="date"
+                  required
+                />
+                <span class="error-message" data-error="lastInspectionDate">Please select a date</span>
+              </div>
+              <div class="field">
+                <label for="nextMaintenanceDue">Next Maintenance Due <span class="required">*</span></label>
+                <input
+                  id="nextMaintenanceDue"
+                  name="nextMaintenanceDue"
+                  type="date"
+                  required
+                />
+                <span class="error-message" data-error="nextMaintenanceDue">Please select a date</span>
+              </div>
+              <div class="field">
+                <label for="isRetired">Retired? <span class="required">*</span></label>
+                <select id="isRetired" name="isRetired" required>
+                  <option value="false" selected>No</option>
+                  <option value="true">Yes</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="disposalValue">Disposal Value (₹) <span class="required">*</span></label>
+                <input
+                  id="disposalValue"
+                  name="disposalValue"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+                <span class="error-message" data-error="disposalValue">Please enter a valid value</span>
+              </div>
+              <div class="field">
+                <label for="retirementReason">Retirement Reason</label>
+                <input
+                  id="retirementReason"
+                  name="retirementReason"
+                  type="text"
+                  disabled
+                />
+                <span class="error-message" data-error="retirementReason">This field is required when retired</span>
+              </div>
+              <div class="field" style="grid-column: 1 / -1">
+                <label for="retirementNotes">Notes</label>
+                <textarea
+                  id="retirementNotes"
+                  name="retirementNotes"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Photos with remove capability -->
+          <section class="section-card">
+            <div class="section-title">Photos</div>
+
+            <!-- Hidden real file input for Multer: .array('photos') -->
+            <input
+              id="photosInput"
+              name="photos"
+              type="file"
+              accept="image/*"
+              multiple
+              style="display: none"
+            />
+
+            <div
+              id="photosDropzone"
+              class="photos-dropzone"
+              onclick="document.getElementById('photosInput').click()"
+            >
+              <div style="font-size: 20px; margin-bottom: 6px">⬆</div>
+              <div><strong>Add Photos</strong></div>
+              <div>Drag and drop files here, or click to upload</div>
+            </div>
+
+            <div id="photosPreview" class="photos-preview-row"></div>
+          </section>
+
+          <!-- Footer buttons -->
+          <div class="form-footer">
+            <button
+              type="button"
+              class="btn-danger-outline"
+              onclick="history.back()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn-secondary">Save Draft</button>
+            <button type="submit" class="btn-primary">Save Product</button>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script>
+      const photosInput = document.getElementById("photosInput");
+      const photosPreview = document.getElementById("photosPreview");
+      const dropzone = document.getElementById("photosDropzone");
+      const productForm = document.getElementById("productForm");
+      const isRetiredSelect = document.getElementById("isRetired");
+      const retirementReasonInput = document.getElementById("retirementReason");
+
+      let selectedFiles = [];
+
+      // Handle retirement reason field enabling/disabling
+      function toggleRetirementReason() {
+        const isRetired = isRetiredSelect.value === "true";
+        retirementReasonInput.disabled = !isRetired;
+        
+        if (isRetired) {
+          retirementReasonInput.setAttribute("required", "required");
+        } else {
+          retirementReasonInput.removeAttribute("required");
+          retirementReasonInput.value = "";
+          hideError(retirementReasonInput);
+        }
+      }
+
+      isRetiredSelect.addEventListener("change", toggleRetirementReason);
+      toggleRetirementReason(); // Initialize on load
+
+      function renderPreviews() {
+        photosPreview.innerHTML = "";
+        selectedFiles.forEach((file, index) => {
+          const url = URL.createObjectURL(file);
+          const wrapper = document.createElement("div");
+          wrapper.className = "photo-thumb";
+          wrapper.style.backgroundImage = `url(${url})`;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "photo-remove-btn";
+          removeBtn.textContent = "×";
+          removeBtn.addEventListener("click", () => {
+            selectedFiles.splice(index, 1);
+            renderPreviews();
+          });
+
+          wrapper.appendChild(removeBtn);
+          photosPreview.appendChild(wrapper);
+        });
+      }
+
+      photosInput.addEventListener("change", () => {
+        const files = Array.from(photosInput.files || []);
+        selectedFiles = selectedFiles.concat(files);
+        photosInput.value = "";
+        renderPreviews();
+      });
+
+      ["dragenter", "dragover"].forEach((evtName) => {
+        dropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.style.borderColor = "#4b63ff";
+        });
+      });
+
+      ["dragleave", "drop"].forEach((evtName) => {
+        dropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.style.borderColor = "#374151";
+        });
+      });
+
+      dropzone.addEventListener("drop", (e) => {
+        const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+          f.type.startsWith("image/")
+        );
+        if (files.length) {
+          selectedFiles = selectedFiles.concat(files);
+          renderPreviews();
+        }
+      });
+
+      // Validation functions
+      function showError(input) {
+        input.classList.add("error");
+        const errorMsg = document.querySelector(`[data-error="${input.id}"]`);
+        if (errorMsg) {
+          errorMsg.classList.add("show");
+        }
+      }
+
+      function hideError(input) {
+        input.classList.remove("error");
+        const errorMsg = document.querySelector(`[data-error="${input.id}"]`);
+        if (errorMsg) {
+          errorMsg.classList.remove("show");
+        }
+      }
+
+      function validateField(input) {
+        if (!input.value.trim() && input.hasAttribute("required")) {
+          showError(input);
+          return false;
+        }
+        
+        if (input.type === "number" && input.hasAttribute("required")) {
+          const value = parseFloat(input.value);
+          if (isNaN(value) || value < 0) {
+            showError(input);
+            return false;
+          }
+        }
+        
+        hideError(input);
+        return true;
+      }
+
+      function validateForm() {
+        const requiredFields = productForm.querySelectorAll("[required]");
+        let isValid = true;
+        let firstInvalidField = null;
+
+        requiredFields.forEach((field) => {
+          if (!field.disabled && !validateField(field)) {
+            isValid = false;
+            if (!firstInvalidField) {
+              firstInvalidField = field;
+            }
+          }
+        });
+
+        if (!isValid && firstInvalidField) {
+          firstInvalidField.scrollIntoView({ behavior: "smooth", block: "center" });
+          firstInvalidField.focus();
+        }
+
+        return isValid;
+      }
+
+      // Add real-time validation
+      const allInputs = productForm.querySelectorAll("input, select, textarea");
+      allInputs.forEach((input) => {
+        input.addEventListener("blur", () => {
+          if (input.hasAttribute("required") && !input.disabled) {
+            validateField(input);
+          }
+        });
+
+        input.addEventListener("input", () => {
+          if (input.classList.contains("error")) {
+            validateField(input);
+          }
+        });
+      });
+
+      // SuitManager-style SweetAlert2 classes
+      const swalTheme = {
+        background: "#151821",
+        color: "#f9fafb",
+        confirmButtonColor: "#4b63ff",
+        cancelButtonColor: "#222635",
+        customClass: {
+          popup: "swal2-suit-popup",
+          confirmButton: "swal2-suit-confirm",
+          cancelButton: "swal2-suit-cancel",
+        },
+      };
+
+      productForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Validate form
+        if (!validateForm()) {
+          await Swal.fire({
+            icon: "error",
+            title: "Validation Error",
+            text: "Please fill in all required fields correctly.",
+            ...swalTheme,
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        const form = e.target;
+        const fd = new FormData(form);
+
+        // wipe any default photos entries and re-append from selectedFiles
+        fd.delete("photos");
+        selectedFiles.forEach((file) => {
+          fd.append("photos", file);
+        });
+
+        try {
+          const res = await fetch(form.action, {
+            method: form.method,
+            body: fd,
+          });
+
+          const json = await res.json().catch(() => ({}));
+
+          if (!res.ok || !json.ok) {
+            await Swal.fire({
+              icon: "error",
+              title: "Failed to add product",
+              text:
+                json.message ||
+                "Something went wrong while saving the product.",
+              ...swalTheme,
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+
+          await Swal.fire({
+            icon: "success",
+            title: "Product added",
+            text: json.message || "The product has been added to inventory.",
+            ...swalTheme,
+            showConfirmButton: true,
+            confirmButtonText: "Back to Inventory",
+          });
+
+          window.location.href = "/inventory";
+        } catch (err) {
+          console.error(err);
+          await Swal.fire({
+            icon: "error",
+            title: "Network error",
+            text: "Could not reach the server. Please try again.",
+            ...swalTheme,
+            confirmButtonText: "OK",
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

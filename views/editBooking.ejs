@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Booking - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Select2 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- jQuery (required for Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-card: #1a1d28;
+        --sidebar-bg: #11131b;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left,
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        margin-bottom: 20px;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .form-section {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--card-radius);
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 14px;
+        color: #e5e7eb;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .form-grid.three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .form-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-item.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+
+      .form-label .required {
+        color: var(--danger);
+        margin-left: 2px;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        background: #0d0f14;
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--text-main);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        border-color: var(--accent);
+      }
+
+      .form-textarea {
+        min-height: 80px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .form-select {
+        cursor: pointer;
+      }
+
+      /* Select2 Dark Theme */
+      .select2-container--default .select2-selection--single {
+        background: #0d0f14 !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 8px !important;
+        height: 38px !important;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+        color: var(--text-main) !important;
+        line-height: 36px !important;
+        padding-left: 12px !important;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 36px !important;
+      }
+
+      .select2-dropdown {
+        background: #0d0f14 !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 8px !important;
+      }
+
+      .select2-container--default .select2-results__option {
+        background: #0d0f14 !important;
+        color: var(--text-main) !important;
+      }
+
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background: var(--accent) !important;
+      }
+
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field {
+        background: #11131c !important;
+        border: 1px solid var(--border-subtle) !important;
+        color: var(--text-main) !important;
+        border-radius: 6px !important;
+      }
+
+      .select2-container--default.select2-container--focus
+        .select2-selection--single {
+        border-color: var(--accent) !important;
+      }
+
+      .product-selection {
+        background: #0d0f14;
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 14px;
+        min-height: 120px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .product-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+
+      .product-card:hover {
+        border-color: var(--accent-soft);
+      }
+
+      .product-card.selected {
+        border-color: var(--accent);
+        background: rgba(75, 99, 255, 0.1);
+      }
+
+      .product-image {
+        width: 100%;
+        height: 120px;
+        background: #1a1d28;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .product-name {
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .product-sku {
+        font-size: 10px;
+        color: var(--text-soft);
+        margin-bottom: 4px;
+      }
+
+      .product-price {
+        font-size: 11px;
+        color: var(--success);
+        font-weight: 500;
+      }
+
+      /* ✅ NEW: Stock display */
+      .product-stock {
+        font-size: 10px;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+
+      .loading-products {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-soft);
+        font-size: 12px;
+      }
+
+      .no-products {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .selected-products-list {
+        margin-top: 12px;
+      }
+
+      .selected-product-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .selected-product-info {
+        flex: 1;
+      }
+
+      .selected-product-name {
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+
+      .selected-product-details {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .quantity-input {
+        width: 60px;
+        margin: 0 8px;
+        text-align: center;
+      }
+
+      .remove-product-btn {
+        background: transparent;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 4px;
+      }
+
+      /* Price Summary */
+      .price-summary {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+      }
+
+      .price-summary-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 13px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .price-row:last-child {
+        border-bottom: none;
+      }
+
+      .price-row.total {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--success);
+        padding-top: 12px;
+        margin-top: 8px;
+        border-top: 2px solid var(--border-subtle);
+      }
+
+      .price-label {
+        color: var(--text-soft);
+      }
+
+      .price-value {
+        color: var(--text-main);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .price-row.total .price-label {
+        color: var(--text-main);
+      }
+
+      .price-row.discount .price-value {
+        color: var(--success);
+      }
+
+      .price-row.balance-due {
+        color: var(--warning);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .btn-primary {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: 1px solid var(--border-subtle);
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .helper-text {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-grid.three-col {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item active">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <h1 class="page-title">Edit Booking</h1>
+          <p class="page-subtitle">
+            Update booking #<%= booking.bookingCode %>
+          </p>
+        </div>
+
+        <form id="bookingForm">
+          <!-- Customer & Event Details -->
+          <section class="form-section">
+            <div class="section-title">Customer & Event Details</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label"
+                  >Customer <span class="required">*</span></label
+                >
+                <select
+                  name="customerId"
+                  id="customerSelect"
+                  class="form-select"
+                  required
+                >
+                  <option value="<%= booking.customerId._id %>" selected>
+                    <%= booking.customerId.fullName %> (<%= booking.customerId.primaryMobile %>)
+                  </option>
+                </select>
+                <div class="helper-text">Search by name, mobile, or email</div>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label"
+                  >Event Type <span class="required">*</span></label
+                >
+                <select name="eventType" class="form-select" required>
+                  <option value="">Select event type</option>
+                  <option value="Wedding" <%= booking.eventType === 'Wedding' ? 'selected' : '' %>>Wedding</option>
+                  <option value="Corporate Event" <%= booking.eventType === 'Corporate Event' ? 'selected' : '' %>>Corporate Event</option>
+                  <option value="Birthday Party" <%= booking.eventType === 'Birthday Party' ? 'selected' : '' %>>Birthday Party</option>
+                  <option value="Anniversary" <%= booking.eventType === 'Anniversary' ? 'selected' : '' %>>Anniversary</option>
+                  <option value="Conference" <%= booking.eventType === 'Conference' ? 'selected' : '' %>>Conference</option>
+                  <option value="Photoshoot" <%= booking.eventType === 'Photoshoot' ? 'selected' : '' %>>Photoshoot</option>
+                  <option value="Concert" <%= booking.eventType === 'Concert' ? 'selected' : '' %>>Concert</option>
+                  <option value="Festival" <%= booking.eventType === 'Festival' ? 'selected' : '' %>>Festival</option>
+                  <option value="Other" <%= booking.eventType === 'Other' ? 'selected' : '' %>>Other</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label"
+                  >Event Date <span class="required">*</span></label
+                >
+                <input
+                  type="date"
+                  name="eventDate"
+                  id="eventDate"
+                  class="form-input"
+                  value="<%= booking.eventDate.toISOString().split('T')[0] %>"
+                  required
+                />
+                <div class="helper-text">
+                  Must be between pickup and return dates
+                </div>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label">Event Venue</label>
+                <input
+                  type="text"
+                  name="eventVenue"
+                  class="form-input"
+                  placeholder="Enter venue name"
+                  value="<%= booking.eventVenue || '' %>"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Pickup & Return Details -->
+          <section class="form-section">
+            <div class="section-title">Pickup & Return Details</div>
+            <div class="form-grid three-col">
+              <div class="form-item">
+                <label class="form-label"
+                  >Pickup Date <span class="required">*</span></label
+                >
+                <input
+                  type="date"
+                  name="pickupDate"
+                  id="pickupDate"
+                  class="form-input"
+                  value="<%= booking.pickupDate.toISOString().split('T')[0] %>"
+                  required
+                />
+                <div class="helper-text">Products available from this date</div>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label"
+                  >Expected Return Date <span class="required">*</span></label
+                >
+                <input
+                  type="date"
+                  name="expectedReturnDate"
+                  id="returnDate"
+                  class="form-input"
+                  value="<%= booking.expectedReturnDate.toISOString().split('T')[0] %>"
+                  required
+                />
+                <div class="helper-text">
+                  Products available until this date
+                </div>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label"
+                  >Pickup Method <span class="required">*</span></label
+                >
+                <select name="pickupMethod" class="form-select" required>
+                  <option value="Store Pickup" <%= booking.pickupMethod === 'Store Pickup' ? 'selected' : '' %>>Store Pickup</option>
+                  <option value="Home Delivery" <%= booking.pickupMethod === 'Home Delivery' ? 'selected' : '' %>>Home Delivery</option>
+                  <option value="Courier" <%= booking.pickupMethod === 'Courier' ? 'selected' : '' %>>Courier</option>
+                </select>
+              </div>
+
+              <div class="form-item full-width">
+                <label class="form-label">Pickup Time Window</label>
+                <input
+                  type="text"
+                  name="pickupTimeWindow"
+                  class="form-input"
+                  placeholder="e.g., 10:00 AM - 12:00 PM"
+                  value="<%= booking.pickupTimeWindow || '' %>"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Product Selection -->
+          <section class="form-section">
+            <div class="section-title">Product Selection</div>
+            <div id="productSelectionArea" class="product-selection">
+              <div class="loading-products">🔄 Loading available products...</div>
+            </div>
+
+            <!-- Selected Products List -->
+            <div id="selectedProductsList" class="selected-products-list"></div>
+
+            <!-- Price Summary -->
+            <div id="priceSummary" class="price-summary" style="display: none;">
+              <div class="price-summary-title">📊 Price Summary</div>
+
+              <div class="price-row">
+                <span class="price-label">Rental Days</span>
+                <span class="price-value" id="rentalDaysDisplay">0 days</span>
+              </div>
+
+              <div class="price-row">
+                <span class="price-label">Subtotal (Products × Days)</span>
+                <span class="price-value" id="subtotalDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row discount" id="discountRow" style="display: none;">
+                <span class="price-label">Discount <span id="discountTypeDisplay"></span></span>
+                <span class="price-value" id="discountDisplay">- ₹0.00</span>
+              </div>
+
+              <div class="price-row">
+                <span class="price-label">Taxable Amount</span>
+                <span class="price-value" id="taxableAmountDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row">
+                <span class="price-label">Tax (<span id="taxRateDisplay">18</span>%)</span>
+                <span class="price-value" id="taxAmountDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row">
+                <span class="price-label">Security Deposit</span>
+                <span class="price-value" id="securityDepositDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row total">
+                <span class="price-label">Total Amount</span>
+                <span class="price-value" id="totalAmountDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row">
+                <span class="price-label">Amount Paid</span>
+                <span class="price-value" id="amountPaidDisplay">₹0.00</span>
+              </div>
+
+              <div class="price-row balance-due">
+                <span class="price-label">Balance Due</span>
+                <span class="price-value" id="balanceDueDisplay">₹0.00</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Pricing & Payment -->
+          <section class="form-section">
+            <div class="section-title">Pricing & Payment</div>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">Discount Type</label>
+                <select
+                  name="discountType"
+                  id="discountType"
+                  class="form-select"
+                >
+                  <option value="None" <%= booking.discountType === 'None' ? 'selected' : '' %>>None</option>
+                  <option value="Percentage" <%= booking.discountType === 'Percentage' ? 'selected' : '' %>>Percentage</option>
+                  <option value="Fixed Amount" <%= booking.discountType === 'Fixed Amount' ? 'selected' : '' %>>Fixed Amount</option>
+                  <option value="Promotional Code" <%= booking.discountType === 'Promotional Code' ? 'selected' : '' %>>Promotional Code</option>
+                </select>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label">Discount Value</label>
+                <input
+                  type="number"
+                  name="discountValue"
+                  id="discountValue"
+                  class="form-input"
+                  min="0"
+                  step="0.01"
+                  value="<%= booking.discountValue || 0 %>"
+                />
+              </div>
+
+              <div class="form-item">
+                <label class="form-label">Tax Rate (%)</label>
+                <input
+                  type="number"
+                  name="taxRate"
+                  class="form-input"
+                  value="<%= booking.taxRate || 18 %>"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                />
+              </div>
+
+              <div class="form-item">
+                <label class="form-label">Security Deposit (₹)</label>
+                <input
+                  type="number"
+                  name="securityDeposit"
+                  class="form-input"
+                  min="0"
+                  step="0.01"
+                  value="<%= booking.securityDeposit || 0 %>"
+                />
+              </div>
+
+              <div class="form-item">
+                <label class="form-label">Amount Paid (₹)</label>
+                <input
+                  type="number"
+                  name="amountPaid"
+                  class="form-input"
+                  min="0"
+                  step="0.01"
+                  value="<%= booking.amountPaid || 0 %>"
+                />
+                <div class="helper-text">Enter advance payment received</div>
+              </div>
+
+              <div class="form-item">
+                <label class="form-label"
+                  >Booking Status <span class="required">*</span></label
+                >
+                <select name="bookingStatus" class="form-select" required>
+                  <option value="Draft" <%= booking.bookingStatus === 'Draft' ? 'selected' : '' %>>Draft</option>
+                  <option value="Confirmed" <%= booking.bookingStatus === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+                  <option value="Completed" <%= booking.bookingStatus === 'Completed' ? 'selected' : '' %>>Completed</option>
+                  <option value="Cancelled" <%= booking.bookingStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                  <option value="No Show" <%= booking.bookingStatus === 'No Show' ? 'selected' : '' %>>No Show</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Notes -->
+          <section class="form-section">
+            <div class="section-title">Additional Notes</div>
+            <div class="form-grid">
+              <div class="form-item full-width">
+                <label class="form-label">Customer Notes</label>
+                <textarea
+                  name="customerNotes"
+                  class="form-textarea"
+                  placeholder="Special requests, delivery instructions, etc."
+                ><%= booking.customerNotes || '' %></textarea>
+              </div>
+
+              <div class="form-item full-width">
+                <label class="form-label">Internal Notes</label>
+                <textarea
+                  name="internalNotes"
+                  class="form-textarea"
+                  placeholder="Private notes for staff only"
+                ><%= booking.internalNotes || '' %></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <a href="/bookings/<%= booking._id %>" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary" id="submitBtn">
+              ✓ Update Booking
+            </button>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script>
+      const form = document.getElementById("bookingForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const pickupDateInput = document.getElementById("pickupDate");
+      const returnDateInput = document.getElementById("returnDate");
+      const eventDateInput = document.getElementById("eventDate");
+      const productSelectionArea = document.getElementById("productSelectionArea");
+      const selectedProductsList = document.getElementById("selectedProductsList");
+      const priceSummary = document.getElementById("priceSummary");
+
+      const discountTypeInput = document.getElementById("discountType");
+      const discountValueInput = document.getElementById("discountValue");
+      const taxRateInput = document.querySelector('input[name="taxRate"]');
+      const securityDepositInput = document.querySelector('input[name="securityDeposit"]');
+      const amountPaidInput = document.querySelector('input[name="amountPaid"]');
+
+      let availableProducts = [];
+      let selectedProducts = <%- JSON.stringify(booking.items.map(item => ({
+        productId: item.productId._id,
+        productName: item.productName || item.productId.displayName,
+        sku: item.sku || item.productId.sku,
+        quantity: item.quantity,
+        rentalPrice: item.rentalPrice,
+        securityDeposit: item.securityDeposit || 0,
+        availableQuantity: item.quantity || 1
+      }))) %>;
+      let fetchProductsTimer = null;
+      let rentalDays = 0;
+
+      // Initialize Select2
+      $(document).ready(function () {
+        $("#customerSelect").select2({
+          placeholder: "Search customer by name, mobile, or email",
+          allowClear: true,
+          width: "100%",
+          ajax: {
+            url: "/api/customers/search",
+            dataType: "json",
+            delay: 300,
+            data: function (params) {
+              return {
+                q: params.term || "",
+                page: params.page || 1,
+                limit: 20,
+              };
+            },
+            processResults: function (data, params) {
+              params.page = params.page || 1;
+
+              if (!data.ok || !data.data) {
+                console.error("Invalid response from server:", data);
+                return {
+                  results: [],
+                  pagination: { more: false },
+                };
+              }
+
+              return {
+                results: data.data.map((customer) => ({
+                  id: customer._id,
+                  text: `${customer.fullName} - ${
+                    customer.primaryMobile || customer.email || ""
+                  }`,
+                })),
+                pagination: {
+                  more: params.page * 20 < data.pagination.total,
+                },
+              };
+            },
+            cache: true,
+          },
+          minimumInputLength: 0,
+        });
+
+        // Load products and render initially
+        fetchAvailableProducts();
+      });
+
+      function calculateRentalDays() {
+        const pickupDate = pickupDateInput.value;
+        const returnDate = returnDateInput.value;
+
+        if (!pickupDate || !returnDate) {
+          rentalDays = 0;
+          return 0;
+        }
+
+        const pickup = new Date(pickupDate);
+        const returnD = new Date(returnDate);
+        const diffTime = Math.abs(returnD - pickup);
+        rentalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return rentalDays;
+      }
+
+      function updatePriceSummary() {
+        if (selectedProducts.length === 0) {
+          priceSummary.style.display = "none";
+          return;
+        }
+
+        priceSummary.style.display = "block";
+
+        const days = calculateRentalDays();
+        document.getElementById("rentalDaysDisplay").textContent = `${days} day${days !== 1 ? 's' : ''}`;
+
+        let subtotal = 0;
+        selectedProducts.forEach(product => {
+          subtotal += product.rentalPrice * product.quantity * days;
+        });
+
+        document.getElementById("subtotalDisplay").textContent = `₹${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const discountType = discountTypeInput.value;
+        const discountValue = parseFloat(discountValueInput.value) || 0;
+        let discountAmount = 0;
+
+        if (discountType === 'Percentage') {
+          discountAmount = (subtotal * discountValue) / 100;
+          document.getElementById("discountTypeDisplay").textContent = `(${discountValue}%)`;
+        } else if (discountType === 'Fixed Amount') {
+          discountAmount = discountValue;
+          document.getElementById("discountTypeDisplay").textContent = "";
+        } else if (discountType === 'Promotional Code') {
+          discountAmount = discountValue;
+          document.getElementById("discountTypeDisplay").textContent = "(Code)";
+        }
+
+        const discountRow = document.getElementById("discountRow");
+        if (discountType !== 'None' && discountAmount > 0) {
+          discountRow.style.display = "flex";
+          document.getElementById("discountDisplay").textContent = `- ₹${discountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+          discountRow.style.display = "none";
+        }
+
+        const taxableAmount = subtotal - discountAmount;
+        document.getElementById("taxableAmountDisplay").textContent = `₹${taxableAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const taxRate = parseFloat(taxRateInput.value) || 0;
+        const taxAmount = (taxableAmount * taxRate) / 100;
+        document.getElementById("taxRateDisplay").textContent = taxRate;
+        document.getElementById("taxAmountDisplay").textContent = `₹${taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const securityDeposit = parseFloat(securityDepositInput.value) || 0;
+        document.getElementById("securityDepositDisplay").textContent = `₹${securityDeposit.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const totalAmount = taxableAmount + taxAmount + securityDeposit;
+        document.getElementById("totalAmountDisplay").textContent = `₹${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const amountPaid = parseFloat(amountPaidInput.value) || 0;
+        document.getElementById("amountPaidDisplay").textContent = `₹${amountPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const balanceDue = totalAmount - amountPaid;
+        document.getElementById("balanceDueDisplay").textContent = `₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      discountTypeInput.addEventListener("change", updatePriceSummary);
+      discountValueInput.addEventListener("input", updatePriceSummary);
+      taxRateInput.addEventListener("input", updatePriceSummary);
+      securityDepositInput.addEventListener("input", updatePriceSummary);
+      amountPaidInput.addEventListener("input", updatePriceSummary);
+      pickupDateInput.addEventListener("change", updatePriceSummary);
+      returnDateInput.addEventListener("change", updatePriceSummary);
+
+      function debounceFetchProducts() {
+        clearTimeout(fetchProductsTimer);
+
+        const pickupDate = pickupDateInput.value;
+        const returnDate = returnDateInput.value;
+
+        if (!pickupDate || !returnDate) {
+          return;
+        }
+
+        fetchProductsTimer = setTimeout(() => {
+          fetchAvailableProducts();
+        }, 500);
+      }
+
+      async function fetchAvailableProducts() {
+        const pickupDate = pickupDateInput.value;
+        const returnDate = returnDateInput.value;
+
+        if (!pickupDate || !returnDate) {
+          return;
+        }
+
+        if (new Date(returnDate) <= new Date(pickupDate)) {
+          productSelectionArea.innerHTML =
+            '<div class="no-products">⚠️ Return date must be after pickup date</div>';
+          return;
+        }
+
+        productSelectionArea.innerHTML =
+          '<div class="loading-products">🔄 Loading available products...</div>';
+
+        try {
+          const res = await fetch(
+            `/api/bookings/available-products?pickupDate=${pickupDate}&returnDate=${returnDate}&excludeBooking=<%= booking._id %>`
+          );
+          const json = await res.json();
+
+          if (!json.ok || !json.data) {
+            throw new Error(json.message || "Failed to fetch products");
+          }
+
+          availableProducts = json.data;
+          
+          // ✅ Update availableQuantity for already selected products
+          selectedProducts = selectedProducts.map(selected => {
+            const product = availableProducts.find(p => p._id === selected.productId);
+            if (product) {
+              return {
+                ...selected,
+                availableQuantity: product.availableQuantity
+              };
+            }
+            return selected;
+          });
+
+          renderAvailableProducts();
+          renderSelectedProducts();
+          updatePriceSummary();
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          productSelectionArea.innerHTML =
+            '<div class="no-products">❌ Failed to load products. Please try again.</div>';
+        }
+      }
+
+      function renderAvailableProducts() {
+        if (availableProducts.length === 0) {
+          productSelectionArea.innerHTML =
+            '<div class="no-products">😔 No products available for selected dates</div>';
+          return;
+        }
+
+        const productGrid = document.createElement("div");
+        productGrid.className = "product-grid";
+
+        availableProducts.forEach((product) => {
+          const isSelected = selectedProducts.some(
+            (p) => p.productId === product._id
+          );
+
+          const card = document.createElement("div");
+          card.className = "product-card" + (isSelected ? " selected" : "");
+          card.dataset.productId = product._id;
+          card.dataset.availableQty = product.availableQuantity || 1;
+          card.onclick = () => toggleProduct(product);
+
+          const img = document.createElement("div");
+          img.className = "product-image";
+          if (product.photos && product.photos[0]) {
+            img.style.backgroundImage = `url('${product.photos[0]}')`;
+          }
+
+          const name = document.createElement("div");
+          name.className = "product-name";
+          name.textContent = product.displayName || product.sku;
+
+          const sku = document.createElement("div");
+          sku.className = "product-sku";
+          sku.textContent = product.sku;
+
+          const price = document.createElement("div");
+          price.className = "product-price";
+          price.textContent = `₹${
+            product.baseRent ? product.baseRent.toLocaleString("en-IN") : 0
+          }/day`;
+
+          // ✅ NEW: Stock display
+          const stock = document.createElement("div");
+          stock.className = "product-stock";
+          const availableQty = product.availableQuantity || 1;
+          const stockColor = availableQty > 5 
+            ? "var(--success)" 
+            : availableQty > 0 
+              ? "var(--warning)" 
+              : "var(--danger)";
+          stock.style.color = stockColor;
+          stock.textContent = `📦 ${availableQty} available`;
+
+          card.appendChild(img);
+          card.appendChild(name);
+          card.appendChild(sku);
+          card.appendChild(price);
+          card.appendChild(stock);
+
+          productGrid.appendChild(card);
+        });
+
+        productSelectionArea.innerHTML = "";
+        productSelectionArea.appendChild(productGrid);
+      }
+
+      function toggleProduct(product) {
+        const index = selectedProducts.findIndex(
+          (p) => p.productId === product._id
+        );
+
+        if (index > -1) {
+          selectedProducts.splice(index, 1);
+        } else {
+          selectedProducts.push({
+            productId: product._id,
+            productName: product.displayName,
+            sku: product.sku,
+            quantity: 1,
+            rentalPrice: product.baseRent || 0,
+            securityDeposit: product.securityDeposit || 0,
+            availableQuantity: product.availableQuantity || 1,
+          });
+        }
+
+        renderAvailableProducts();
+        renderSelectedProducts();
+        updatePriceSummary();
+      }
+
+      function renderSelectedProducts() {
+        if (selectedProducts.length === 0) {
+          selectedProductsList.innerHTML = "";
+          updatePriceSummary();
+          return;
+        }
+
+        selectedProductsList.innerHTML =
+          '<div class="section-title" style="margin-top: 16px;">Selected Products</div>';
+
+        selectedProducts.forEach((product, index) => {
+          const item = document.createElement("div");
+          item.className = "selected-product-item";
+
+          const info = document.createElement("div");
+          info.className = "selected-product-info";
+
+          const name = document.createElement("div");
+          name.className = "selected-product-name";
+          name.textContent = product.productName;
+
+          const details = document.createElement("div");
+          details.className = "selected-product-details";
+          details.textContent = `${
+            product.sku
+          } • ₹${product.rentalPrice.toLocaleString("en-IN")}/day`;
+
+          // ✅ NEW: Stock info
+          const stockInfo = document.createElement("div");
+          stockInfo.style.fontSize = "10px";
+          stockInfo.style.color = "var(--text-muted)";
+          stockInfo.style.marginTop = "2px";
+          const maxQty = product.availableQuantity || 999;
+          stockInfo.textContent = `Max: ${maxQty} available`;
+
+          info.appendChild(name);
+          info.appendChild(details);
+          info.appendChild(stockInfo);
+
+          const qtyLabel = document.createElement("span");
+          qtyLabel.textContent = "Qty: ";
+          qtyLabel.style.fontSize = "11px";
+          qtyLabel.style.color = "var(--text-soft)";
+
+          const qtyInput = document.createElement("input");
+          qtyInput.type = "number";
+          qtyInput.className = "form-input quantity-input";
+          qtyInput.value = product.quantity;
+          qtyInput.min = 1;
+          qtyInput.max = maxQty;
+          qtyInput.onchange = (e) => {
+            const newQty = parseInt(e.target.value) || 1;
+            
+            // ✅ Validate quantity
+            if (newQty > maxQty) {
+              Swal.fire({
+                icon: "warning",
+                title: "Insufficient Stock",
+                text: `Only ${maxQty} unit(s) available for ${product.productName}`,
+                background: "#151821",
+                color: "#f9fafb",
+                confirmButtonColor: "#4b63ff",
+                customClass: {
+                  popup: "swal2-suit-popup",
+                },
+              });
+              e.target.value = maxQty;
+              selectedProducts[index].quantity = maxQty;
+            } else {
+              selectedProducts[index].quantity = Math.max(1, newQty);
+            }
+            
+            updatePriceSummary();
+          };
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "remove-product-btn";
+          removeBtn.innerHTML = "×";
+          removeBtn.onclick = () => {
+            selectedProducts.splice(index, 1);
+            renderAvailableProducts();
+            renderSelectedProducts();
+          };
+
+          item.appendChild(info);
+          item.appendChild(qtyLabel);
+          item.appendChild(qtyInput);
+          item.appendChild(removeBtn);
+          selectedProductsList.appendChild(item);
+        });
+
+        updatePriceSummary();
+      }
+
+      pickupDateInput.addEventListener("change", debounceFetchProducts);
+      returnDateInput.addEventListener("change", debounceFetchProducts);
+      pickupDateInput.addEventListener("input", debounceFetchProducts);
+      returnDateInput.addEventListener("input", debounceFetchProducts);
+
+      const today = new Date().toISOString().split("T")[0];
+      pickupDateInput.min = today;
+      returnDateInput.min = today;
+      eventDateInput.min = today;
+
+      pickupDateInput.addEventListener("change", () => {
+        if (pickupDateInput.value) {
+          returnDateInput.min = pickupDateInput.value;
+          eventDateInput.min = pickupDateInput.value;
+        }
+      });
+
+      function validateEventDate() {
+        const pickupDate = pickupDateInput.value;
+        const returnDate = returnDateInput.value;
+        const eventDate = eventDateInput.value;
+
+        if (!pickupDate || !returnDate || !eventDate) {
+          return true;
+        }
+
+        const pickup = new Date(pickupDate);
+        const returnD = new Date(returnDate);
+        const event = new Date(eventDate);
+
+        if (event < pickup || event > returnD) {
+          return false;
+        }
+
+        return true;
+      }
+
+      eventDateInput.addEventListener("change", () => {
+        if (!validateEventDate()) {
+          Swal.fire({
+            icon: "error",
+            title: "Invalid Event Date",
+            text: "Event date must be between pickup date and return date",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+            },
+          });
+          eventDateInput.value = "";
+        }
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!validateEventDate()) {
+          await Swal.fire({
+            icon: "error",
+            title: "Invalid Event Date",
+            text: "Event date must be between pickup date and return date",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+            },
+          });
+          return;
+        }
+
+        if (selectedProducts.length === 0) {
+          await Swal.fire({
+            icon: "warning",
+            title: "No Products Selected",
+            text: "Please select at least one product for the booking",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+            },
+          });
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Updating Booking...";
+
+        const formData = new FormData(form);
+        const data = {};
+
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+
+        data.items = selectedProducts;
+
+        try {
+          const res = await fetch("/api/bookings/<%= booking._id %>", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const json = await res.json();
+
+          if (!res.ok || !json.ok) {
+            throw new Error(json.message || "Failed to update booking");
+          }
+
+          await Swal.fire({
+            icon: "success",
+            title: "Booking Updated",
+            text: `Booking #${json.data.bookingCode} updated successfully!`,
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+            },
+          });
+
+          window.location.href = `/bookings/${json.data._id}`;
+        } catch (error) {
+          console.error("Error:", error);
+
+          await Swal.fire({
+            icon: "error",
+            title: "Failed to Update Booking",
+            text: error.message,
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+            },
+          });
+
+          submitBtn.disabled = false;
+          submitBtn.textContent = "✓ Update Booking";
+        }
+      });
+
+      // Initial render
+      renderSelectedProducts();
+    </script>
+  </body>
+</html>

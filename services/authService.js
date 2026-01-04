@@ -67,7 +67,7 @@ const verifyOtpService = async (otp, email) => {
       return {
         ok: true,
         message: "succesfully Logged In",
-        redirectTo: "/homeDashboard",
+        redirectTo: "/dashboard",
         token: token,
       };
     } else {
@@ -113,6 +113,7 @@ const resendOtpService = async (email) => {
         expiresIn: "3m",
       });
       console.log(code.otp);
+      await sendOtp(email, code.otp);
       return {
         ok: true,
         message: "Otp Resend Succesfully",

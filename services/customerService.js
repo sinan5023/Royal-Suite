@@ -1,7 +1,6 @@
 const Customer = require("../models/customerModel");
 const buildCustomerFilter = require("../helpers/customerSearchFilter");
-const { findByIdAndUpdate } = require("../models/userModel");
-
+const Product = require("../models/productModel");
 const addCustomerService = async (data, email) => {
   try {
     console.log(email);
@@ -187,10 +186,128 @@ const deleteCustomerService = async (id) => {
   }
 };
 
+
+
+
+
+async function getInventoryStats() {
+  const [available, rented, maintenance, total] = await Promise.all([
+    Product.countDocuments({ status: "available" }),
+    Product.countDocuments({ status: "rented" }),
+    Product.countDocuments({ status: { $in: ["maintenance", "damaged"] } }),
+    Product.countDocuments({}),
+  ]);
+
+  return {
+    available,
+    rented,
+    maintenance,
+    total,
+  };
+}
+
+async function getCategories() {
+  const categories = await Product.distinct("category");
+  return categories.sort();
+}
+
+async function getSizes() {
+  const sizes = await Product.distinct("size");
+  return sizes.filter(Boolean).sort();
+}
+
+async function getInventoryList(page = 1, limit = 10, filters = {}) {
+  const skip = (page - 1) * limit;
+  const match = {};
+
+  // Text search across multiple fields
+  if (filters.q) {
+    match.$or = [
+      { displayName: { $regex: filters.q, $options: "i" } },
+      { sku: { $regex: filters.q, $options: "i" } },
+      { category: { $regex: filters.q, $options: "i" } },
+      { size: { $regex: filters.q, $options: "i" } },
+    ];
+  }
+
+  // Category filter
+  if (filters.category) match.category = filters.category;
+
+  // Size filter
+  if (filters.size) match.size = filters.size;
+
+  // Status filter
+  if (filters.status) match.status = filters.status;
+
+  // Condition filter
+  if (filters.condition) match.conditionGrade = filters.condition;
+
+  // Pipeline for aggregation
+  const pipeline = [
+    { $match: match },
+    {
+      $facet: {
+        data: [
+          { $sort: { dateAdded: -1 } },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $project: {
+              id: "$_id",
+              itemName: "$displayName",
+              suitCode: "$sku",
+              category: 1,
+              quantity: { $ifNull: ["$quantity", 1] },
+              unitPrice: { $ifNull: ["$baseRent", 0] },
+              supplier: "$branch",
+              condition: "$conditionGrade",
+              lastInspectionAt: "$lastInspectionDate",
+              location: "$storageLocation",
+              status: 1,
+              statusLabel: {
+                $switch: {
+                  branches: [
+                    { case: { $eq: ["$status", "available"] }, then: "Available" },
+                    { case: { $eq: ["$status", "rented"] }, then: "Rented" },
+                    { case: { $eq: ["$status", "maintenance"] }, then: "Maintenance" },
+                    { case: { $eq: ["$status", "damaged"] }, then: "Damaged" },
+                  ],
+                  default: "$status",
+                },
+              },
+            },
+          },
+        ],
+        total: [{ $count: "count" }],
+      },
+    },
+  ];
+
+  const result = await Product.aggregate(pipeline);
+  const total = result[0].total[0]?.count || 0;
+
+  return {
+    data: result[0].data,
+    pagination: {
+      page,
+      total,
+      totalPages: Math.ceil(total / limit),
+      from: skip + 1,
+      to: Math.min(skip + limit, total),
+    },
+  };
+}
+
+
+
 module.exports = {
   addCustomerService,
   getCustomerService,
   getCustomerDetails,
   updateCustomerService,
   deleteCustomerService,
+  getInventoryStats,
+  getInventoryList,
+  getCategories,
+  getSizes,
 };

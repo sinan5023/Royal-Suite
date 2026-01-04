@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Product Details - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: #11131b;
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #6b7280;
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: #1f2432;
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: #6b7280;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px 24px 24px;
+        overflow-y: auto;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+      }
+
+      .page-title-section {
+        flex: 1;
+      }
+
+      .page-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        margin-top: 6px;
+      }
+
+      .status-available {
+        background: #1e3a2e;
+        color: var(--success);
+      }
+
+      .status-rented {
+        background: #1e293b;
+        color: #60a5fa;
+      }
+
+      .status-maintenance {
+        background: #3b2d1f;
+        color: var(--warning);
+      }
+
+      .status-retired {
+        background: #3b1f2f;
+        color: var(--danger);
+      }
+
+      .status-damaged {
+        background: #3b1f2f;
+        color: var(--danger);
+      }
+
+      .section-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 14px 16px 16px;
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #e5e7eb;
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 20px;
+      }
+
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .detail-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .detail-value {
+        font-size: 13px;
+        color: var(--text-main);
+        font-weight: 500;
+      }
+
+      .detail-value.empty {
+        color: var(--text-muted);
+        font-style: italic;
+      }
+
+      .detail-item.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .detail-value.multiline {
+        white-space: pre-wrap;
+        line-height: 1.5;
+      }
+
+      /* Photo Gallery */
+      .photo-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .photo-gallery.empty-state {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .photo-item {
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        border: 1px solid var(--border-subtle);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .photo-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Modal for full image view */
+      .photo-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .photo-modal.open {
+        display: flex;
+      }
+
+      .photo-modal-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 12px;
+        position: relative;
+      }
+
+      .photo-modal-image {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 12px;
+        object-fit: contain;
+      }
+
+      .photo-modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .photo-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .photo-modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .photo-modal-nav:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .photo-modal-nav.prev {
+        left: -50px;
+      }
+
+      .photo-modal-nav.next {
+        right: -50px;
+      }
+
+      .photo-counter {
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #fff;
+        font-size: 12px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 4px 12px;
+        border-radius: 999px;
+      }
+
+      .btn-primary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-secondary {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-danger {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        background: var(--danger);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-danger:hover {
+        background: #e55f5f;
+      }
+
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+
+      /* Empty state for photos */
+      .photo-gallery-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        text-align: center;
+        background: #0d0f14;
+        border-radius: 8px;
+        border: 1px dashed var(--border-subtle);
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+      }
+
+      .empty-state-text {
+        font-size: 13px;
+        color: var(--text-soft);
+        margin-bottom: 4px;
+      }
+
+      /* Remove the old empty-state class if it exists */
+      .photo-gallery.empty-state {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+        .page-header {
+          flex-direction: column;
+          gap: 12px;
+        }
+        .page-actions {
+          width: 100%;
+        }
+        .photo-modal-nav.prev {
+          left: 10px;
+        }
+        .photo-modal-nav.next {
+          right: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💳</div>
+            <span>Sales &amp; Expenses</span>
+          </a>
+          <a href="/inventory" class="sidebar-item active">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+          <span>⬅ Collapse</span>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header">
+          <div class="page-title-section">
+            <h1 class="page-title">
+              <%= product.displayName || 'Product Details' %>
+            </h1>
+            <div class="page-subtitle">
+              SKU: <%= product.sku || 'N/A' %> • Added: <%= product.dateAdded ?
+              new Date(product.dateAdded).toLocaleDateString('en-IN') : 'N/A' %>
+            </div>
+            <% const statusClass = { 'available': 'status-available', 'rented':
+            'status-rented', 'maintenance': 'status-maintenance', 'retired':
+            'status-retired', 'damaged': 'status-damaged' }[product.status] ||
+            'status-available'; const statusLabel = { 'available': 'Available',
+            'rented': 'Rented', 'maintenance': 'Under Maintenance', 'retired':
+            'Retired', 'damaged': 'Damaged' }[product.status] || 'Available'; %>
+            <span class="status-badge <%= statusClass %>"
+              ><%= statusLabel %></span
+            >
+          </div>
+          <div class="page-actions">
+            <a href="/inventory" class="btn-secondary"> ← Back to Inventory </a>
+            <a
+              href="/inventory/<%= product.id || product._id %>/edit"
+              class="btn-primary"
+            >
+              ✏️ Edit Product
+            </a>
+            <button id="deleteBtn" class="btn-danger">🗑️ Delete</button>
+          </div>
+        </div>
+
+        <!-- Photos Section -->
+        <section class="section-card">
+          <div class="section-title">Product Photos</div>
+          <% if (product.photos && product.photos.length > 0) { %>
+          <div class="photo-gallery" id="photoGallery">
+            <% product.photos.forEach((photo, index) => { %>
+            <div
+              class="photo-item"
+              style="background-image: url('<%= photo %>')"
+              data-index="<%= index %>"
+            ></div>
+            <% }) %>
+          </div>
+          <% } else { %>
+          <div class="photo-gallery-empty">
+            <div class="empty-state-icon">📷</div>
+            <div class="empty-state-text">
+              No photos available for this product
+            </div>
+            <a
+              href="/inventory/<%= product._id || product.productId %>/edit"
+              class="btn-secondary"
+              style="margin-top: 12px"
+            >
+              ➕ Add Photos
+            </a>
+          </div>
+          <% } %>
+        </section>
+        <!-- Basic Identification -->
+        <section class="section-card">
+          <div class="section-title">Basic Identification</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">SKU</div>
+              <div class="detail-value <%= product.sku ? '' : 'empty' %>">
+                <%= product.sku || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Display Name</div>
+              <div
+                class="detail-value <%= product.displayName ? '' : 'empty' %>"
+              >
+                <%= product.displayName || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Category</div>
+              <div class="detail-value <%= product.category ? '' : 'empty' %>">
+                <%= product.category || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Branch</div>
+              <div class="detail-value <%= product.branch ? '' : 'empty' %>">
+                <%= product.branch || 'Not specified' %>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Size & Fit Details -->
+        <section class="section-card">
+          <div class="section-title">Size & Fit Details</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Size</div>
+              <div class="detail-value <%= product.size ? '' : 'empty' %>">
+                <%= product.size || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Height Range</div>
+              <div
+                class="detail-value <%= product.heightRange ? '' : 'empty' %>"
+              >
+                <%= product.heightRange || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Chest</div>
+              <div class="detail-value <%= product.chest ? '' : 'empty' %>">
+                <%= product.chest || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Waist</div>
+              <div class="detail-value <%= product.waist ? '' : 'empty' %>">
+                <%= product.waist || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Fabric</div>
+              <div class="detail-value <%= product.fabric ? '' : 'empty' %>">
+                <%= product.fabric || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Color</div>
+              <div class="detail-value <%= product.color ? '' : 'empty' %>">
+                <%= product.color || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item full-width">
+              <div class="detail-label">Other Measurements</div>
+              <div
+                class="detail-value multiline <%= product.otherMeasurements ? '' : 'empty' %>"
+              >
+                <%= product.otherMeasurements || 'Not specified' %>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Rental & Pricing -->
+        <section class="section-card">
+          <div class="section-title">Rental & Pricing</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Base Rental Price</div>
+              <div class="detail-value <%= product.baseRent ? '' : 'empty' %>">
+                <%= product.baseRent ? '₹' +
+                product.baseRent.toLocaleString('en-IN') : 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Extra Day Charge</div>
+              <div
+                class="detail-value <%= product.extraDayCharge ? '' : 'empty' %>"
+              >
+                <%= product.extraDayCharge ? '₹' +
+                product.extraDayCharge.toLocaleString('en-IN') : 'Not specified'
+                %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Security Deposit</div>
+              <div
+                class="detail-value <%= product.securityDeposit ? '' : 'empty' %>"
+              >
+                <%= product.securityDeposit ? '₹' +
+                product.securityDeposit.toLocaleString('en-IN') : 'Not Set' %>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Operational Data -->
+        <section class="section-card">
+          <div class="section-title">Operational Data</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Storage Location</div>
+              <div
+                class="detail-value <%= product.storageLocation ? '' : 'empty' %>"
+              >
+                <%= product.storageLocation || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Barcode / RFID Tag</div>
+              <div class="detail-value <%= product.barcode ? '' : 'empty' %>">
+                <%= product.barcode || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Date Added</div>
+              <div class="detail-value <%= product.dateAdded ? '' : 'empty' %>">
+                <%= product.dateAdded ? new
+                Date(product.dateAdded).toLocaleDateString('en-IN') : 'Not Set'
+                %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Times Rented</div>
+              <div class="detail-value">
+                <%= product.timesRented || 0 %> times
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Condition & Lifecycle -->
+        <section class="section-card">
+          <div class="section-title">Condition & Lifecycle</div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Condition Grade</div>
+              <div
+                class="detail-value <%= product.conditionGrade ? '' : 'empty' %>"
+              >
+                <%= product.conditionGrade || 'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Status</div>
+              <div class="detail-value"><%= statusLabel %></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Last Inspection Date</div>
+              <div
+                class="detail-value <%= product.lastInspectionDate ? '' : 'empty' %>"
+              >
+                <%= product.lastInspectionDate ? new
+                Date(product.lastInspectionDate).toLocaleDateString('en-IN') :
+                'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Next Maintenance Due</div>
+              <div
+                class="detail-value <%= product.nextMaintenanceDue ? '' : 'empty' %>"
+              >
+                <%= product.nextMaintenanceDue ? new
+                Date(product.nextMaintenanceDue).toLocaleDateString('en-IN') :
+                'Not specified' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Retired</div>
+              <div class="detail-value">
+                <%= product.isRetired === true || product.isRetired === 'true' ?
+                'Yes' : 'No' %>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Disposal Value</div>
+              <div
+                class="detail-value <%= product.disposalValue ? '' : 'empty' %>"
+              >
+                <%= product.disposalValue ? '₹' +
+                product.disposalValue.toLocaleString('en-IN') : 'Not specified'
+                %>
+              </div>
+            </div>
+            <% if (product.isRetired === true || product.isRetired === 'true') {
+            %>
+            <div class="detail-item">
+              <div class="detail-label">Retirement Reason</div>
+              <div
+                class="detail-value <%= product.retirementReason ? '' : 'empty' %>"
+              >
+                <%= product.retirementReason || 'Not specified' %>
+              </div>
+            </div>
+            <% } %>
+            <div class="detail-item full-width">
+              <div class="detail-label">Notes</div>
+              <div
+                class="detail-value multiline <%= product.retirementNotes ? '' : 'empty' %>"
+              >
+                <%= product.retirementNotes || 'No notes available' %>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal">
+      <div class="photo-modal-content">
+        <button class="photo-modal-close" id="modalClose">×</button>
+        <button class="photo-modal-nav prev" id="modalPrev">‹</button>
+        <button class="photo-modal-nav next" id="modalNext">›</button>
+        <img
+          id="modalImage"
+          class="photo-modal-image"
+          src=""
+          alt="Product photo"
+        />
+        <div class="photo-counter" id="photoCounter">1 / 1</div>
+      </div>
+    </div>
+    <script>
+      // Product data - safely injected
+      const productData = <%- JSON.stringify({
+        id: product._id || product.productId,
+        photos: product.photos || []
+      }) %>;
+
+      const productId = productData.id;
+      const photos = productData.photos;
+
+      console.log('Product ID:', productId);
+      console.log('Photos:', photos);
+
+      // Photo gallery modal
+      const photoGallery = document.getElementById('photoGallery');
+      const photoModal = document.getElementById('photoModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalClose = document.getElementById('modalClose');
+      const modalPrev = document.getElementById('modalPrev');
+      const modalNext = document.getElementById('modalNext');
+      const photoCounter = document.getElementById('photoCounter');
+
+      let currentPhotoIndex = 0;
+
+      function openModal(index) {
+        currentPhotoIndex = index;
+        updateModalImage();
+        if (photoModal) {
+          photoModal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeModal() {
+        if (photoModal) {
+          photoModal.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      }
+
+      function updateModalImage() {
+        if (photos.length === 0 || !modalImage || !photoCounter) return;
+
+        modalImage.src = photos[currentPhotoIndex];
+        photoCounter.textContent = String(currentPhotoIndex + 1) + ' / ' + String(photos.length);
+
+        if (modalPrev) {
+          modalPrev.style.display = currentPhotoIndex === 0 ? 'none' : 'flex';
+        }
+        if (modalNext) {
+          modalNext.style.display = currentPhotoIndex === photos.length - 1 ? 'none' : 'flex';
+        }
+      }
+
+      function nextPhoto() {
+        if (currentPhotoIndex < photos.length - 1) {
+          currentPhotoIndex = currentPhotoIndex + 1;
+          updateModalImage();
+        }
+      }
+
+      function prevPhoto() {
+        if (currentPhotoIndex > 0) {
+          currentPhotoIndex = currentPhotoIndex - 1;
+          updateModalImage();
+        }
+      }
+
+      // Event listeners
+      if (photoGallery) {
+        photoGallery.addEventListener('click', function(e) {
+          const photoItem = e.target.closest('.photo-item');
+          if (photoItem) {
+            const index = parseInt(photoItem.dataset.index, 10);
+            openModal(index);
+          }
+        });
+      }
+
+      if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+      }
+
+      if (modalNext) {
+        modalNext.addEventListener('click', nextPhoto);
+      }
+
+      if (modalPrev) {
+        modalPrev.addEventListener('click', prevPhoto);
+      }
+
+      if (photoModal) {
+        photoModal.addEventListener('click', function(e) {
+          if (e.target === photoModal) {
+            closeModal();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (!photoModal || !photoModal.classList.contains('open')) return;
+
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowRight') nextPhoto();
+        if (e.key === 'ArrowLeft') prevPhoto();
+      });
+
+      // Delete functionality
+      const deleteBtn = document.getElementById('deleteBtn');
+
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+          Swal.fire({
+            title: 'Delete Product?',
+            text: 'This action cannot be undone. All product data will be permanently deleted.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'Cancel',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#f97373',
+            cancelButtonColor: '#222635',
+            customClass: {
+              popup: 'swal2-suit-popup',
+              confirmButton: 'swal2-suit-confirm',
+              cancelButton: 'swal2-suit-cancel'
+            }
+          }).then(function(result) {
+            if (!result.isConfirmed) return;
+
+            fetch('/api/inventory/' + productId, {
+              method: 'DELETE',
+              headers: { 'Accept': 'application/json' }
+            })
+            .then(function(res) {
+              return res.json().catch(function() {
+                return { ok: false };
+              });
+            })
+            .then(function(json) {
+              if (!json.ok) {
+                return Swal.fire({
+                  icon: 'error',
+                  title: 'Delete Failed',
+                  text: json.message || 'Something went wrong while deleting the product.',
+                  confirmButtonText: 'OK',
+                  background: '#151821',
+                  color: '#f9fafb',
+                  confirmButtonColor: '#4b63ff',
+                  customClass: {
+                    popup: 'swal2-suit-popup',
+                    confirmButton: 'swal2-suit-confirm'
+                  }
+                });
+              }
+
+              return Swal.fire({
+                icon: 'success',
+                title: 'Product Deleted',
+                text: json.message || 'The product has been deleted successfully.',
+                confirmButtonText: 'Back to Inventory',
+                background: '#151821',
+                color: '#f9fafb',
+                confirmButtonColor: '#4b63ff',
+                customClass: {
+                  popup: 'swal2-suit-popup',
+                  confirmButton: 'swal2-suit-confirm'
+                }
+              }).then(function() {
+                window.location.href = '/inventory';
+              });
+            })
+            .catch(function(err) {
+              console.error(err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Network Error',
+                text: 'Could not reach the server. Please try again.',
+                confirmButtonText: 'OK',
+                background: '#151821',
+                color: '#f9fafb',
+                confirmButtonColor: '#4b63ff',
+                customClass: {
+                  popup: 'swal2-suit-popup',
+                  confirmButton: 'swal2-suit-confirm'
+                }
+              });
+            });
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

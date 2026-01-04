@@ -2,12 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Customers - SuitManager Pro</title>
+    <title>Bookings - SuitManager Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- [web:493][web:510] -->
 
     <style>
       :root {
@@ -22,6 +21,7 @@
         --danger: #f97373;
         --success: #22c55e;
         --warning: #fbbf24;
+        --info: #60a5fa;
         --text-main: #f9fafb;
         --text-soft: #9ca3af;
         --text-muted: #6b7280;
@@ -278,7 +278,7 @@
         font-size: 13px;
       }
 
-      /* Search row */
+      /* Search and filter row */
       .search-filter-row {
         display: flex;
         justify-content: space-between;
@@ -307,6 +307,23 @@
         outline: none;
         color: var(--text-main);
         font-size: 12px;
+      }
+
+      .filter-btn {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .filter-btn:hover {
+        background: #191d2a;
       }
 
       /* Table card */
@@ -354,15 +371,20 @@
         background: #1b1f2c;
       }
 
+      .booking-id {
+        color: #60a5fa;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
       .customer-name {
         color: #e5e7eb;
         font-size: 12px;
-        margin-bottom: 2px;
       }
 
-      .customer-email {
-        font-size: 11px;
-        color: var(--text-soft);
+      .date-text {
+        font-size: 12px;
+        color: var(--text-main);
       }
 
       .status-badge {
@@ -373,24 +395,47 @@
         font-weight: 500;
       }
 
-      .status-active {
+      .status-confirmed {
         background: #1e3a2e;
         color: var(--success);
       }
 
-      .status-inactive {
-        background: #3b2831;
-        color: #fecaca;
+      .status-draft {
+        background: #2d2d3b;
+        color: #9ca3af;
       }
 
-      .status-vip {
-        background: #3b2d1f;
-        color: var(--warning);
+      .status-completed {
+        background: #1e293b;
+        color: var(--info);
       }
 
-      .status-blacklisted {
+      .status-cancelled {
         background: #3b1a1f;
         color: var(--danger);
+      }
+
+      .payment-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .payment-paid {
+        background: #1e3a2e;
+        color: var(--success);
+      }
+
+      .payment-unpaid {
+        background: #3b1f2f;
+        color: var(--danger);
+      }
+
+      .payment-partial {
+        background: #3b2d1f;
+        color: var(--warning);
       }
 
       .numeric-cell {
@@ -403,35 +448,54 @@
 
       .actions-cell {
         text-align: right;
-        font-size: 11px;
+        position: relative;
+        width: 60px;
       }
 
-      .action-btn {
+      .more-btn {
         border: none;
-        border-radius: 999px;
-        padding: 3px 7px;
-        margin-left: 4px;
-        font-size: 10px;
+        background: transparent;
+        color: #9ca3af;
         cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+      }
+
+      .more-btn:hover {
+        color: #e5e7eb;
+      }
+
+      .row-menu {
+        position: absolute;
+        right: 8px;
+        top: 24px;
+        min-width: 120px;
         background: #11131c;
-        color: var(--text-soft);
+        border-radius: 8px;
         border: 1px solid #222635;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+        z-index: 20;
+        display: none;
       }
 
-      .action-btn.view {
-        color: #60a5fa;
+      .row-menu.open {
+        display: block;
       }
 
-      .action-btn.edit {
-        color: #facc15;
+      .row-menu-item {
+        padding: 6px 10px;
+        font-size: 11px;
+        color: #e5e7eb;
+        cursor: pointer;
+        text-align: left;
       }
 
-      .action-btn.delete {
+      .row-menu-item:hover {
+        background: #1f2933;
+      }
+
+      .row-menu-item.delete {
         color: #f97373;
-      }
-
-      .action-btn:hover {
-        background: #191d2a;
       }
 
       /* Footer / pagination */
@@ -474,130 +538,17 @@
         font-size: 11px;
         cursor: pointer;
       }
-      .actions-cell {
-        text-align: right;
-        position: relative;
-        width: 60px;
-      }
-
-      /* vertical three-dots button */
-      .more-btn {
-        border: none;
-        background: transparent;
-        color: #9ca3af;
-        cursor: pointer;
-        font-size: 16px;
-        padding: 0 4px;
-      }
-
-      .more-btn:hover {
-        color: #e5e7eb;
-      }
-
-      /* dropdown menu */
-      .row-menu {
-        position: absolute;
-        right: 8px;
-        top: 24px;
-        min-width: 120px;
-        background: #11131c;
-        border-radius: 8px;
-        border: 1px solid #222635;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-        z-index: 20;
-        display: none;
-      }
-
-      .row-menu.open {
-        display: block;
-      }
-
-      .row-menu-item {
-        padding: 6px 10px;
-        font-size: 11px;
-        color: #e5e7eb;
-        cursor: pointer;
-        text-align: left;
-      }
-
-      .row-menu-item:hover {
-        background: #1f2933;
-      }
-
-      .row-menu-item.delete {
-        color: #f97373;
-      }
 
       .page-button[disabled] {
         opacity: 0.4;
         cursor: default;
       }
-      /* SuitManager-style SweetAlert2 overrides */
-      .swal2-popup.swal2-suit-popup {
-        background: #151821; /* var(--bg-elevated) */
-        border-radius: 12px;
-        border: 1px solid #222633; /* var(--border-subtle) */
-        color: #f9fafb; /* var(--text-main) */
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+
+      .page-button:hover:not([disabled]) {
+        background: #191d2a;
       }
 
-      .swal2-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-
-      .swal2-html-container {
-        font-size: 12px;
-        color: #9ca3af; /* var(--text-soft) */
-      }
-
-      .swal2-actions {
-        gap: 8px;
-      }
-
-      .swal2-suit-confirm {
-        border-radius: 999px !important;
-        font-size: 12px !important;
-        padding: 6px 14px !important;
-      }
-
-      .swal2-suit-cancel {
-        border-radius: 999px !important;
-        font-size: 12px !important;
-        padding: 6px 14px !important;
-        border: 1px solid #222635 !important;
-        background: #11131c !important;
-        color: #e5e7eb !important;
-      }
-
-      .swal2-popup.swal2-suit-popup {
-        background: #151821; /* matches card bg */
-        border-radius: 12px;
-        border: 1px solid #222633;
-        color: #f9fafb;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
-      }
-
-      .swal2-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-
-      .swal2-html-container {
-        font-size: 12px;
-        color: #9ca3af;
-      }
-
-      .swal2-actions {
-        gap: 8px;
-      }
-
-      .swal2-suit-confirm {
-        border-radius: 999px !important;
-        font-size: 12px !important;
-        padding: 6px 14px !important;
-      }
-
+      /* SweetAlert2 overrides */
       .swal2-popup.swal2-suit-popup {
         background: #151821;
         border-radius: 12px;
@@ -626,8 +577,13 @@
         padding: 6px 14px !important;
       }
 
-      .page-button:hover:not([disabled]) {
-        background: #191d2a;
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
       }
 
       @media (max-width: 900px) {
@@ -661,10 +617,7 @@
         </div>
       </div>
       <div class="topbar-center">
-        <span
-          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
-          currentDate %></span
-        >
+        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
       </div>
       <div class="topbar-right">
         <div class="topbar-pill">
@@ -690,11 +643,11 @@
             <div class="sidebar-icon">🏠</div>
             <span>Dashboard</span>
           </a>
-          <a href="/customers" class="sidebar-item active">
+          <a href="/customers" class="sidebar-item">
             <div class="sidebar-icon">👤</div>
             <span>Customers</span>
           </a>
-          <a href="/bookings" class="sidebar-item">
+          <a href="/bookings" class="sidebar-item active">
             <div class="sidebar-icon">📦</div>
             <span>Bookings</span>
           </a>
@@ -708,7 +661,7 @@
           </a>
           <a href="/invoices" class="sidebar-item">
             <div class="sidebar-icon">💼</div>
-            <span>Invoices</span>
+            <span>invoices</span>
           </a>
         </div>
         <div class="sidebar-footer">
@@ -721,16 +674,16 @@
       <main class="content">
         <div class="page-header-row">
           <div class="page-header-texts">
-            <div class="page-title">Customers</div>
-            <div class="page-subtitle">Manage all registered clients.</div>
+            <div class="page-title">Bookings</div>
+            <div class="page-subtitle">Search, filter, and manage all bookings.</div>
           </div>
-          <a href="/customers/new" class="btn-primary">
-            <span class="btn-icon">👤+</span>
-            <span>Add New Customer</span>
+          <a href="/bookings/new" class="btn-primary">
+            <span class="btn-icon">📦+</span>
+            <span>New Booking</span>
           </a>
         </div>
 
-        <!-- Search -->
+        <!-- Search and Filter -->
         <div class="search-filter-row">
           <div class="search-box-wrapper">
             <span>🔍</span>
@@ -738,9 +691,13 @@
               type="text"
               id="searchInput"
               class="search-input"
-              placeholder="Search by name, mobile, or customer ID..."
+              placeholder="Search Booking ID or Customer..."
             />
           </div>
+          <button class="filter-btn" id="filterBtn">
+            <span>🎚</span>
+            <span>Filter</span>
+          </button>
         </div>
 
         <!-- Table (AJAX filled) -->
@@ -748,41 +705,39 @@
           <table class="table">
             <thead>
               <tr>
+                <th>Booking ID</th>
                 <th>Customer Name</th>
-                <th>Customer ID / Code</th>
-                <th>Primary Mobile</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th class="numeric-cell">Total Bookings</th>
-                <th class="numeric-cell">Outstanding Balance (₹)</th>
+                <th>Event Date</th>
+                <th>Pickup Date</th>
+                <th>Return Date</th>
+                <th>Items Summary</th>
+                <th>Booking Status</th>
+                <th>Payment Status / Outstanding</th>
                 <th class="numeric-cell">Actions</th>
               </tr>
             </thead>
-            <tbody id="customersBody">
+            <tbody id="bookingsBody">
               <!-- rows injected by JS -->
             </tbody>
           </table>
 
           <!-- Footer / pagination -->
           <div class="table-footer">
-            <div id="summaryText">Showing 0–0 of 0 customers</div>
+            <div id="summaryText">Showing 0–0 of 0 bookings</div>
             <div>
               <span class="rows-per-page">
                 <span>Rows per page:</span>
                 <select class="rows-select" id="rowsPerPage">
-                  <option value="10" selected>10</option>
+                  <option value="20" selected>20</option>
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                 </select>
               </span>
-              <span style="margin-left: 16px" id="pageText"> Page 1 of 1 </span>
+              <span style="margin-left: 16px" id="pageText">Page 1 of 1</span>
               <span class="pagination" style="margin-left: 12px">
-                <button class="page-button" id="prevPageBtn" disabled>
-                  ‹ Previous
-                </button>
-                <button class="page-button" id="nextPageBtn" disabled>
-                  Next ›
-                </button>
+                <button class="page-button" id="prevPageBtn" disabled>‹ Previous</button>
+                <button class="page-button" id="nextPageBtn" disabled>Next ›</button>
               </span>
             </div>
           </div>
@@ -793,13 +748,13 @@
     <script>
       const state = {
         page: 1,
-        limit: 10,
+        limit: 20,
         total: 0,
         totalPages: 1,
         q: "",
       };
 
-      const tbody = document.getElementById("customersBody");
+      const tbody = document.getElementById("bookingsBody");
       const summaryText = document.getElementById("summaryText");
       const pageText = document.getElementById("pageText");
       const prevPageBtn = document.getElementById("prevPageBtn");
@@ -807,14 +762,14 @@
       const rowsPerPage = document.getElementById("rowsPerPage");
       const searchInput = document.getElementById("searchInput");
 
-      async function fetchCustomers() {
+      async function fetchBookings() {
         const params = new URLSearchParams({
           page: state.page,
           limit: state.limit,
           q: state.q,
         });
 
-        const res = await fetch("/api/customers?" + params.toString(), {
+        const res = await fetch("/api/bookings?" + params.toString(), {
           headers: { Accept: "application/json" },
         });
 
@@ -822,9 +777,8 @@
         if (!json.ok) {
           await Swal.fire({
             icon: "error",
-            title: "Failed to load customers",
-            text:
-              json.message || "Something went wrong while loading customers.",
+            title: "Failed to load bookings",
+            text: json.message || "Something went wrong while loading bookings.",
             background: "#151821",
             color: "#f9fafb",
             confirmButtonText: "OK",
@@ -835,7 +789,7 @@
             },
           });
           return;
-        } // backend: { ok: true, data, pagination, message? }
+        }
 
         state.total = json.pagination.total;
         state.totalPages = json.pagination.totalPages;
@@ -849,93 +803,113 @@
         if (!rows.length) {
           const tr = document.createElement("tr");
           const td = document.createElement("td");
-          td.colSpan = 8;
+          td.colSpan = 9;
           td.style.textAlign = "center";
           td.style.padding = "14px";
-          td.textContent = "No customers found.";
+          td.textContent = "No bookings found.";
           tr.appendChild(td);
           tbody.appendChild(tr);
           return;
         }
 
-        rows.forEach((c) => {
+        rows.forEach((b) => {
           const tr = document.createElement("tr");
-          tr.dataset.id = c.id;
+          tr.dataset.id = b.id;
 
-          // name + email
-          const tdName = document.createElement("td");
-          const nameDiv = document.createElement("div");
-          nameDiv.className = "customer-name";
-          nameDiv.textContent = c.name;
-          const emailDiv = document.createElement("div");
-          emailDiv.className = "customer-email";
-          emailDiv.textContent = c.email || "";
-          tdName.appendChild(nameDiv);
-          tdName.appendChild(emailDiv);
-          tr.appendChild(tdName);
+          // Booking ID
+          const tdId = document.createElement("td");
+          const bookingIdSpan = document.createElement("span");
+          bookingIdSpan.className = "booking-id";
+          bookingIdSpan.textContent = b.bookingId || b.id;
+          tdId.appendChild(bookingIdSpan);
+          tr.appendChild(tdId);
 
-          // code
-          const tdCode = document.createElement("td");
-          tdCode.textContent = c.code || "-";
-          tr.appendChild(tdCode);
+          // Customer Name
+          const tdCustomer = document.createElement("td");
+          const customerSpan = document.createElement("span");
+          customerSpan.className = "customer-name";
+          customerSpan.textContent = b.customerName || "-";
+          tdCustomer.appendChild(customerSpan);
+          tr.appendChild(tdCustomer);
 
-          // mobile
-          const tdMobile = document.createElement("td");
-          tdMobile.textContent = c.primaryMobile || "-";
-          tr.appendChild(tdMobile);
+          // Event Date
+          const tdEvent = document.createElement("td");
+          const eventSpan = document.createElement("span");
+          eventSpan.className = "date-text";
+          eventSpan.textContent = b.eventDate || "-";
+          tdEvent.appendChild(eventSpan);
+          tr.appendChild(tdEvent);
 
-          // email column
-          const tdEmail = document.createElement("td");
-          tdEmail.textContent = c.email || "-";
-          tr.appendChild(tdEmail);
+          // Pickup Date
+          const tdPickup = document.createElement("td");
+          const pickupSpan = document.createElement("span");
+          pickupSpan.className = "date-text";
+          pickupSpan.textContent = b.pickupDate || "-";
+          tdPickup.appendChild(pickupSpan);
+          tr.appendChild(tdPickup);
 
-          // status
+          // Return Date
+          const tdReturn = document.createElement("td");
+          const returnSpan = document.createElement("span");
+          returnSpan.className = "date-text";
+          returnSpan.textContent = b.returnDate || "-";
+          tdReturn.appendChild(returnSpan);
+          tr.appendChild(tdReturn);
+
+          // Items Summary
+          const tdItems = document.createElement("td");
+          tdItems.textContent = b.itemsSummary || "-";
+          tr.appendChild(tdItems);
+
+          // Booking Status
           const tdStatus = document.createElement("td");
-          const spanStatus = document.createElement("span");
-          spanStatus.classList.add("status-badge");
-          const status = (c.status || "").toLowerCase();
-          if (status === "active") spanStatus.classList.add("status-active");
-          else if (status === "inactive")
-            spanStatus.classList.add("status-inactive");
-          else if (status === "vip") spanStatus.classList.add("status-vip");
-          else if (status === "blacklisted")
-            spanStatus.classList.add("status-blacklisted");
-          spanStatus.textContent = c.status || "Active";
-          tdStatus.appendChild(spanStatus);
+          const statusBadge = document.createElement("span");
+          statusBadge.classList.add("status-badge");
+          const status = (b.bookingStatus || "").toLowerCase();
+          if (status === "confirmed") statusBadge.classList.add("status-confirmed");
+          else if (status === "draft") statusBadge.classList.add("status-draft");
+          else if (status === "completed") statusBadge.classList.add("status-completed");
+          else if (status === "cancelled") statusBadge.classList.add("status-cancelled");
+          statusBadge.textContent = b.bookingStatus || "Draft";
+          tdStatus.appendChild(statusBadge);
           tr.appendChild(tdStatus);
 
-          // total bookings
-          const tdBookings = document.createElement("td");
-          tdBookings.className = "numeric-cell";
-          tdBookings.textContent = c.totalBookings ?? 0;
-          tr.appendChild(tdBookings);
+          // Payment Status
+          const tdPayment = document.createElement("td");
+          const paymentBadge = document.createElement("span");
+          paymentBadge.classList.add("payment-badge");
+          const payment = (b.paymentStatus || "").toLowerCase();
+          if (payment === "paid") paymentBadge.classList.add("payment-paid");
+          else if (payment === "unpaid") paymentBadge.classList.add("payment-unpaid");
+          else if (payment === "partial" || payment === "partially paid") 
+            paymentBadge.classList.add("payment-partial");
+          
+          let paymentText = b.paymentStatus || "Unpaid";
+          if (b.outstandingAmount && b.outstandingAmount > 0) {
+            paymentText += ` / ₹${b.outstandingAmount.toLocaleString('en-IN')} Outstanding`;
+          }
+          paymentBadge.textContent = paymentText;
+          tdPayment.appendChild(paymentBadge);
+          tr.appendChild(tdPayment);
 
-          // outstanding balance
-          const tdBalance = document.createElement("td");
-          tdBalance.className = "numeric-cell currency";
-          tdBalance.textContent = c.outstandingBalance
-            ? c.outstandingBalance.toLocaleString("en-IN")
-            : "0";
-          tr.appendChild(tdBalance);
-
-          // actions: vertical dots + dropdown menu
+          // Actions
           const tdActions = document.createElement("td");
           tdActions.className = "actions-cell";
 
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "more-btn";
-          btn.innerHTML = "&#8942;"; // vertical ellipsis
+          btn.innerHTML = "&#8942;";
           btn.dataset.action = "menu";
-          btn.dataset.id = c.id;
+          btn.dataset.id = b.id;
 
           const menu = document.createElement("div");
           menu.className = "row-menu";
           menu.innerHTML = `
-        <div class="row-menu-item" data-action="view" data-id="${c.id}">View</div>
-        <div class="row-menu-item" data-action="edit" data-id="${c.id}">Edit</div>
-        <div class="row-menu-item delete" data-action="delete" data-id="${c.id}">Delete</div>
-      `;
+            <div class="row-menu-item" data-action="view" data-id="${b.id}">View</div>
+            <div class="row-menu-item" data-action="edit" data-id="${b.id}">Edit</div>
+            <div class="row-menu-item delete" data-action="delete" data-id="${b.id}">Delete</div>
+          `;
 
           tdActions.appendChild(btn);
           tdActions.appendChild(menu);
@@ -947,9 +921,9 @@
 
       function renderFooter(p) {
         if (p.total === 0) {
-          summaryText.textContent = "Showing 0–0 of 0 customers";
+          summaryText.textContent = "Showing 0–0 of 0 bookings";
         } else {
-          summaryText.textContent = `Showing ${p.from}–${p.to} of ${p.total} customers`;
+          summaryText.textContent = `Showing ${p.from}–${p.to} of ${p.total} bookings`;
         }
         pageText.textContent = `Page ${p.page} of ${p.totalPages}`;
         prevPageBtn.disabled = p.page <= 1;
@@ -959,34 +933,33 @@
       prevPageBtn.addEventListener("click", () => {
         if (state.page <= 1) return;
         state.page -= 1;
-        fetchCustomers();
+        fetchBookings();
       });
 
       nextPageBtn.addEventListener("click", () => {
         if (state.page >= state.totalPages) return;
         state.page += 1;
-        fetchCustomers();
+        fetchBookings();
       });
 
       rowsPerPage.addEventListener("change", () => {
-        state.limit = parseInt(rowsPerPage.value, 10) || 10;
+        state.limit = parseInt(rowsPerPage.value, 10) || 20;
         state.page = 1;
-        fetchCustomers();
+        fetchBookings();
       });
 
-      // search debounce
+      // Search debounce
       let searchTimer;
       searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => {
           state.q = searchInput.value.trim();
           state.page = 1;
-          fetchCustomers();
+          fetchBookings();
         }, 300);
       });
 
-      // --- actions: dots menu + SweetAlert delete ---
-
+      // Actions: dots menu + delete
       function closeAllMenus() {
         document
           .querySelectorAll(".row-menu.open")
@@ -997,7 +970,6 @@
         const menuBtn = e.target.closest(".more-btn");
         const menuItem = e.target.closest(".row-menu-item");
 
-        // toggle dropdown
         if (menuBtn) {
           const cell = menuBtn.parentElement;
           const menu = cell.querySelector(".row-menu");
@@ -1015,45 +987,44 @@
         closeAllMenus();
 
         if (action === "view") {
-          window.location.href = `api/customers/${id}`;
+          window.location.href = `/bookings/${id}`;
           return;
         }
 
         if (action === "edit") {
-          window.location.href = `api/customers/${id}/edit`;
+          window.location.href = `/bookings/${id}/edit`;
           return;
         }
 
         if (action === "delete") {
           const result = await Swal.fire({
-            title: "Delete customer?",
+            title: "Delete booking?",
             text: "This action cannot be undone.",
             icon: "warning",
-            background: "#151821", // card background
-            color: "#f9fafb", // text color
+            background: "#151821",
+            color: "#f9fafb",
             showCancelButton: true,
             confirmButtonText: "Yes, delete",
             cancelButtonText: "Cancel",
-            confirmButtonColor: "#f97373", // your danger color
-            cancelButtonColor: "#222635", // subtle border color
+            confirmButtonColor: "#f97373",
+            cancelButtonColor: "#222635",
             customClass: {
               popup: "swal2-suit-popup",
               confirmButton: "swal2-suit-confirm",
               cancelButton: "swal2-suit-cancel",
             },
-          }); // { ok: true, message: "..." } still handled the same
+          });
 
           if (!result.isConfirmed) return;
 
           try {
-            const res = await fetch(`/api/customers/${id}`, {
+            const res = await fetch(`/api/bookings/${id}`, {
               method: "DELETE",
               headers: { Accept: "application/json" },
             });
 
             const json = await res.json();
 
-            // backend: { ok: true, message: "..." }
             if (!json.ok) {
               await Swal.fire({
                 icon: "error",
@@ -1074,7 +1045,7 @@
             await Swal.fire({
               icon: "success",
               title: "Deleted",
-              text: json.message || "Customer deleted successfully.",
+              text: json.message || "Booking deleted successfully.",
               background: "#151821",
               color: "#f9fafb",
               confirmButtonColor: "#4b63ff",
@@ -1086,27 +1057,34 @@
               showConfirmButton: false,
             });
 
-            fetchCustomers();
+            fetchBookings();
           } catch (err) {
             console.error(err);
             await Swal.fire({
               icon: "error",
               title: "Error",
               text: "Something went wrong while deleting.",
+              background: "#151821",
+              color: "#f9fafb",
+              confirmButtonColor: "#4b63ff",
+              customClass: {
+                popup: "swal2-suit-popup",
+                confirmButton: "swal2-suit-confirm",
+              },
             });
           }
         }
       });
 
-      // close menus when clicking outside
+      // Close menus when clicking outside
       document.addEventListener("click", (e) => {
         if (!e.target.closest(".actions-cell")) {
           closeAllMenus();
         }
       });
 
-      // initial load
-      fetchCustomers();
+      // Initial load
+      fetchBookings();
     </script>
   </body>
 </html>
