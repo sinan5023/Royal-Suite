@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Booking Calendar - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content {
+        flex: 1;
+        padding: 18px;
+        overflow-y: auto;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .calendar-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .calendar-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn-nav {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-elevated-soft);
+        color: var(--text-main);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-nav:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .month-year {
+        font-size: 14px;
+        font-weight: 500;
+        min-width: 150px;
+        text-align: center;
+      }
+
+      .legend {
+        display: flex;
+        gap: 16px;
+        font-size: 11px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .legend-badge {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .calendar-container {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 20px;
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: var(--border-subtle);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .calendar-day-header {
+        background: var(--bg-elevated-soft);
+        padding: 10px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-soft);
+        text-transform: uppercase;
+      }
+
+      .calendar-day {
+        background: var(--bg-elevated);
+        padding: 8px;
+        min-height: 80px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      .calendar-day:hover {
+        background: var(--bg-elevated-soft);
+      }
+
+      .calendar-day.today {
+        background: rgba(75, 99, 255, 0.1);
+        border: 1px solid var(--accent);
+      }
+
+      .calendar-day.other-month {
+        opacity: 0.3;
+      }
+
+      .day-number {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: var(--text-main);
+      }
+
+      .day-counts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .count-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .count-badge.pickup {
+        background: rgba(75, 99, 255, 0.2);
+        color: #8b9eff;
+      }
+
+      .count-badge.return {
+        background: rgba(34, 197, 94, 0.2);
+        color: #4ade80;
+      }
+
+      .count-badge.overdue {
+        background: rgba(249, 115, 115, 0.2);
+        color: #fca5a5;
+      }
+
+      /* Details Panel */
+      .details-panel {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100vh;
+        background: var(--bg-elevated);
+        border-left: 1px solid var(--border-subtle);
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .details-panel.open {
+        right: 0;
+      }
+
+      .details-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-subtle);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .details-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: var(--text-soft);
+        font-size: 24px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+
+      .close-btn:hover {
+        background: var(--bg-elevated-soft);
+        color: var(--text-main);
+      }
+
+      .details-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .booking-section {
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .booking-card {
+        background: var(--bg-elevated-soft);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .booking-card:hover {
+        border-color: var(--accent);
+        transform: translateX(4px);
+      }
+
+      .booking-code {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+
+      .booking-customer {
+        font-size: 12px;
+        color: var(--text-main);
+        margin-bottom: 4px;
+      }
+
+      .booking-items {
+        font-size: 11px;
+        color: var(--text-soft);
+        margin-bottom: 6px;
+      }
+
+      .booking-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .meta-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .meta-badge.confirmed {
+        background: rgba(34, 197, 94, 0.2);
+        color: #4ade80;
+      }
+
+      .meta-badge.draft {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+      }
+
+      .meta-badge.paid {
+        background: rgba(34, 197, 94, 0.2);
+        color: #4ade80;
+      }
+
+      .meta-badge.unpaid {
+        background: rgba(249, 115, 115, 0.2);
+        color: #fca5a5;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .details-panel {
+          width: 100%;
+          right: -100%;
+        }
+        .calendar-day {
+          min-height: 60px;
+        }
+        .day-counts {
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span><%= greeting %>, <%= user.name %></span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-logo">🧳</div>
+        <div class="sidebar-header-text">SuitManager Pro</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-section-title">Menu</div>
+        <a href="/dashboard" class="sidebar-item">
+          <div class="sidebar-icon">🏠</div>
+          <span>Dashboard</span>
+        </a>
+        <a href="/calendar" class="sidebar-item">
+          <div class="sidebar-icon">📅</div>
+          <span>Calendar</span>
+        </a>
+        <a href="/analytics" class="sidebar-item active">
+          <div class="sidebar-icon">📊</div>
+          <span>Analytics</span>
+        </a>
+        <a href="/expenses" class="sidebar-item">
+          <div class="sidebar-icon">💸</div>
+          <span>Expenses</span>
+        </a>
+        <a href="/customers" class="sidebar-item">
+          <div class="sidebar-icon">👤</div>
+          <span>Customers</span>
+        </a>
+        <a href="/bookings" class="sidebar-item">
+          <div class="sidebar-icon">📦</div>
+          <span>Bookings</span>
+        </a>
+        <a href="/inventory" class="sidebar-item">
+          <div class="sidebar-icon">📋</div>
+          <span>Inventory</span>
+        </a>
+        <a href="/invoices" class="sidebar-item">
+          <div class="sidebar-icon">💼</div>
+          <span>Invoices</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <span>v1.0.0</span>
+      </div>
+    </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="calendar-header">
+          <div class="calendar-title">📅 Booking Calendar</div>
+          <div class="calendar-controls">
+            <button class="btn-nav" onclick="previousMonth()">← Prev</button>
+            <div class="month-year" id="monthYear"></div>
+            <button class="btn-nav" onclick="nextMonth()">Next →</button>
+            <button class="btn-nav" onclick="goToToday()">Today</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px">
+          <div class="legend">
+            <div class="legend-item">
+              <span class="legend-badge pickup">📦 Pickups</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge return">🔁 Returns</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge overdue">⚠️ Overdue</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="calendar-container">
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Calendar will be rendered here -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="details-panel" id="detailsPanel">
+      <div class="details-header">
+        <div class="details-title" id="detailsDate"></div>
+        <button class="close-btn" onclick="closeDetails()">×</button>
+      </div>
+      <div class="details-body" id="detailsBody">
+        <!-- Details will be loaded here -->
+      </div>
+    </div>
+
+    <script>
+      let currentDate = new Date();
+      let bookingsData = {};
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        renderCalendar();
+      });
+
+      function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        // Update month/year display
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        document.getElementById(
+          "monthYear"
+        ).textContent = `${monthNames[month]} ${year}`;
+
+        // Get first and last day of month
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startingDayOfWeek = firstDay.getDay();
+        const totalDays = lastDay.getDate();
+
+        // Calculate days to show from previous month
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        const prevMonthDays = startingDayOfWeek;
+
+        const grid = document.getElementById("calendarGrid");
+        grid.innerHTML = "";
+
+        // Day headers
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        days.forEach((day) => {
+          const header = document.createElement("div");
+          header.className = "calendar-day-header";
+          header.textContent = day;
+          grid.appendChild(header);
+        });
+
+        // Previous month days
+        for (let i = prevMonthDays - 1; i >= 0; i--) {
+          const dayNum = prevMonthLastDay - i;
+          const dayDiv = createDayElement(
+            dayNum,
+            "other-month",
+            new Date(year, month - 1, dayNum)
+          );
+          grid.appendChild(dayDiv);
+        }
+
+        // Current month days
+        for (let day = 1; day <= totalDays; day++) {
+          const date = new Date(year, month, day);
+          const isToday = date.toDateString() === new Date().toDateString();
+          const dayDiv = createDayElement(day, isToday ? "today" : "", date);
+          grid.appendChild(dayDiv);
+        }
+
+        // Next month days
+        const remainingCells = 42 - (prevMonthDays + totalDays); // 6 weeks grid
+        for (let day = 1; day <= remainingCells; day++) {
+          const dayDiv = createDayElement(
+            day,
+            "other-month",
+            new Date(year, month + 1, day)
+          );
+          grid.appendChild(dayDiv);
+        }
+
+        // Fetch bookings for this month
+        fetchBookings(firstDay, lastDay);
+      }
+
+      function createDayElement(dayNum, className, date) {
+        const div = document.createElement("div");
+        div.className = `calendar-day ${className}`;
+        div.innerHTML = `<div class="day-number">${dayNum}</div><div class="day-counts" id="counts-${
+          date.toISOString().split("T")[0]
+        }"></div>`;
+        div.onclick = () => showDetails(date);
+        return div;
+      }
+
+      async function fetchBookings(startDate, endDate) {
+        try {
+          const start = startDate.toISOString().split("T")[0];
+          const end = endDate.toISOString().split("T")[0];
+
+          const response = await fetch(
+            `/api/calendar/bookings?start=${start}&end=${end}`
+          );
+          const data = await response.json();
+
+          if (data.ok) {
+            processBookings(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      }
+
+      function processBookings(events) {
+        bookingsData = {};
+
+        events.forEach((event) => {
+          const date = event.start;
+          if (!bookingsData[date]) {
+            bookingsData[date] = { pickups: [], returns: [], overdue: [] };
+          }
+
+          if (event.extendedProps.type === "pickup") {
+            bookingsData[date].pickups.push(event);
+          } else if (event.extendedProps.type === "return") {
+            if (event.backgroundColor === "#f97373") {
+              bookingsData[date].overdue.push(event);
+            } else {
+              bookingsData[date].returns.push(event);
+            }
+          }
+        });
+
+        // Update counts on calendar
+        Object.keys(bookingsData).forEach((date) => {
+          const countsDiv = document.getElementById(`counts-${date}`);
+          if (countsDiv) {
+            const data = bookingsData[date];
+            let html = "";
+
+            if (data.pickups.length > 0) {
+              html += `<div class="count-badge pickup">📦 Pickups : ${data.pickups.length}</div>`;
+            }
+            if (data.returns.length > 0) {
+              html += `<div class="count-badge return">🔁 Return : ${data.returns.length}</div>`;
+            }
+            if (data.overdue.length > 0) {
+              html += `<div class="count-badge overdue">⚠️ Overdue : ${data.overdue.length}</div>`;
+            }
+
+            countsDiv.innerHTML = html;
+          }
+        });
+      }
+
+      function showDetails(date) {
+        const dateStr = date.toISOString().split("T")[0];
+        const data = bookingsData[dateStr];
+
+        const panel = document.getElementById("detailsPanel");
+        const detailsDate = document.getElementById("detailsDate");
+        const detailsBody = document.getElementById("detailsBody");
+
+        detailsDate.textContent = date.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        if (
+          !data ||
+          (data.pickups.length === 0 &&
+            data.returns.length === 0 &&
+            data.overdue.length === 0)
+        ) {
+          detailsBody.innerHTML =
+            '<div class="empty-state">No bookings for this date</div>';
+        } else {
+          let html = "";
+
+          if (data.pickups.length > 0) {
+            html +=
+              '<div class="booking-section"><div class="section-title">📦 Pickups</div>';
+            data.pickups.forEach((booking) => {
+              html += createBookingCard(booking);
+            });
+            html += "</div>";
+          }
+
+          if (data.returns.length > 0) {
+            html +=
+              '<div class="booking-section"><div class="section-title">🔁 Returns</div>';
+            data.returns.forEach((booking) => {
+              html += createBookingCard(booking);
+            });
+            html += "</div>";
+          }
+
+          if (data.overdue.length > 0) {
+            html +=
+              '<div class="booking-section"><div class="section-title">⚠️ Overdue Returns</div>';
+            data.overdue.forEach((booking) => {
+              html += createBookingCard(booking);
+            });
+            html += "</div>";
+          }
+
+          detailsBody.innerHTML = html;
+        }
+
+        panel.classList.add("open");
+      }
+
+      function createBookingCard(booking) {
+        const props = booking.extendedProps;
+        const statusClass =
+          props.bookingStatus === "Confirmed" ? "confirmed" : "draft";
+        const paymentClass = props.paymentStatus === "Paid" ? "paid" : "unpaid";
+
+        return `
+        <div class="booking-card" onclick="window.location.href='/bookings/${booking.id.replace(
+          "-return",
+          ""
+        )}'">
+          <div class="booking-code">${props.bookingCode}</div>
+          <div class="booking-customer">👤 ${props.customerName}</div>
+          <div class="booking-items">${props.items}</div>
+          <div class="booking-meta">
+            <span class="meta-badge ${statusClass}">${
+          props.bookingStatus || "N/A"
+        }</span>
+            ${
+              props.paymentStatus
+                ? `<span class="meta-badge ${paymentClass}">${props.paymentStatus}</span>`
+                : ""
+            }
+            ${
+              props.totalAmount
+                ? `<span class="meta-badge">₹${props.totalAmount.toLocaleString(
+                    "en-IN"
+                  )}</span>`
+                : ""
+            }
+          </div>
+        </div>
+      `;
+      }
+
+      function closeDetails() {
+        document.getElementById("detailsPanel").classList.remove("open");
+      }
+
+      function previousMonth() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      }
+
+      function nextMonth() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      }
+
+      function goToToday() {
+        currentDate = new Date();
+        renderCalendar();
+      }
+    </script>
+  </body>
+</html>

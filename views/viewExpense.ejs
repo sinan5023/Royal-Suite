@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Expense Details - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --info: #60a5fa;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Main layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      .page-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .page-header-texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-secondary {
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      .btn-primary {
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-danger {
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: none;
+        background: var(--danger);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-danger:hover {
+        background: #e55555;
+      }
+
+      /* Status Badge in Header */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .status-paid {
+        background: #1e3a2e;
+        color: var(--success);
+      }
+
+      .status-pending {
+        background: #3b1f2f;
+        color: var(--danger);
+      }
+
+      .status-partial {
+        background: #3b2d1f;
+        color: var(--warning);
+      }
+
+      /* Content Grid */
+      .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 14px;
+      }
+
+      /* Detail Card */
+      .detail-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 16px;
+      }
+
+      .detail-section {
+        margin-bottom: 20px;
+      }
+
+      .detail-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .section-header {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 8px 0;
+        border-bottom: 1px solid #1a1e2a;
+        gap: 12px;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        font-weight: 500;
+      }
+
+      .detail-value {
+        font-size: 12px;
+        color: var(--text-main);
+        text-align: right;
+        word-break: break-word;
+      }
+
+      .detail-value.large {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .detail-value.description {
+        text-align: left;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+
+      .category-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        background: #1e293b;
+        color: var(--info);
+      }
+
+      /* Summary Card */
+      .summary-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 16px;
+      }
+
+      .summary-header {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #1a1e2a;
+      }
+
+      .summary-item:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+        margin-top: 4px;
+        border-top: 2px solid var(--border-subtle);
+      }
+
+      .summary-label {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .summary-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .summary-value.highlight {
+        font-size: 16px;
+        color: var(--success);
+      }
+
+      /* Activity Timeline */
+      .activity-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 16px;
+        margin-top: 14px;
+      }
+
+      .activity-header {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .activity-item {
+        display: flex;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #1a1e2a;
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-text {
+        font-size: 12px;
+        color: var(--text-main);
+        margin-bottom: 2px;
+      }
+
+      .activity-time {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      /* SweetAlert2 overrides */
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item active">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+        </div>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header-row">
+          <div class="page-header-texts">
+            <div class="page-title">
+              <span>💸</span>
+              <span>Expense Details</span>
+              <span
+                class="status-badge status-<%= expense.paymentStatus.toLowerCase() %>"
+              >
+                <%= expense.paymentStatus %>
+              </span>
+            </div>
+            <div class="page-subtitle"><%= expense.expenseCode %></div>
+          </div>
+          <div class="header-actions">
+            <a href="/expenses" class="btn-secondary">← Back</a>
+            <a href="/expenses/<%= expense._id %>/edit" class="btn-primary"
+              >✏️ Edit</a
+            >
+            <button class="btn-danger" onclick="deleteExpense()">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+          <!-- Left Column -->
+          <div>
+            <!-- Basic Information -->
+            <div class="detail-card">
+              <div class="detail-section">
+                <div class="section-header">📝 Basic Information</div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Expense Code</span>
+                  <span class="detail-value"><%= expense.expenseCode %></span>
+                </div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Category</span>
+                  <span class="detail-value">
+                    <span class="category-badge"><%= expense.category %></span>
+                  </span>
+                </div>
+
+                <% if (expense.subcategory) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Subcategory</span>
+                  <span class="detail-value"><%= expense.subcategory %></span>
+                </div>
+                <% } %>
+
+                <div class="detail-row">
+                  <span class="detail-label">Description</span>
+                  <span class="detail-value description"
+                    ><%= expense.description %></span
+                  >
+                </div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Expense Date</span>
+                  <span class="detail-value">
+                    <%= new
+                    Date(expense.expenseDate).toLocaleDateString('en-IN', {
+                    weekday: 'short', year: 'numeric', month: 'short', day:
+                    'numeric' }) %>
+                  </span>
+                </div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Amount</span>
+                  <span class="detail-value large"
+                    >₹<%= expense.amount.toLocaleString('en-IN') %></span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="detail-card" style="margin-top: 14px">
+              <div class="detail-section">
+                <div class="section-header">💳 Payment Details</div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Payment Method</span>
+                  <span class="detail-value"><%= expense.paymentMethod %></span>
+                </div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Payment Status</span>
+                  <span class="detail-value">
+                    <span
+                      class="status-badge status-<%= expense.paymentStatus.toLowerCase() %>"
+                    >
+                      <%= expense.paymentStatus %>
+                    </span>
+                  </span>
+                </div>
+
+                <% if (expense.paidAmount) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Paid Amount</span>
+                  <span class="detail-value"
+                    >₹<%= expense.paidAmount.toLocaleString('en-IN') %></span
+                  >
+                </div>
+                <% } %> <% if (expense.taxRate) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Tax Rate</span>
+                  <span class="detail-value"><%= expense.taxRate %>%</span>
+                </div>
+                <% } %> <% if (expense.taxAmount) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Tax Amount</span>
+                  <span class="detail-value"
+                    >₹<%= expense.taxAmount.toLocaleString('en-IN') %></span
+                  >
+                </div>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Vendor Details -->
+            <% if (expense.vendorName || expense.vendorContact ||
+            expense.invoiceNumber || expense.receiptNumber) { %>
+            <div class="detail-card" style="margin-top: 14px">
+              <div class="detail-section">
+                <div class="section-header">🏢 Vendor Details</div>
+
+                <% if (expense.vendorName) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Vendor Name</span>
+                  <span class="detail-value"><%= expense.vendorName %></span>
+                </div>
+                <% } %> <% if (expense.vendorContact) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Vendor Contact</span>
+                  <span class="detail-value"><%= expense.vendorContact %></span>
+                </div>
+                <% } %> <% if (expense.invoiceNumber) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Invoice Number</span>
+                  <span class="detail-value"><%= expense.invoiceNumber %></span>
+                </div>
+                <% } %> <% if (expense.receiptNumber) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Receipt Number</span>
+                  <span class="detail-value"><%= expense.receiptNumber %></span>
+                </div>
+                <% } %>
+              </div>
+            </div>
+            <% } %>
+
+            <!-- Recurring Settings -->
+            <% if (expense.isRecurring) { %>
+            <div class="detail-card" style="margin-top: 14px">
+              <div class="detail-section">
+                <div class="section-header">🔄 Recurring Settings</div>
+
+                <div class="detail-row">
+                  <span class="detail-label">Recurring</span>
+                  <span class="detail-value">✅ Yes</span>
+                </div>
+
+                <% if (expense.recurringFrequency) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Frequency</span>
+                  <span class="detail-value"
+                    ><%= expense.recurringFrequency %></span
+                  >
+                </div>
+                <% } %> <% if (expense.nextRecurringDate) { %>
+                <div class="detail-row">
+                  <span class="detail-label">Next Occurrence</span>
+                  <span class="detail-value">
+                    <%= new
+                    Date(expense.nextRecurringDate).toLocaleDateString('en-IN')
+                    %>
+                  </span>
+                </div>
+                <% } %>
+              </div>
+            </div>
+            <% } %>
+
+            <!-- Notes -->
+            <% if (expense.notes) { %>
+            <div class="detail-card" style="margin-top: 14px">
+              <div class="detail-section">
+                <div class="section-header">📄 Additional Notes</div>
+                <div class="detail-row">
+                  <span class="detail-value description"
+                    ><%= expense.notes %></span
+                  >
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Summary Card -->
+            <div class="summary-card">
+              <div class="summary-header">💰 Financial Summary</div>
+
+              <div class="summary-item">
+                <span class="summary-label">Base Amount</span>
+                <span class="summary-value"
+                  >₹<%= expense.amount.toLocaleString('en-IN') %></span
+                >
+              </div>
+
+              <% if (expense.taxAmount) { %>
+              <div class="summary-item">
+                <span class="summary-label">Tax Amount</span>
+                <span class="summary-value"
+                  >₹<%= expense.taxAmount.toLocaleString('en-IN') %></span
+                >
+              </div>
+
+              <div class="summary-item">
+                <span class="summary-label">Total Amount</span>
+                <span class="summary-value highlight">
+                  ₹<%= (expense.amount +
+                  expense.taxAmount).toLocaleString('en-IN') %>
+                </span>
+              </div>
+              <% } else { %>
+              <div class="summary-item">
+                <span class="summary-label">Total Amount</span>
+                <span class="summary-value highlight"
+                  >₹<%= expense.amount.toLocaleString('en-IN') %></span
+                >
+              </div>
+              <% } %>
+            </div>
+
+            <!-- Metadata Card -->
+            <div class="summary-card" style="margin-top: 14px">
+              <div class="summary-header">📊 Metadata</div>
+
+              <div class="summary-item">
+                <span class="summary-label">Created</span>
+                <span class="summary-value">
+                  <%= new Date(expense.createdAt).toLocaleDateString('en-IN') %>
+                </span>
+              </div>
+
+              <div class="summary-item">
+                <span class="summary-label">Last Updated</span>
+                <span class="summary-value">
+                  <%= new Date(expense.updatedAt).toLocaleDateString('en-IN') %>
+                </span>
+              </div>
+
+              <% if (expense.createdBy) { %>
+              <div class="summary-item">
+                <span class="summary-label">Created By</span>
+                <span class="summary-value"><%= expense.createdBy %></span>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="activity-card">
+          <div class="activity-header">📋 Activity Timeline</div>
+
+          <div class="activity-item">
+            <div class="activity-icon">✅</div>
+            <div class="activity-content">
+              <div class="activity-text">Expense created</div>
+              <div class="activity-time">
+                <%= new Date(expense.createdAt).toLocaleString('en-IN') %>
+              </div>
+            </div>
+          </div>
+
+          <% if (expense.updatedAt && expense.updatedAt.toString() !==
+          expense.createdAt.toString()) { %>
+          <div class="activity-item">
+            <div class="activity-icon">✏️</div>
+            <div class="activity-content">
+              <div class="activity-text">Expense updated</div>
+              <div class="activity-time">
+                <%= new Date(expense.updatedAt).toLocaleString('en-IN') %>
+              </div>
+            </div>
+          </div>
+          <% } %> <% if (expense.paymentStatus === 'Paid') { %>
+          <div class="activity-item">
+            <div class="activity-icon">💳</div>
+            <div class="activity-content">
+              <div class="activity-text">Payment completed</div>
+              <div class="activity-time">Payment marked as paid</div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      async function deleteExpense() {
+        const result = await Swal.fire({
+          title: "Delete expense?",
+          text: "This action cannot be undone.",
+          icon: "warning",
+          background: "#151821",
+          color: "#f9fafb",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete",
+          cancelButtonText: "Cancel",
+          confirmButtonColor: "#f97373",
+          cancelButtonColor: "#222635",
+          customClass: {
+            popup: "swal2-suit-popup",
+            confirmButton: "swal2-suit-confirm",
+            cancelButton: "swal2-suit-cancel",
+          },
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+          const response = await fetch("/api/expenses/<%= expense._id %>", {
+            method: "DELETE",
+            headers: { Accept: "application/json" },
+          });
+
+          const json = await response.json();
+
+          if (!json.ok) {
+            await Swal.fire({
+              icon: "error",
+              title: "Delete failed",
+              text: json.message || "Something went wrong while deleting.",
+              background: "#151821",
+              color: "#f9fafb",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#4b63ff",
+              customClass: {
+                popup: "swal2-suit-popup",
+                confirmButton: "swal2-suit-confirm",
+              },
+            });
+            return;
+          }
+
+          await Swal.fire({
+            icon: "success",
+            title: "Deleted",
+            text: json.message || "Expense deleted successfully.",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+              confirmButton: "swal2-suit-confirm",
+            },
+            timer: 1500,
+            showConfirmButton: false,
+          });
+
+          window.location.href = "/expenses";
+        } catch (error) {
+          console.error(error);
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Something went wrong while deleting.",
+            background: "#151821",
+            color: "#f9fafb",
+            confirmButtonColor: "#4b63ff",
+            customClass: {
+              popup: "swal2-suit-popup",
+              confirmButton: "swal2-suit-confirm",
+            },
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -473,10 +473,21 @@
         </div>
         <div class="sidebar-nav">
           <div class="sidebar-section-title">Menu</div>
-
           <a href="/dashboard" class="sidebar-item">
             <div class="sidebar-icon">🏠</div>
             <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item active">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
           </a>
           <a href="/customers" class="sidebar-item">
             <div class="sidebar-icon">👤</div>
@@ -486,11 +497,7 @@
             <div class="sidebar-icon">📦</div>
             <span>Bookings</span>
           </a>
-          <a href="/expenses" class="sidebar-item">
-            <div class="sidebar-icon">💳</div>
-            <span>Sales &amp; Expenses</span>
-          </a>
-          <a href="/inventory" class="sidebar-item active">
+          <a href="/inventory" class="sidebar-item">
             <div class="sidebar-icon">📋</div>
             <span>Inventory</span>
           </a>
@@ -501,7 +508,6 @@
         </div>
         <div class="sidebar-footer">
           <span>v1.0.0</span>
-          <span>⬅ Collapse</span>
         </div>
       </aside>
 
@@ -524,32 +530,46 @@
               <div class="field">
                 <label for="sku">SKU <span class="required">*</span></label>
                 <input id="sku" name="sku" type="text" required />
-                <span class="error-message" data-error="sku">This field is required</span>
+                <span class="error-message" data-error="sku"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="displayName">Display Name <span class="required">*</span></label>
+                <label for="displayName"
+                  >Display Name <span class="required">*</span></label
+                >
                 <input
                   id="displayName"
                   name="displayName"
                   type="text"
                   required
                 />
-                <span class="error-message" data-error="displayName">This field is required</span>
+                <span class="error-message" data-error="displayName"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="category">Category <span class="required">*</span></label>
+                <label for="category"
+                  >Category <span class="required">*</span></label
+                >
                 <select id="category" name="category" required>
                   <option value="">Select a category</option>
                   <% categories.forEach(function (c) { %>
                   <option value="<%= c %>"><%= c %></option>
                   <% }) %>
                 </select>
-                <span class="error-message" data-error="category">Please select a category</span>
+                <span class="error-message" data-error="category"
+                  >Please select a category</span
+                >
               </div>
               <div class="field">
-                <label for="branch">Branch <span class="required">*</span></label>
+                <label for="branch"
+                  >Branch <span class="required">*</span></label
+                >
                 <input id="branch" name="branch" type="text" required />
-                <span class="error-message" data-error="branch">This field is required</span>
+                <span class="error-message" data-error="branch"
+                  >This field is required</span
+                >
               </div>
             </div>
           </section>
@@ -561,32 +581,53 @@
               <div class="field">
                 <label for="size">Size <span class="required">*</span></label>
                 <input id="size" name="size" type="text" required />
-                <span class="error-message" data-error="size">This field is required</span>
+                <span class="error-message" data-error="size"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="heightRange">Height Range <span class="required">*</span></label>
-                <input id="heightRange" name="heightRange" type="text" required />
-                <span class="error-message" data-error="heightRange">This field is required</span>
+                <label for="heightRange"
+                  >Height Range <span class="required">*</span></label
+                >
+                <input
+                  id="heightRange"
+                  name="heightRange"
+                  type="text"
+                  required
+                />
+                <span class="error-message" data-error="heightRange"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
                 <label for="chest">Chest <span class="required">*</span></label>
                 <input id="chest" name="chest" type="text" required />
-                <span class="error-message" data-error="chest">This field is required</span>
+                <span class="error-message" data-error="chest"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
                 <label for="waist">Waist <span class="required">*</span></label>
                 <input id="waist" name="waist" type="text" required />
-                <span class="error-message" data-error="waist">This field is required</span>
+                <span class="error-message" data-error="waist"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="fabric">Fabric <span class="required">*</span></label>
+                <label for="fabric"
+                  >Fabric <span class="required">*</span></label
+                >
                 <input id="fabric" name="fabric" type="text" required />
-                <span class="error-message" data-error="fabric">This field is required</span>
+                <span class="error-message" data-error="fabric"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
                 <label for="color">Color <span class="required">*</span></label>
                 <input id="color" name="color" type="text" required />
-                <span class="error-message" data-error="color">This field is required</span>
+                <span class="error-message" data-error="color"
+                  >This field is required</span
+                >
               </div>
               <div class="field" style="grid-column: 1 / -1">
                 <label for="otherMeasurements">Other Measurements</label>
@@ -603,7 +644,9 @@
             <div class="section-title">Rental & Pricing</div>
             <div class="section-grid">
               <div class="field">
-                <label for="baseRent">Base Rental Price (₹) <span class="required">*</span></label>
+                <label for="baseRent"
+                  >Base Rental Price (₹) <span class="required">*</span></label
+                >
                 <input
                   id="baseRent"
                   name="baseRent"
@@ -612,10 +655,14 @@
                   min="0"
                   required
                 />
-                <span class="error-message" data-error="baseRent">Please enter a valid price</span>
+                <span class="error-message" data-error="baseRent"
+                  >Please enter a valid price</span
+                >
               </div>
               <div class="field">
-                <label for="extraDayCharge">Extra Day Charge (₹) <span class="required">*</span></label>
+                <label for="extraDayCharge"
+                  >Extra Day Charge (₹) <span class="required">*</span></label
+                >
                 <input
                   id="extraDayCharge"
                   name="extraDayCharge"
@@ -624,10 +671,14 @@
                   min="0"
                   required
                 />
-                <span class="error-message" data-error="extraDayCharge">Please enter a valid charge</span>
+                <span class="error-message" data-error="extraDayCharge"
+                  >Please enter a valid charge</span
+                >
               </div>
               <div class="field">
-                <label for="securityDeposit">Security Deposit (₹) <span class="required">*</span></label>
+                <label for="securityDeposit"
+                  >Security Deposit (₹) <span class="required">*</span></label
+                >
                 <input
                   id="securityDeposit"
                   name="securityDeposit"
@@ -636,7 +687,9 @@
                   min="0"
                   required
                 />
-                <span class="error-message" data-error="securityDeposit">Please enter a valid deposit</span>
+                <span class="error-message" data-error="securityDeposit"
+                  >Please enter a valid deposit</span
+                >
               </div>
             </div>
           </section>
@@ -646,27 +699,41 @@
             <div class="section-title">Operational Data</div>
             <div class="section-grid">
               <div class="field">
-                <label for="storageLocation">Storage Location <span class="required">*</span></label>
+                <label for="storageLocation"
+                  >Storage Location <span class="required">*</span></label
+                >
                 <input
                   id="storageLocation"
                   name="storageLocation"
                   type="text"
                   required
                 />
-                <span class="error-message" data-error="storageLocation">This field is required</span>
+                <span class="error-message" data-error="storageLocation"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="barcode">Barcode / RFID Tag <span class="required">*</span></label>
+                <label for="barcode"
+                  >Barcode / RFID Tag <span class="required">*</span></label
+                >
                 <input id="barcode" name="barcode" type="text" required />
-                <span class="error-message" data-error="barcode">This field is required</span>
+                <span class="error-message" data-error="barcode"
+                  >This field is required</span
+                >
               </div>
               <div class="field">
-                <label for="dateAdded">Date Added <span class="required">*</span></label>
+                <label for="dateAdded"
+                  >Date Added <span class="required">*</span></label
+                >
                 <input id="dateAdded" name="dateAdded" type="date" required />
-                <span class="error-message" data-error="dateAdded">Please select a date</span>
+                <span class="error-message" data-error="dateAdded"
+                  >Please select a date</span
+                >
               </div>
               <div class="field">
-                <label for="timesRented">Times Rented <span class="required">*</span></label>
+                <label for="timesRented"
+                  >Times Rented <span class="required">*</span></label
+                >
                 <input
                   id="timesRented"
                   name="timesRented"
@@ -675,7 +742,9 @@
                   value="0"
                   required
                 />
-                <span class="error-message" data-error="timesRented">Please enter a valid number</span>
+                <span class="error-message" data-error="timesRented"
+                  >Please enter a valid number</span
+                >
               </div>
             </div>
           </section>
@@ -685,7 +754,9 @@
             <div class="section-title">Condition & Lifecycle</div>
             <div class="section-grid">
               <div class="field">
-                <label for="conditionGrade">Condition Grade <span class="required">*</span></label>
+                <label for="conditionGrade"
+                  >Condition Grade <span class="required">*</span></label
+                >
                 <select id="conditionGrade" name="conditionGrade" required>
                   <option value="">Select condition grade</option>
                   <option value="Excellent">Excellent</option>
@@ -693,10 +764,14 @@
                   <option value="Fair">Fair</option>
                   <option value="Worn">Worn</option>
                 </select>
-                <span class="error-message" data-error="conditionGrade">Please select a condition grade</span>
+                <span class="error-message" data-error="conditionGrade"
+                  >Please select a condition grade</span
+                >
               </div>
               <div class="field">
-                <label for="status">Status <span class="required">*</span></label>
+                <label for="status"
+                  >Status <span class="required">*</span></label
+                >
                 <select id="status" name="status" required>
                   <option value="">Select status</option>
                   <option value="available">Available</option>
@@ -705,37 +780,51 @@
                   <option value="damaged">Damaged</option>
                   <option value="retired">Retired</option>
                 </select>
-                <span class="error-message" data-error="status">Please select a status</span>
+                <span class="error-message" data-error="status"
+                  >Please select a status</span
+                >
               </div>
               <div class="field">
-                <label for="lastInspectionDate">Last Inspection Date <span class="required">*</span></label>
+                <label for="lastInspectionDate"
+                  >Last Inspection Date <span class="required">*</span></label
+                >
                 <input
                   id="lastInspectionDate"
                   name="lastInspectionDate"
                   type="date"
                   required
                 />
-                <span class="error-message" data-error="lastInspectionDate">Please select a date</span>
+                <span class="error-message" data-error="lastInspectionDate"
+                  >Please select a date</span
+                >
               </div>
               <div class="field">
-                <label for="nextMaintenanceDue">Next Maintenance Due <span class="required">*</span></label>
+                <label for="nextMaintenanceDue"
+                  >Next Maintenance Due <span class="required">*</span></label
+                >
                 <input
                   id="nextMaintenanceDue"
                   name="nextMaintenanceDue"
                   type="date"
                   required
                 />
-                <span class="error-message" data-error="nextMaintenanceDue">Please select a date</span>
+                <span class="error-message" data-error="nextMaintenanceDue"
+                  >Please select a date</span
+                >
               </div>
               <div class="field">
-                <label for="isRetired">Retired? <span class="required">*</span></label>
+                <label for="isRetired"
+                  >Retired? <span class="required">*</span></label
+                >
                 <select id="isRetired" name="isRetired" required>
                   <option value="false" selected>No</option>
                   <option value="true">Yes</option>
                 </select>
               </div>
               <div class="field">
-                <label for="disposalValue">Disposal Value (₹) <span class="required">*</span></label>
+                <label for="disposalValue"
+                  >Disposal Value (₹) <span class="required">*</span></label
+                >
                 <input
                   id="disposalValue"
                   name="disposalValue"
@@ -744,7 +833,9 @@
                   min="0"
                   required
                 />
-                <span class="error-message" data-error="disposalValue">Please enter a valid value</span>
+                <span class="error-message" data-error="disposalValue"
+                  >Please enter a valid value</span
+                >
               </div>
               <div class="field">
                 <label for="retirementReason">Retirement Reason</label>
@@ -754,7 +845,9 @@
                   type="text"
                   disabled
                 />
-                <span class="error-message" data-error="retirementReason">This field is required when retired</span>
+                <span class="error-message" data-error="retirementReason"
+                  >This field is required when retired</span
+                >
               </div>
               <div class="field" style="grid-column: 1 / -1">
                 <label for="retirementNotes">Notes</label>
@@ -823,7 +916,7 @@
       function toggleRetirementReason() {
         const isRetired = isRetiredSelect.value === "true";
         retirementReasonInput.disabled = !isRetired;
-        
+
         if (isRetired) {
           retirementReasonInput.setAttribute("required", "required");
         } else {
@@ -913,7 +1006,7 @@
           showError(input);
           return false;
         }
-        
+
         if (input.type === "number" && input.hasAttribute("required")) {
           const value = parseFloat(input.value);
           if (isNaN(value) || value < 0) {
@@ -921,7 +1014,7 @@
             return false;
           }
         }
-        
+
         hideError(input);
         return true;
       }
@@ -941,7 +1034,10 @@
         });
 
         if (!isValid && firstInvalidField) {
-          firstInvalidField.scrollIntoView({ behavior: "smooth", block: "center" });
+          firstInvalidField.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
           firstInvalidField.focus();
         }
 

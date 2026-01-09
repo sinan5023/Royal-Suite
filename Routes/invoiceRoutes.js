@@ -1,13 +1,14 @@
 const express = require("express")
 const router = express.Router()
-const invoiceController = require("../controller/invoiceController")
+const invoiceController = require("../controller/invoiceController");
+const authCheck = require("../middlewares/authcheck");
 //page routes 
 // invoices dashboard
-router.get('/', invoiceController.getInvoicesPage);
+router.get('/',authCheck, invoiceController.getInvoicesPage);
 // Create new invoice page (MUST be before /:id)
-router.get('/new', invoiceController.getCreateInvoicePage); 
+router.get('/new',authCheck, invoiceController.getCreateInvoicePage); 
 // single invoice view
-router.get('/:id', invoiceController.getViewInvoicePage);
+router.get('/:id',authCheck, invoiceController.getViewInvoicePage);
 // get edit page view
-router.get('/:id/edit', invoiceController.getEditInvoicePage);
+router.get('/:id/edit',authCheck, invoiceController.getEditInvoicePage);
 module.exports = router

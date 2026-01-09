@@ -264,6 +264,7 @@
       .btn-group {
         display: flex;
         gap: 8px;
+        flex-wrap: wrap;
       }
 
       .btn {
@@ -315,6 +316,15 @@
 
       .btn-success:hover {
         background: #1ea84e;
+      }
+
+      .btn-whatsapp {
+        background: #25d366;
+        color: #fff;
+      }
+
+      .btn-whatsapp:hover {
+        background: #1ebe57;
       }
 
       /* Status Badge */
@@ -471,7 +481,7 @@
         font-weight: 700;
         color: var(--text-main);
         margin-bottom: 8px;
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
       }
 
       /* Billing Details */
@@ -761,11 +771,11 @@
         .alert-banner {
           display: none !important;
         }
-        
+
         .content {
           padding: 0;
         }
-        
+
         .invoice-card {
           border: none;
           box-shadow: none;
@@ -776,28 +786,38 @@
         .layout {
           flex-direction: column;
         }
-        
+
         .sidebar {
           width: 100%;
           order: 2;
         }
-        
+
         .content {
           order: 1;
         }
-        
+
         .billing-details,
         .info-grid {
           grid-template-columns: 1fr;
         }
-        
+
         .invoice-header {
           flex-direction: column;
           gap: 16px;
         }
-        
+
         .invoice-meta {
           text-align: left;
+        }
+
+        .btn-group {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
         }
       }
     </style>
@@ -812,7 +832,10 @@
         </div>
       </div>
       <div class="topbar-center">
-        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
+        <span
+          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
+          currentDate %></span
+        >
       </div>
       <div class="topbar-right">
         <div class="topbar-pill">
@@ -833,10 +856,21 @@
         </div>
         <div class="sidebar-nav">
           <div class="sidebar-section-title">Menu</div>
-
           <a href="/dashboard" class="sidebar-item">
             <div class="sidebar-icon">🏠</div>
             <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item active">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
           </a>
           <a href="/customers" class="sidebar-item">
             <div class="sidebar-icon">👤</div>
@@ -846,22 +880,17 @@
             <div class="sidebar-icon">📦</div>
             <span>Bookings</span>
           </a>
-          <a href="/expenses" class="sidebar-item">
-            <div class="sidebar-icon">💳</div>
-            <span>Sales &amp; Expenses</span>
-          </a>
           <a href="/inventory" class="sidebar-item">
             <div class="sidebar-icon">📋</div>
             <span>Inventory</span>
           </a>
-          <a href="/invoices" class="sidebar-item active">
+          <a href="/invoices" class="sidebar-item">
             <div class="sidebar-icon">💼</div>
             <span>Invoices</span>
           </a>
         </div>
         <div class="sidebar-footer">
           <span>v1.0.0</span>
-          <div class="sidebar-collapse">⬅ Collapse</div>
         </div>
       </aside>
 
@@ -870,37 +899,50 @@
         <div class="page-header-row">
           <div class="page-header-texts">
             <div class="page-title-row">
-              <div class="page-title">Invoice #<%= invoice.invoiceNumber %></div>
-              <span class="status-badge status-<%= invoice.status.toLowerCase().replace(/\s+/g, '-') %>">
+              <div class="page-title">
+                Invoice #<%= invoice.invoiceNumber %>
+              </div>
+              <span
+                class="status-badge status-<%= invoice.status.toLowerCase().replace(/\s+/g, '-') %>"
+              >
                 <%= invoice.status %>
               </span>
-              <% 
-                const isOpen = invoice.balanceDue > 0;
-                const billStatus = isOpen ? 'open' : 'closed';
-              %>
+              <% const isOpen = invoice.balanceDue > 0; const billStatus =
+              isOpen ? 'open' : 'closed'; %>
               <span class="status-badge status-<%= billStatus %>">
-                <% if (isOpen) { %>
-                  🔓 OPEN
-                <% } else { %>
-                  🔒 CLOSED
-                <% } %>
+                <% if (isOpen) { %> 🔓 OPEN <% } else { %> 🔒 CLOSED <% } %>
               </span>
             </div>
             <div class="page-subtitle">
-              Created on <%= new Date(invoice.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+              Created on <%= new
+              Date(invoice.createdAt).toLocaleDateString('en-IN', { year:
+              'numeric', month: 'long', day: 'numeric' }) %>
             </div>
           </div>
           <div class="btn-group">
-            <% if (invoice.status !== 'Paid' && invoice.status !== 'Cancelled') { %>
-              <a href="/invoices/<%= invoice._id %>/edit" class="btn btn-secondary">
-                <span>✏️</span>
-                <span>Edit</span>
-              </a>
+            <button class="btn btn-whatsapp" onclick="sendInvoiceWhatsApp()">
+              <span>📱</span>
+              <span>Send via WhatsApp</span>
+            </button>
+            <button class="btn btn-success" onclick="downloadInvoicePDF()">
+              <span>⬇️</span>
+              <span>Download PDF</span>
+            </button>
+            <% if (invoice.status !== 'Paid' && invoice.status !== 'Cancelled')
+            { %>
+            <a
+              href="/invoices/<%= invoice._id %>/edit"
+              class="btn btn-secondary"
+            >
+              <span>✏️</span>
+              <span>Edit</span>
+            </a>
             <% } %>
-            <button class="btn btn-primary" onclick="window.print()">
-              <span>🖨️</span>
+            <button class="btn btn-primary" onclick="printInvoice()">
+              <span>🖨</span>
               <span>Print</span>
             </button>
+
             <button class="btn btn-secondary" onclick="goBack()">
               <span>←</span>
               <span>Back</span>
@@ -918,14 +960,20 @@
             </div>
           </div>
           <div class="alert-amount">
-            ₹<%= invoice.balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+            ₹<%= invoice.balanceDue.toLocaleString('en-IN',
+            {minimumFractionDigits: 2}) %>
           </div>
-          <button class="btn btn-success" onclick="recordPayment()" style="margin-left: 16px;">
+          <button
+            class="btn btn-success"
+            onclick="recordPayment()"
+            style="margin-left: 16px"
+          >
             <span>💰</span>
             <span>Record Payment</span>
           </button>
         </div>
-        <% } else if (invoice.balanceDue === 0 && invoice.status === 'Paid') { %>
+        <% } else if (invoice.balanceDue === 0 && invoice.status === 'Paid') {
+        %>
         <div class="alert-banner success">
           <div class="alert-content">
             <div class="alert-title">✅ Fully Paid</div>
@@ -933,9 +981,7 @@
               This invoice has been completely settled. No outstanding balance.
             </div>
           </div>
-          <div class="alert-amount">
-            ₹0.00
-          </div>
+          <div class="alert-amount">₹0.00</div>
         </div>
         <% } %>
 
@@ -946,19 +992,29 @@
             <div class="company-info">
               <h1>🧳 SuitManager Pro</h1>
               <p>
-                Royal Suits<br/>
-                Kozhikode, Kerala<br/>
-                Phone: +91 123 456 7890<br/>
+                Royal Suits<br />
+                Kozhikode, Kerala<br />
+                Phone: +91 123 456 7890<br />
                 Email: info@royalsuits.com
               </p>
             </div>
             <div class="invoice-meta">
               <div class="invoice-number">#<%= invoice.invoiceNumber %></div>
-              <p style="font-size: 12px; color: var(--text-soft); margin-top: 8px;">
-                <strong>Issue Date:</strong> <%= new Date(invoice.issueDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              <p
+                style="
+                  font-size: 12px;
+                  color: var(--text-soft);
+                  margin-top: 8px;
+                "
+              >
+                <strong>Issue Date:</strong> <%= new
+                Date(invoice.issueDate).toLocaleDateString('en-IN', { year:
+                'numeric', month: 'short', day: 'numeric' }) %>
               </p>
-              <p style="font-size: 12px; color: var(--text-soft);">
-                <strong>Due Date:</strong> <%= new Date(invoice.dueDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              <p style="font-size: 12px; color: var(--text-soft)">
+                <strong>Due Date:</strong> <%= new
+                Date(invoice.dueDate).toLocaleDateString('en-IN', { year:
+                'numeric', month: 'short', day: 'numeric' }) %>
               </p>
             </div>
           </div>
@@ -968,13 +1024,13 @@
             <div class="detail-section">
               <h3>📍 Bill To</h3>
               <p>
-                <strong><%= invoice.billTo.name %></strong><br/>
-                <%= invoice.billTo.street || invoice.billTo.address || '' %><br/>
-                <%= invoice.billTo.city %>, <%= invoice.billTo.state %> <%= invoice.billTo.postalCode %><br/>
-                <%= invoice.billTo.country || 'India' %><br/>
-                📞 <%= invoice.billTo.phone %><br/>
-                <% if (invoice.billTo.email) { %>
-                ✉️ <%= invoice.billTo.email %>
+                <strong><%= invoice.billTo.name %></strong><br />
+                <%= invoice.billTo.street || invoice.billTo.address || '' %><br />
+                <%= invoice.billTo.city %>, <%= invoice.billTo.state %> <%=
+                invoice.billTo.postalCode %><br />
+                <%= invoice.billTo.country || 'India' %><br />
+                📞 <%= invoice.billTo.phone %><br />
+                <% if (invoice.billTo.email) { %> ✉️ <%= invoice.billTo.email %>
                 <% } %>
               </p>
             </div>
@@ -982,15 +1038,31 @@
             <div class="detail-section">
               <h3>📦 Booking Details</h3>
               <p>
-                <span class="label">Booking Code:</span> <span class="value"><%= invoice.bookingId?.bookingCode || 'N/A' %></span><br/>
+                <span class="label">Booking Code:</span>
+                <span class="value"
+                  ><%= invoice.bookingId?.bookingCode || 'N/A' %></span
+                ><br />
                 <% if (invoice.bookingId?.eventDate) { %>
-                <span class="label">Event Date:</span> <span class="value"><%= new Date(invoice.bookingId.eventDate).toLocaleDateString('en-IN') %></span><br/>
-                <% } %>
-                <% if (invoice.bookingId?.pickupDate) { %>
-                <span class="label">Pickup:</span> <span class="value"><%= new Date(invoice.bookingId.pickupDate).toLocaleDateString('en-IN') %></span><br/>
-                <% } %>
-                <% if (invoice.bookingId?.expectedReturnDate) { %>
-                <span class="label">Return:</span> <span class="value"><%= new Date(invoice.bookingId.expectedReturnDate).toLocaleDateString('en-IN') %></span>
+                <span class="label">Event Date:</span>
+                <span class="value"
+                  ><%= new
+                  Date(invoice.bookingId.eventDate).toLocaleDateString('en-IN')
+                  %></span
+                ><br />
+                <% } %> <% if (invoice.bookingId?.pickupDate) { %>
+                <span class="label">Pickup:</span>
+                <span class="value"
+                  ><%= new
+                  Date(invoice.bookingId.pickupDate).toLocaleDateString('en-IN')
+                  %></span
+                ><br />
+                <% } %> <% if (invoice.bookingId?.expectedReturnDate) { %>
+                <span class="label">Return:</span>
+                <span class="value"
+                  ><%= new
+                  Date(invoice.bookingId.expectedReturnDate).toLocaleDateString('en-IN')
+                  %></span
+                >
                 <% } %>
               </p>
             </div>
@@ -998,7 +1070,9 @@
             <div class="detail-section">
               <h3>📋 Payment Terms</h3>
               <p>
-                <span class="value"><%= invoice.paymentTerms || 'Due on Receipt' %></span>
+                <span class="value"
+                  ><%= invoice.paymentTerms || 'Due on Receipt' %></span
+                >
               </p>
             </div>
           </div>
@@ -1023,8 +1097,14 @@
                 </td>
                 <td class="right"><%= item.quantity %></td>
                 <td class="right"><%= item.rentalDays %></td>
-                <td class="right">₹<%= item.rentalPrice.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></td>
-                <td class="right">₹<%= item.subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></td>
+                <td class="right">
+                  ₹<%= item.rentalPrice.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %>
+                </td>
+                <td class="right">
+                  ₹<%= item.subtotal.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %>
+                </td>
               </tr>
               <% }); %>
             </tbody>
@@ -1035,40 +1115,60 @@
             <div class="totals-table">
               <div class="totals-row subtotal">
                 <span class="label">Subtotal:</span>
-                <span class="value">₹<%= invoice.subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="value"
+                  >₹<%= invoice.subtotal.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
-              
+
               <% if (invoice.discountValue && invoice.discountValue > 0) { %>
               <div class="totals-row discount">
-                <span class="label">Discount (<%= invoice.discountType === 'Percentage' ? invoice.discountValue + '%' : 'Fixed' %>):</span>
+                <span class="label"
+                  >Discount (<%= invoice.discountType === 'Percentage' ?
+                  invoice.discountValue + '%' : 'Fixed' %>):</span
+                >
                 <span class="value">
-                  -₹<%= (invoice.discountType === 'Percentage' ? (invoice.subtotal * invoice.discountValue / 100) : invoice.discountValue).toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+                  -₹<%= (invoice.discountType === 'Percentage' ?
+                  (invoice.subtotal * invoice.discountValue / 100) :
+                  invoice.discountValue).toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %>
                 </span>
               </div>
               <% } %>
-              
+
               <div class="totals-row tax">
                 <span class="label">Tax (<%= invoice.taxRate %>%):</span>
-                <span class="value">₹<%= invoice.taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="value"
+                  >₹<%= invoice.taxAmount.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
-              
-              <% if (invoice.securityDeposit && invoice.securityDeposit > 0) { %>
+
+              <% if (invoice.securityDeposit && invoice.securityDeposit > 0) {
+              %>
               <div class="totals-row">
                 <span class="label">Security Deposit:</span>
-                <span class="value">₹<%= invoice.securityDeposit.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="value"
+                  >₹<%= invoice.securityDeposit.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
-              <% } %>
-              
-              <% if (invoice.lateFees && invoice.lateFees > 0) { %>
+              <% } %> <% if (invoice.lateFees && invoice.lateFees > 0) { %>
               <div class="totals-row">
                 <span class="label">Late Fees:</span>
-                <span class="value">₹<%= invoice.lateFees.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="value"
+                  >₹<%= invoice.lateFees.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
               <% } %>
-              
+
               <div class="totals-row total">
                 <span class="label">Total Amount:</span>
-                <span class="value">₹<%= invoice.totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="value"
+                  >₹<%= invoice.totalAmount.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
             </div>
           </div>
@@ -1078,19 +1178,23 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">💰 Amount Paid</span>
-                <span class="info-value success">₹<%= invoice.amountPaid.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+                <span class="info-value success"
+                  >₹<%= invoice.amountPaid.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %></span
+                >
               </div>
               <div class="info-item">
                 <span class="info-label">⏳ Balance Due</span>
-                <span class="info-value <%= invoice.balanceDue > 0 ? 'warning' : 'success' %>">
-                  ₹<%= invoice.balanceDue.toLocaleString('en-IN', {minimumFractionDigits: 2}) %>
+                <span
+                  class="info-value <%= invoice.balanceDue > 0 ? 'warning' : 'success' %>"
+                >
+                  ₹<%= invoice.balanceDue.toLocaleString('en-IN',
+                  {minimumFractionDigits: 2}) %>
                 </span>
               </div>
               <div class="info-item">
                 <span class="info-label">📊 Status</span>
-                <span class="info-value">
-                  <%= invoice.status %>
-                </span>
+                <span class="info-value"> <%= invoice.status %> </span>
               </div>
             </div>
           </div>
@@ -1103,14 +1207,23 @@
             <div class="payment-item">
               <div class="payment-item-info">
                 <span class="payment-date">
-                  <%= new Date(payment.paymentDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                  <%= new Date(payment.paymentDate).toLocaleDateString('en-IN',
+                  { year: 'numeric', month: 'short', day: 'numeric', hour:
+                  '2-digit', minute: '2-digit' }) %>
                 </span>
                 <span class="payment-method">💳 <%= payment.method %></span>
                 <% if (payment.notes) { %>
-                <span class="payment-method" style="font-size: 11px; color: var(--text-soft);"><%= payment.notes %></span>
+                <span
+                  class="payment-method"
+                  style="font-size: 11px; color: var(--text-soft)"
+                  ><%= payment.notes %></span
+                >
                 <% } %>
               </div>
-              <span class="payment-amount">₹<%= payment.amount.toLocaleString('en-IN', {minimumFractionDigits: 2}) %></span>
+              <span class="payment-amount"
+                >₹<%= payment.amount.toLocaleString('en-IN',
+                {minimumFractionDigits: 2}) %></span
+              >
             </div>
             <% }); %>
           </div>
@@ -1126,222 +1239,463 @@
         </div>
       </main>
     </div>
-
     <script>
-      function goBack() {
-        window.history.back();
-      }
+            const invoiceId = '<%= invoice._id %>';
+            const invoiceNumber = '<%= invoice.invoiceNumber %>';
 
-      // Record Payment Function
-      async function recordPayment() {
-        const balanceDue = <%= invoice.balanceDue || 0 %>;
-        const invoiceId = '<%= invoice._id %>';
-
-        // Check if already fully paid
-        if (balanceDue <= 0) {
-          await Swal.fire({
-            icon: 'info',
-            title: 'Already Paid',
-            text: 'This invoice has been fully paid. No outstanding balance.',
-            background: '#151821',
-            color: '#f9fafb',
-            confirmButtonColor: '#4b63ff',
-          });
-          return;
-        }
-
-        const result = await Swal.fire({
-          title: "💳 Record Payment",
-          html: `
-            <div style="text-align: left; margin-top: 16px;">
-              <div style="
-                background: rgba(251, 191, 36, 0.1);
-                border: 1px solid rgba(251, 191, 36, 0.3);
-                padding: 16px;
-                border-radius: 8px;
-                margin-bottom: 16px;
-                text-align: center;
-              ">
-                <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;">Outstanding Balance</div>
-                <div style="font-size: 28px; font-weight: 700; color: #fbbf24; margin-top: 4px;">
-                  ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </div>
-              </div>
-
-              <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
-                Payment Amount <span style="color: #f97373;">*</span>
-              </label>
-              <input
-                id="paymentAmount"
-                type="number"
-                class="swal2-input"
-                placeholder="Enter amount"
-                value="${balanceDue.toFixed(2)}"
-                min="0.01"
-                max="${balanceDue}"
-                step="0.01"
-                style="
-                  width: 100%;
-                  margin: 0;
-                  background: #0d0f14;
-                  border: 1px solid #222633;
-                  color: #f9fafb;
-                  padding: 12px;
-                  border-radius: 8px;
-                  font-size: 14px;
-                  font-weight: 500;
-                "
-              >
-              <div style="margin-top: 6px; font-size: 11px; color: #6b7280;">
-                Maximum: ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </div>
-
-              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
-                Payment Method <span style="color: #f97373;">*</span>
-              </label>
-              <select
-                id="paymentMethod"
-                class="swal2-input"
-                style="
-                  width: 100%;
-                  margin: 0;
-                  background: #0d0f14;
-                  border: 1px solid #222633;
-                  color: #f9fafb;
-                  padding: 12px;
-                  border-radius: 8px;
-                  font-size: 14px;
-                "
-              >
-                <option value="Cash">Cash</option>
-                <option value="Card">Card</option>
-                <option value="UPI">UPI</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-                <option value="Cheque">Cheque</option>
-              </select>
-
-              <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
-                Payment Notes (Optional)
-              </label>
-              <textarea
-                id="paymentNotes"
-                class="swal2-textarea"
-                placeholder="Add any notes about this payment..."
-                style="
-                  width: 100%;
-                  height: 80px;
-                  margin: 0;
-                  background: #0d0f14;
-                  border: 1px solid #222633;
-                  color: #f9fafb;
-                  padding: 12px;
-                  border-radius: 8px;
-                  font-size: 13px;
-                  resize: vertical;
-                "
-              ></textarea>
-            </div>
-          `,
-          showCancelButton: true,
-          confirmButtonText: "💰 Record Payment",
-          cancelButtonText: "Cancel",
-          confirmButtonColor: "#22c55e",
-          cancelButtonColor: "#6b7280",
-          background: "#151821",
-          color: "#f9fafb",
-          width: "540px",
-          preConfirm: () => {
-            const amount = parseFloat(document.getElementById("paymentAmount").value);
-            const method = document.getElementById("paymentMethod").value;
-            const notes = document.getElementById("paymentNotes").value;
-
-            if (!amount || amount <= 0) {
-              Swal.showValidationMessage("Please enter a valid amount");
-              return false;
+            function goBack() {
+              window.history.back();
             }
 
-            if (amount > balanceDue) {
-              Swal.showValidationMessage(
-                `Amount cannot exceed balance due (₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })})`
-              );
-              return false;
+            // Send Invoice via WhatsApp
+            async function sendInvoiceWhatsApp() {
+              try {
+                Swal.fire({
+                  title: 'Generating WhatsApp Link...',
+                  html: 'Please wait while we prepare your invoice link',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                });
+
+                const response = await fetch(`/api/invoices/${invoiceId}/send-whatsapp`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.ok) {
+                  throw new Error(data.message || 'Failed to generate WhatsApp link');
+                }
+
+                await Swal.fire({
+                  icon: 'success',
+                  title: '📱 WhatsApp Ready!',
+                  html: `
+                    <div style="text-align: left; margin-top: 16px;">
+                      <p style="font-size: 13px; color: #9ca3af; margin-bottom: 16px;">
+                        Your invoice is ready to send! Click the button below to open WhatsApp.
+                      </p>
+                      <div style="background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">Customer will receive:</div>
+                        <div style="font-size: 12px; color: #25D366; font-weight: 500;">
+                          ✓ Invoice Details<br>
+                          ✓ Secure Download Link<br>
+                          ✓ Balance Due Information
+                        </div>
+                      </div>
+                      <div style="background: rgba(75, 99, 255, 0.1); border: 1px solid rgba(75, 99, 255, 0.3); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 10px; color: #9ca3af; margin-bottom: 4px;">Download Link:</div>
+                        <div style="font-size: 9px; color: #4b63ff; word-break: break-all; font-family: monospace;">
+                          ${data.data.downloadUrl}
+                        </div>
+                      </div>
+                    </div>
+                  `,
+                  showCancelButton: true,
+                  confirmButtonText: '📱 Open WhatsApp',
+                  cancelButtonText: '📋 Copy Link',
+                  confirmButtonColor: '#25D366',
+                  cancelButtonColor: '#6b7280',
+                  background: '#151821',
+                  color: '#f9fafb',
+                  width: '540px',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    // Open WhatsApp in new tab
+                    window.open(data.data.whatsappUrl, '_blank');
+
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'WhatsApp Opened!',
+                      text: 'Message is ready to send to customer',
+                      timer: 2500,
+                      showConfirmButton: false,
+                      background: '#151821',
+                      color: '#f9fafb',
+                    });
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Copy link to clipboard
+                    navigator.clipboard.writeText(data.data.downloadUrl).then(() => {
+                      Swal.fire({
+                        icon: 'success',
+                        title: '📋 Link Copied!',
+                        text: 'Download link has been copied to clipboard',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#151821',
+                        color: '#f9fafb',
+                      });
+                    }).catch(() => {
+                      Swal.fire({
+                        icon: 'info',
+                        title: 'Link Ready',
+                        text: data.data.downloadUrl,
+                        background: '#151821',
+                        color: '#f9fafb',
+                        confirmButtonColor: '#4b63ff',
+                      });
+                    });
+                  }
+                });
+              } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Failed',
+                  text: error.message || 'Failed to generate WhatsApp link',
+                  background: '#151821',
+                  color: '#f9fafb',
+                  confirmButtonColor: '#4b63ff',
+                });
+              }
             }
 
-            return { amount, method, notes };
-          },
-        });
+            // Download Invoice PDF - FIXED VERSION
+            async function downloadInvoicePDF() {
+              try {
+                // Show loading dialog
+                Swal.fire({
+                  title: 'Preparing Download...',
+                  html: 'Generating your invoice PDF',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                });
 
-        if (!result.isConfirmed) return;
+                // Direct download approach - create a temporary link and trigger download
+                const downloadUrl = `/api/invoices/${invoiceId}/download`;
 
-        // Show loading
-        Swal.fire({
-          title: 'Processing Payment...',
-          html: 'Please wait while we record your payment',
-          allowOutsideClick: false,
-          allowEscapeKey: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
+                // Create temporary anchor element
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = `invoice-${invoiceNumber}.pdf`;
+                link.style.display = 'none';
 
-        try {
-          const response = await fetch(`/api/invoices/${invoiceId}/payment`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(result.value),
-          });
+                // Add to document, click, and remove
+                document.body.appendChild(link);
+                link.click();
 
-          const data = await response.json();
+                // Small delay to ensure download starts
+                setTimeout(() => {
+                  document.body.removeChild(link);
 
-          if (!data.ok) {
-            throw new Error(data.message || 'Failed to record payment');
-          }
+                  // Close loading and show success
+                  Swal.fire({
+                    icon: 'success',
+                    title: '⬇️ Download Started!',
+                    html: `
+                      <div style="text-align: center; margin-top: 12px;">
+                        <p style="font-size: 13px; color: #9ca3af; margin-bottom: 12px;">
+                          Your invoice PDF is downloading...
+                        </p>
+                        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 12px; border-radius: 8px;">
+                          <div style="font-size: 14px; color: #22c55e; font-weight: 600;">
+                            ${invoiceNumber}
+                          </div>
+                        </div>
+                      </div>
+                    `,
+                    timer: 2500,
+                    showConfirmButton: false,
+                    background: '#151821',
+                    color: '#f9fafb',
+                  });
+                }, 500);
 
-          const newBalanceDue = balanceDue - result.value.amount;
-          const isFullyPaid = newBalanceDue === 0;
+              } catch (error) {
+                console.error('Download error:', error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Download Failed',
+                  text: 'Failed to download invoice PDF. Please try again.',
+                  background: '#151821',
+                  color: '#f9fafb',
+                  confirmButtonColor: '#4b63ff',
+                });
+              }
+            }
 
-          await Swal.fire({
-            icon: "success",
-            title: isFullyPaid ? "🎉 Invoice Fully Paid!" : "✅ Payment Recorded!",
-            html: `
-              <div style="text-align: center; margin-top: 16px;">
-                <div style="font-size: 14px; color: #9ca3af; margin-bottom: 12px;">
-                  ₹${result.value.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} paid via ${result.value.method}
-                </div>
-                <div style="
-                  background: rgba(34, 197, 94, 0.1);
-                  border: 1px solid rgba(34, 197, 94, 0.3);
-                  padding: 16px;
-                  border-radius: 8px;
-                  margin-top: 16px;
-                ">
-                  <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">
-                    ${isFullyPaid ? 'Invoice Status' : 'Remaining Balance'}
+            // Record Payment Function
+            async function recordPayment() {
+              const balanceDue = <%= invoice.balanceDue || 0 %>;
+
+              // Check if already fully paid
+              if (balanceDue <= 0) {
+                await Swal.fire({
+                  icon: 'info',
+                  title: 'Already Paid',
+                  text: 'This invoice has been fully paid. No outstanding balance.',
+                  background: '#151821',
+                  color: '#f9fafb',
+                  confirmButtonColor: '#4b63ff',
+                });
+                return;
+              }
+
+              const result = await Swal.fire({
+                title: "💳 Record Payment",
+                html: `
+                  <div style="text-align: left; margin-top: 16px;">
+                    <div style="
+                      background: rgba(251, 191, 36, 0.1);
+                      border: 1px solid rgba(251, 191, 36, 0.3);
+                      padding: 16px;
+                      border-radius: 8px;
+                      margin-bottom: 16px;
+                      text-align: center;
+                    ">
+                      <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;">Outstanding Balance</div>
+                      <div style="font-size: 28px; font-weight: 700; color: #fbbf24; margin-top: 4px;">
+                        ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                    </div>
+
+                    <label style="display: block; font-size: 12px; color: #9ca3af; margin-bottom: 6px;">
+                      Payment Amount <span style="color: #f97373;">*</span>
+                    </label>
+                    <input
+                      id="paymentAmount"
+                      type="number"
+                      class="swal2-input"
+                      placeholder="Enter amount"
+                      value="${balanceDue.toFixed(2)}"
+                      min="0.01"
+                      max="${balanceDue}"
+                      step="0.01"
+                      style="
+                        width: 100%;
+                        margin: 0;
+                        background: #0d0f14;
+                        border: 1px solid #222633;
+                        color: #f9fafb;
+                        padding: 12px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: 500;
+                      "
+                    >
+                    <div style="margin-top: 6px; font-size: 11px; color: #6b7280;">
+                      Maximum: ₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+
+                    <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                      Payment Method <span style="color: #f97373;">*</span>
+                    </label>
+                    <select
+                      id="paymentMethod"
+                      class="swal2-input"
+                      style="
+                        width: 100%;
+                        margin: 0;
+                        background: #0d0f14;
+                        border: 1px solid #222633;
+                        color: #f9fafb;
+                        padding: 12px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                      "
+                    >
+                      <option value="Cash">Cash</option>
+                      <option value="Card">Card</option>
+                      <option value="UPI">UPI</option>
+                      <option value="Bank Transfer">Bank Transfer</option>
+                      <option value="Cheque">Cheque</option>
+                    </select>
+
+                    <label style="display: block; font-size: 12px; color: #9ca3af; margin: 16px 0 6px;">
+                      Payment Notes (Optional)
+                    </label>
+                    <textarea
+                      id="paymentNotes"
+                      class="swal2-textarea"
+                      placeholder="Add any notes about this payment..."
+                      style="
+                        width: 100%;
+                        height: 80px;
+                        margin: 0;
+                        background: #0d0f14;
+                        border: 1px solid #222633;
+                        color: #f9fafb;
+                        padding: 12px;
+                        border-radius: 8px;
+                        font-size: 13px;
+                        resize: vertical;
+                      "
+                    ></textarea>
                   </div>
-                  <div style="font-size: 24px; font-weight: 700; color: #22c55e; margin-top: 6px;">
-                    ${isFullyPaid ? 'FULLY PAID ✓' : '₹' + newBalanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                `,
+                showCancelButton: true,
+                confirmButtonText: "💰 Record Payment",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#22c55e",
+                cancelButtonColor: "#6b7280",
+                background: "#151821",
+                color: "#f9fafb",
+                width: "540px",
+                preConfirm: () => {
+                  const amount = parseFloat(document.getElementById("paymentAmount").value);
+                  const method = document.getElementById("paymentMethod").value;
+                  const notes = document.getElementById("paymentNotes").value;
+
+                  if (!amount || amount <= 0) {
+                    Swal.showValidationMessage("Please enter a valid amount");
+                    return false;
+                  }
+
+                  if (amount > balanceDue) {
+                    Swal.showValidationMessage(
+                      `Amount cannot exceed balance due (₹${balanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })})`
+                    );
+                    return false;
+                  }
+
+                  return { amount, method, notes };
+                },
+              });
+
+              if (!result.isConfirmed) return;
+
+              // Show loading
+              Swal.fire({
+                title: 'Processing Payment...',
+                html: 'Please wait while we record your payment',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                }
+              });
+
+              try {
+                const response = await fetch(`/api/invoices/${invoiceId}/payment`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(result.value),
+                });
+
+                const data = await response.json();
+
+                if (!data.ok) {
+                  throw new Error(data.message || 'Failed to record payment');
+                }
+
+                const newBalanceDue = balanceDue - result.value.amount;
+                const isFullyPaid = newBalanceDue === 0;
+
+                await Swal.fire({
+                  icon: "success",
+                  title: isFullyPaid ? "🎉 Invoice Fully Paid!" : "✅ Payment Recorded!",
+                  html: `
+                    <div style="text-align: center; margin-top: 16px;">
+                      <div style="font-size: 14px; color: #9ca3af; margin-bottom: 12px;">
+                        ₹${result.value.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} paid via ${result.value.method}
+                      </div>
+                      <div style="
+                        background: rgba(34, 197, 94, 0.1);
+                        border: 1px solid rgba(34, 197, 94, 0.3);
+                        padding: 16px;
+                        border-radius: 8px;
+                        margin-top: 16px;
+                      ">
+                        <div style="font-size: 11px; color: #9ca3af; text-transform: uppercase;">
+                          ${isFullyPaid ? 'Invoice Status' : 'Remaining Balance'}
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; color: #22c55e; margin-top: 6px;">
+                          ${isFullyPaid ? 'FULLY PAID ✓' : '₹' + newBalanceDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                    </div>
+                  `,
+                  background: "#151821",
+                  color: "#f9fafb",
+                  confirmButtonColor: "#4b63ff",
+                  confirmButtonText: "Done",
+                });
+
+                // Reload page to show updated data
+                location.reload();
+
+              } catch (error) {
+                console.error('Error recording payment:', error);
+                await Swal.fire({
+                  icon: "error",
+                  title: "Payment Failed",
+                  text: error.message || 'Failed to record payment. Please try again.',
+                  background: "#151821",
+                  color: "#f9fafb",
+                  confirmButtonColor: "#4b63ff",
+                });
+              }
+            }
+
+            /**
+       * Print Invoice - Opens PDF in new window for printing
+       */
+      async function printInvoice() {
+        try {
+          // Show loading
+          Swal.fire({
+            title: 'Preparing for Print...',
+            html: 'Loading PDF invoice',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          // Generate PDF and open in new window
+          const printUrl = `/api/invoices/${invoiceId}/download`;
+
+          // Open PDF in new window
+          const printWindow = window.open(printUrl, '_blank');
+
+          if (!printWindow) {
+            throw new Error('Please allow pop-ups to print invoices');
+          }
+
+          // Close loading dialog
+          Swal.close();
+
+          // Optional: Show success message
+          await Swal.fire({
+            icon: 'success',
+            title: 'Print Window Opened',
+            html: `
+              <div style="text-align: center; margin-top: 12px;">
+                <p style="font-size: 13px; color: #9ca3af; margin-bottom: 12px;">
+                  PDF opened in new tab. Use browser's print function (Ctrl+P / Cmd+P)
+                </p>
+                <div style="background: rgba(75, 99, 255, 0.1); border: 1px solid rgba(75, 99, 255, 0.3); padding: 12px; border-radius: 8px;">
+                  <div style="font-size: 12px; color: #4b63ff;">
+                    📄 ${invoiceNumber}
                   </div>
                 </div>
               </div>
             `,
-            background: "#151821",
-            color: "#f9fafb",
-            confirmButtonColor: "#4b63ff",
-            confirmButtonText: "Done",
+            timer: 3000,
+            showConfirmButton: false,
+            background: '#151821',
+            color: '#f9fafb',
           });
 
-          // Reload page to show updated data
-          location.reload();
-
         } catch (error) {
-          console.error('Error recording payment:', error);
-          await Swal.fire({
-            icon: "error",
-            title: "Payment Failed",
-            text: error.message || 'Failed to record payment. Please try again.',
-            background: "#151821",
-            color: "#f9fafb",
-            confirmButtonColor: "#4b63ff",
+          console.error('Print error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Print Failed',
+            text: error.message || 'Failed to open print window',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonColor: '#4b63ff',
           });
         }
       }

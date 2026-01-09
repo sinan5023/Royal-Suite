@@ -16,7 +16,7 @@ const {
 } = require("../../ValidationSchema/customerSchema");
 router.post("/", authCheck, validate(customerCreateSchema), addNewCustomer);
 router.get("/", authCheck, getCustomers);
-router.get("/search", searchCustomers);
+router.get("/search" , authCheck, searchCustomers);
 router.put("/:id", validate(customerCreateSchema), authCheck, updateCustomer);
 router.delete("/:id", authCheck, deleteCustomer);
 router.get("/:id", authCheck, viewCustomerDetails);

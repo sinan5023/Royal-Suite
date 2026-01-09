@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add Expense - SuitManager Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      :root {
+        --bg-main: #0f1115;
+        --bg-elevated: #151821;
+        --bg-elevated-soft: #171a24;
+        --sidebar-bg: #11131b;
+        --sidebar-active: #1f2432;
+        --border-subtle: #222633;
+        --accent: #4b63ff;
+        --accent-soft: #3744a9;
+        --danger: #f97373;
+        --success: #22c55e;
+        --warning: #fbbf24;
+        --info: #60a5fa;
+        --text-main: #f9fafb;
+        --text-soft: #9ca3af;
+        --text-muted: #6b7280;
+        --card-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Top bar */
+      .topbar {
+        height: 42px;
+        background: #12131b;
+        border-bottom: 1px solid #222436;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .topbar-logo-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        font-size: 11px;
+      }
+
+      .logo-square {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .topbar-center {
+        flex: 1;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-soft);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .topbar-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #1b1f2a;
+        border: 1px solid #252a3a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .avatar-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #374151;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Main layout */
+      .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 230px;
+        background: var(--sidebar-bg);
+        border-right: 1px solid #181b27;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #181b27;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .sidebar-header-logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      .sidebar-header-text {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px;
+        flex: 1;
+      }
+
+      .sidebar-section-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 8px;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--text-soft);
+        font-size: 13px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      .sidebar-item:hover {
+        background: #191d28;
+      }
+
+      .sidebar-item.active {
+        background: var(--sidebar-active);
+        color: #e5e7eb;
+      }
+
+      .sidebar-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .sidebar-footer {
+        padding: 10px;
+        border-top: 1px solid #181b27;
+        font-size: 11px;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        padding: 14px 18px 18px;
+        overflow-y: auto;
+      }
+
+      .page-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .page-header-texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .btn-secondary {
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-secondary:hover {
+        background: #191d2a;
+      }
+
+      /* Form Card */
+      .form-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 20px;
+        margin-bottom: 14px;
+      }
+
+      .form-section {
+        margin-bottom: 20px;
+      }
+
+      .form-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .section-header {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .form-row.full {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .form-label {
+        font-size: 12px;
+        color: var(--text-soft);
+        font-weight: 500;
+      }
+
+      .required {
+        color: var(--danger);
+        margin-left: 2px;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-main);
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: #151821;
+      }
+
+      .form-input:hover,
+      .form-select:hover,
+      .form-textarea:hover {
+        border-color: #2a3142;
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+        font-family: inherit;
+      }
+
+      .form-help {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #222635;
+        background: #11131c;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .checkbox-wrapper:hover {
+        border-color: #2a3142;
+        background: #151821;
+      }
+
+      .checkbox-input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--accent);
+      }
+
+      .checkbox-label {
+        font-size: 12px;
+        color: var(--text-main);
+        cursor: pointer;
+        flex: 1;
+      }
+
+      /* Form Actions */
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+      }
+
+      .btn-primary {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-soft);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-cancel {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: 1px solid #222635;
+        background: #11131c;
+        color: var(--text-soft);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+
+      .btn-cancel:hover {
+        background: #191d2a;
+      }
+
+      .spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* SweetAlert2 overrides */
+      .swal2-popup.swal2-suit-popup {
+        background: #151821;
+        border-radius: 12px;
+        border: 1px solid #222633;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      }
+
+      .swal2-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .swal2-html-container {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .swal2-actions {
+        gap: 8px;
+      }
+
+      .swal2-suit-confirm {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+      }
+
+      .swal2-suit-cancel {
+        border-radius: 999px !important;
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        border: 1px solid #222635 !important;
+        background: #11131c !important;
+        color: #e5e7eb !important;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          order: 2;
+        }
+        .content {
+          order: 1;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo-pill">
+          <div class="logo-square">🧳</div>
+          <span>SuitManager Pro</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-pill">
+          <span><%= user.role %> | <%= currentDate %></span>
+        </div>
+        <div class="avatar-circle">
+          <%= user.name.charAt(0).toUpperCase() %>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-logo">🧳</div>
+        <div class="sidebar-header-text">SuitManager Pro</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-section-title">Menu</div>
+        <a href="/dashboard" class="sidebar-item">
+          <div class="sidebar-icon">🏠</div>
+          <span>Dashboard</span>
+        </a>
+        <a href="/calendar" class="sidebar-item">
+          <div class="sidebar-icon">📅</div>
+          <span>Calendar</span>
+        </a>
+        <a href="/analytics" class="sidebar-item active">
+          <div class="sidebar-icon">📊</div>
+          <span>Analytics</span>
+        </a>
+        <a href="/expenses" class="sidebar-item">
+          <div class="sidebar-icon">💸</div>
+          <span>Expenses</span>
+        </a>
+        <a href="/customers" class="sidebar-item">
+          <div class="sidebar-icon">👤</div>
+          <span>Customers</span>
+        </a>
+        <a href="/bookings" class="sidebar-item">
+          <div class="sidebar-icon">📦</div>
+          <span>Bookings</span>
+        </a>
+        <a href="/inventory" class="sidebar-item">
+          <div class="sidebar-icon">📋</div>
+          <span>Inventory</span>
+        </a>
+        <a href="/invoices" class="sidebar-item">
+          <div class="sidebar-icon">💼</div>
+          <span>Invoices</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <span>v1.0.0</span>
+      </div>
+    </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <div class="page-header-row">
+          <div class="page-header-texts">
+            <div class="page-title">Add New Expense</div>
+            <div class="page-subtitle">Record a new business expense</div>
+          </div>
+          <a href="/expenses" class="btn-secondary">
+            ← Back to Expenses
+          </a>
+        </div>
+
+        <!-- Expense Form -->
+        <form id="expenseForm">
+          <!-- Basic Information -->
+          <div class="form-card">
+            <div class="form-section">
+              <div class="section-header">📝 Basic Information</div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">
+                    Category <span class="required">*</span>
+                  </label>
+                  <select class="form-select" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Salaries">Salaries</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Inventory">Inventory</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Subcategory</label>
+                  <input type="text" class="form-input" name="subcategory" placeholder="e.g., Electricity, Water">
+                </div>
+              </div>
+
+              <div class="form-row full">
+                <div class="form-group">
+                  <label class="form-label">
+                    Description <span class="required">*</span>
+                  </label>
+                  <textarea class="form-textarea" name="description" required placeholder="Enter expense description"></textarea>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">
+                    Amount <span class="required">*</span>
+                  </label>
+                  <input type="number" class="form-input" name="amount" required min="0" step="0.01" placeholder="₹ 0.00">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Expense Date <span class="required">*</span>
+                  </label>
+                  <input type="date" class="form-input" name="expenseDate" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Details -->
+          <div class="form-card">
+            <div class="form-section">
+              <div class="section-header">💳 Payment Details</div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">
+                    Payment Method <span class="required">*</span>
+                  </label>
+                  <select class="form-select" name="paymentMethod" required>
+                    <option value="Cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Card">Card</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Payment Status <span class="required">*</span>
+                  </label>
+                  <select class="form-select" name="paymentStatus" id="paymentStatus" required>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Partial">Partial</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row" id="paidAmountRow" style="display: none;">
+                <div class="form-group">
+                  <label class="form-label">Paid Amount</label>
+                  <input type="number" class="form-input" name="paidAmount" min="0" step="0.01" placeholder="₹ 0.00">
+                  <span class="form-help">Amount already paid (for partial payments)</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Tax Rate (%)</label>
+                  <input type="number" class="form-input" name="taxRate" min="0" max="100" step="0.01" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Tax Amount</label>
+                  <input type="number" class="form-input" name="taxAmount" min="0" step="0.01" placeholder="₹ 0.00">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Details -->
+          <div class="form-card">
+            <div class="form-section">
+              <div class="section-header">🏢 Vendor Details</div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vendor Name</label>
+                  <input type="text" class="form-input" name="vendorName" placeholder="Enter vendor name">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Vendor Contact</label>
+                  <input type="text" class="form-input" name="vendorContact" placeholder="Phone or email">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Invoice Number</label>
+                  <input type="text" class="form-input" name="invoiceNumber" placeholder="Invoice #">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Receipt Number</label>
+                  <input type="text" class="form-input" name="receiptNumber" placeholder="Receipt #">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recurring Settings -->
+          <div class="form-card">
+            <div class="form-section">
+              <div class="section-header">🔄 Recurring Settings</div>
+              
+              <div class="form-row full">
+                <div class="form-group">
+                  <div class="checkbox-wrapper">
+                    <input type="checkbox" class="checkbox-input" name="isRecurring" id="isRecurring">
+                    <label class="checkbox-label" for="isRecurring">
+                      This is a recurring expense
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div id="recurringFields" style="display: none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Frequency</label>
+                    <select class="form-select" name="recurringFrequency">
+                      <option value="">Select Frequency</option>
+                      <option value="Daily">Daily</option>
+                      <option value="Weekly">Weekly</option>
+                      <option value="Monthly">Monthly</option>
+                      <option value="Quarterly">Quarterly</option>
+                      <option value="Yearly">Yearly</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Next Occurrence</label>
+                    <input type="date" class="form-input" name="nextRecurringDate">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="form-card">
+            <div class="form-section">
+              <div class="section-header">📄 Additional Information</div>
+              
+              <div class="form-row full">
+                <div class="form-group">
+                  <label class="form-label">Notes</label>
+                  <textarea class="form-textarea" name="notes" placeholder="Add any additional notes or comments"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-card">
+            <div class="form-actions">
+              <a href="/expenses" class="btn-cancel">Cancel</a>
+              <button type="submit" class="btn-primary" id="submitBtn">
+                <span id="submitText">💾 Save Expense</span>
+                <div class="spinner" id="submitSpinner" style="display: none;"></div>
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script>
+      // Set today's date as default
+      document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="expenseDate"]').value = today;
+      });
+
+      // Toggle paid amount field
+      document.getElementById('paymentStatus').addEventListener('change', function() {
+        const paidAmountRow = document.getElementById('paidAmountRow');
+        if (this.value === 'Partial') {
+          paidAmountRow.style.display = 'grid';
+        } else {
+          paidAmountRow.style.display = 'none';
+        }
+      });
+
+      // Toggle recurring fields
+      document.getElementById('isRecurring').addEventListener('change', function() {
+        const recurringFields = document.getElementById('recurringFields');
+        if (this.checked) {
+          recurringFields.style.display = 'block';
+        } else {
+          recurringFields.style.display = 'none';
+        }
+      });
+
+      // Handle form submission
+      document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitText.style.display = 'none';
+        submitSpinner.style.display = 'block';
+        
+        try {
+          const formData = new FormData(this);
+          const data = {};
+          
+          formData.forEach((value, key) => {
+            if (key === 'isRecurring') {
+              data[key] = true;
+            } else if (value !== '') {
+              data[key] = value;
+            }
+          });
+          
+          const response = await fetch('/api/expenses', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+          });
+          
+          const result = await response.json();
+          
+          if (result.ok) {
+            await Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Expense created successfully!',
+              background: '#151821',
+              color: '#f9fafb',
+              confirmButtonColor: '#4b63ff',
+              customClass: {
+                popup: 'swal2-suit-popup',
+                confirmButton: 'swal2-suit-confirm',
+              },
+              timer: 1500,
+              showConfirmButton: false,
+            });
+            
+            window.location.href = '/expenses';
+          } else {
+            await Swal.fire({
+              icon: 'error',
+              title: 'Failed to create expense',
+              text: result.message || 'Something went wrong.',
+              background: '#151821',
+              color: '#f9fafb',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#4b63ff',
+              customClass: {
+                popup: 'swal2-suit-popup',
+                confirmButton: 'swal2-suit-confirm',
+              },
+            });
+            
+            submitBtn.disabled = false;
+            submitText.style.display = 'block';
+            submitSpinner.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          
+          await Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred. Please try again.',
+            background: '#151821',
+            color: '#f9fafb',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4b63ff',
+            customClass: {
+              popup: 'swal2-suit-popup',
+              confirmButton: 'swal2-suit-confirm',
+            },
+          });
+          
+          submitBtn.disabled = false;
+          submitText.style.display = 'block';
+          submitSpinner.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>

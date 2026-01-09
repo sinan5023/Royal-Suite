@@ -25,18 +25,18 @@ router.put('/:id', checkInvoiceBeforeEdit, authCheck, validate(customervalidatio
 router.delete('/:id', authCheck, bookingsController.deleteBooking);
 
 // Mark as picked up
-router.put('/:id/pickup', bookingsController.markBookingPickedUp);
+router.put('/:id/pickup' , authCheck, bookingsController.markBookingPickedUp);
 
 // Mark as returned
-router.put('/:id/return', bookingsController.markBookingReturned);
+router.put('/:id/return' , authCheck, bookingsController.markBookingReturned);
 
 // ✅ Record payment (CHECK INVOICE FIRST)
-router.post('/:id/payment', checkInvoiceBeforePayment, bookingsController.recordPayment);
+router.post('/:id/payment' , authCheck, checkInvoiceBeforePayment, bookingsController.recordPayment);
 
 // Track the reminder status
-router.post('/:id/reminder-log', bookingsController.logReminder);
+router.post('/:id/reminder-log' , authCheck, bookingsController.logReminder);
 
 // Checks the invoice before generating
-router.get('/:bookingId/invoice-check', invoiceController.checkInvoiceForBooking);
+router.get('/:bookingId/invoice-check' , authCheck, invoiceController.checkInvoiceForBooking);
 
 module.exports = router;

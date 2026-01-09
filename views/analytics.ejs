@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sales Analytics - SuitManager Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-main: #0f1115;
+      --bg-elevated: #151821;
+      --bg-elevated-soft: #171a24;
+      --sidebar-bg: #11131b;
+      --sidebar-active: #1f2432;
+      --border-subtle: #222633;
+      --accent: #4b63ff;
+      --accent-soft: #3744a9;
+      --danger: #f97373;
+      --success: #22c55e;
+      --text-main: #f9fafb;
+      --text-soft: #9ca3af;
+      --text-muted: #6b7280;
+      --card-radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 42px;
+      background: #12131b;
+      border-bottom: 1px solid #222436;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-logo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #1b1f2a;
+      border: 1px solid #252a3a;
+      font-size: 11px;
+    }
+
+    .logo-square {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .topbar-center {
+      flex: 1;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+    }
+
+    .topbar-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #1b1f2a;
+      border: 1px solid #252a3a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .avatar-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #374151;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid #181b27;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid #181b27;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-header-logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .sidebar-header-text {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .sidebar-nav {
+      padding: 10px 8px;
+      flex: 1;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 6px 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      color: var(--text-soft);
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .sidebar-item:hover {
+      background: #191d28;
+    }
+
+    .sidebar-item.active {
+      background: var(--sidebar-active);
+      color: #e5e7eb;
+    }
+
+    .sidebar-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .sidebar-footer {
+      padding: 10px;
+      border-top: 1px solid #181b27;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 14px 18px 18px;
+      overflow-y: auto;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .page-title-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Period Selector */
+    .period-selector {
+      display: inline-flex;
+      border-radius: 999px;
+      background: #181b25;
+      border: 1px solid #232737;
+      font-size: 11px;
+      overflow: hidden;
+    }
+
+    .period-btn {
+      padding: 5px 12px;
+      color: var(--text-soft);
+      cursor: pointer;
+      white-space: nowrap;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .period-btn:hover {
+      color: var(--text-main);
+    }
+
+    .period-btn.active {
+      background: var(--accent);
+      color: #f9fafb;
+    }
+
+    .btn-pill {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid #262b3c;
+      background: #191d2a;
+      font-size: 11px;
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-pill:hover {
+      opacity: 0.9;
+    }
+
+    /* Stats Grid */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: var(--bg-elevated);
+      border-radius: var(--card-radius);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: #2a3142;
+      transform: translateY(-1px);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+      opacity: 0.8;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .stat-change {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .stat-change.negative {
+      color: var(--danger);
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .chart-card {
+      background: var(--bg-elevated);
+      border-radius: var(--card-radius);
+      border: 1px solid var(--border-subtle);
+      padding: 14px;
+    }
+
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .chart-subtitle {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+    }
+
+    .chart-container.tall {
+      height: 350px;
+    }
+
+    /* Top Customers Table */
+    .customers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .customers-table thead {
+      background: var(--bg-elevated-soft);
+    }
+
+    .customers-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .customers-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1a1e2a;
+      transition: all 0.2s;
+    }
+
+    .customers-table tr:hover {
+      background: #181b27;
+    }
+
+    .customer-name {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .customer-bookings {
+      color: var(--text-soft);
+    }
+
+    .customer-amount {
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-subtle);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        order: 2;
+      }
+      .content {
+        order: 1;
+      }
+      .stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo-pill">
+        <div class="logo-square">🧳</div>
+        <span>SuitManager Pro</span>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <span><%= greeting %>, <%= user.name %></span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-pill">
+        <span><%= user.role %> | <%= currentDate %></span>
+      </div>
+      <div class="avatar-circle">
+        <%= user.name.charAt(0).toUpperCase() %>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-logo">🧳</div>
+        <div class="sidebar-header-text">SuitManager Pro</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-section-title">Menu</div>
+        <a href="/dashboard" class="sidebar-item">
+          <div class="sidebar-icon">🏠</div>
+          <span>Dashboard</span>
+        </a>
+        <a href="/calendar" class="sidebar-item">
+          <div class="sidebar-icon">📅</div>
+          <span>Calendar</span>
+        </a>
+        <a href="/analytics" class="sidebar-item active">
+          <div class="sidebar-icon">📊</div>
+          <span>Analytics</span>
+        </a>
+        <a href="/expenses" class="sidebar-item">
+          <div class="sidebar-icon">💸</div>
+          <span>Expenses</span>
+        </a>
+        <a href="/customers" class="sidebar-item">
+          <div class="sidebar-icon">👤</div>
+          <span>Customers</span>
+        </a>
+        <a href="/bookings" class="sidebar-item">
+          <div class="sidebar-icon">📦</div>
+          <span>Bookings</span>
+        </a>
+        <a href="/inventory" class="sidebar-item">
+          <div class="sidebar-icon">📋</div>
+          <span>Inventory</span>
+        </a>
+        <a href="/invoices" class="sidebar-item">
+          <div class="sidebar-icon">💼</div>
+          <span>Invoices</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <span>v1.0.0</span>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-title-section">
+          <div class="page-title">
+            📊 Sales Analytics
+          </div>
+          <div class="page-subtitle">Performance insights and revenue trends</div>
+        </div>
+        <div class="header-actions">
+          <div class="period-selector">
+            <button class="period-btn" onclick="changePeriod('7days')">7 Days</button>
+            <button class="period-btn active" onclick="changePeriod('30days')">30 Days</button>
+            <button class="period-btn" onclick="changePeriod('90days')">90 Days</button>
+            <button class="period-btn" onclick="changePeriod('year')">Year</button>
+          </div>
+          <button class="btn-pill" onclick="exportReport()">
+            📥 Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-icon">💰</div>
+          </div>
+          <div class="stat-value" id="totalRevenue">₹<%= (revenueAnalytics.totalRevenue || 0).toLocaleString('en-IN') %></div>
+          <div class="stat-meta">
+            <span id="revenueBookings"><%= revenueAnalytics.bookingsCount || 0 %> bookings</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Total Expenses</div>
+            <div class="stat-icon">💸</div>
+          </div>
+          <div class="stat-value" id="totalExpenses">₹<%= (expenseAnalytics.totalExpenses || 0).toLocaleString('en-IN') %></div>
+          <div class="stat-meta">
+            <span id="expenseCategories"><%= (expenseAnalytics.byCategory || []).length %> categories</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Net Profit</div>
+            <div class="stat-icon">📈</div>
+          </div>
+          <div class="stat-value" id="netProfit">₹<%= (profitMargin.profit || 0).toLocaleString('en-IN') %></div>
+          <div class="stat-meta">
+            <span class="stat-change" id="profitMargin"><%= profitMargin.profitMargin || 0 %>% margin</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Pending Payments</div>
+            <div class="stat-icon">⏳</div>
+          </div>
+          <div class="stat-value" id="pendingPayments">₹<%= (revenueAnalytics.pendingAmount || 0).toLocaleString('en-IN') %></div>
+          <div class="stat-meta">
+            <span id="paidAmount">₹<%= (revenueAnalytics.paidAmount || 0).toLocaleString('en-IN') %> paid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="charts-grid">
+        <!-- Sales vs Expenses Chart -->
+        <div class="chart-card full-width">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Sales vs Expenses</div>
+              <div class="chart-subtitle">Monthly comparison</div>
+            </div>
+          </div>
+          <div class="chart-container tall">
+            <canvas id="salesVsExpensesChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Expense Breakdown Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Expense Breakdown</div>
+              <div class="chart-subtitle">By category</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="expenseBreakdownChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Payment Status Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Payment Status</div>
+              <div class="chart-subtitle">Collection breakdown</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="paymentStatusChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Customers -->
+        <div class="chart-card full-width">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Top Customers</div>
+              <div class="chart-subtitle">By revenue contribution</div>
+            </div>
+          </div>
+          <table class="customers-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Bookings</th>
+                <th>Total Spent</th>
+                <th>Avg. Order</th>
+              </tr>
+            </thead>
+            <tbody id="topCustomersBody">
+              <% if (revenueAnalytics.topCustomers && revenueAnalytics.topCustomers.length > 0) { %>
+                <% revenueAnalytics.topCustomers.forEach(customer => { %>
+                  <tr>
+                    <td class="customer-name"><%= customer.name %></td>
+                    <td class="customer-bookings"><%= customer.bookingCount %></td>
+                    <td class="customer-amount">₹<%= customer.totalSpent.toLocaleString('en-IN') %></td>
+                    <td>₹<%= Math.round(customer.totalSpent / customer.bookingCount).toLocaleString('en-IN') %></td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-muted);">No customer data available</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Chart.js configuration
+    Chart.defaults.color = '#9ca3af';
+    Chart.defaults.borderColor = '#222633';
+    Chart.defaults.font.family = 'system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif';
+    Chart.defaults.font.size = 11;
+
+    let currentPeriod = '30days';
+    let salesVsExpensesChart, expenseBreakdownChart, paymentStatusChart;
+
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+      initCharts();
+    });
+
+    function initCharts() {
+      const salesVsExpensesData = <%- JSON.stringify(salesVsExpenses) %>;
+      createSalesVsExpensesChart(salesVsExpensesData);
+
+      const expenseData = <%- JSON.stringify(expenseAnalytics.byCategory || []) %>;
+      createExpenseBreakdownChart(expenseData);
+
+      const revenueData = <%- JSON.stringify(revenueAnalytics) %>;
+      createPaymentStatusChart(revenueData.paymentBreakdown || []);
+    }
+
+    function createSalesVsExpensesChart(data) {
+      const ctx = document.getElementById('salesVsExpensesChart');
+      
+      salesVsExpensesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.map(d => d.month),
+          datasets: [
+            {
+              label: 'Sales',
+              data: data.map(d => d.sales),
+              backgroundColor: '#22c55e',
+              borderColor: '#22c55e',
+              borderWidth: 0,
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+            {
+              label: 'Expenses',
+              data: data.map(d => d.expenses),
+              backgroundColor: '#f97373',
+              borderColor: '#f97373',
+              borderWidth: 0,
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+            {
+              label: 'Profit',
+              data: data.map(d => d.profit),
+              backgroundColor: '#4b63ff',
+              borderColor: '#4b63ff',
+              borderWidth: 0,
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              align: 'end',
+              labels: {
+                color: '#9ca3af',
+                padding: 15,
+                font: { size: 11, weight: '500' },
+                usePointStyle: true,
+                pointStyle: 'circle',
+              },
+            },
+            tooltip: {
+              backgroundColor: '#151821',
+              titleColor: '#f9fafb',
+              bodyColor: '#9ca3af',
+              borderColor: '#222633',
+              borderWidth: 1,
+              padding: 10,
+              displayColors: true,
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ₹' + context.parsed.y.toLocaleString('en-IN');
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                color: '#9ca3af',
+                font: { size: 10 },
+              },
+            },
+            y: {
+              grid: {
+                color: '#222633',
+                drawBorder: false,
+              },
+              ticks: {
+                color: '#9ca3af',
+                font: { size: 10 },
+                callback: function(value) {
+                  return '₹' + (value / 1000) + 'k';
+                }
+              },
+            },
+          },
+        },
+      });
+    }
+
+    function createExpenseBreakdownChart(data) {
+      const ctx = document.getElementById('expenseBreakdownChart');
+      
+      expenseBreakdownChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: data.map(d => d._id),
+          datasets: [{
+            data: data.map(d => d.totalAmount),
+            backgroundColor: [
+              '#f97373',
+              '#fbbf24',
+              '#22c55e',
+              '#3b82f6',
+              '#a855f7',
+              '#ec4899',
+              '#4b63ff',
+              '#14b8a6',
+            ],
+            borderWidth: 0,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#9ca3af',
+                padding: 12,
+                font: { size: 10, weight: '500' },
+                usePointStyle: true,
+                pointStyle: 'circle',
+              },
+            },
+            tooltip: {
+              backgroundColor: '#151821',
+              titleColor: '#f9fafb',
+              bodyColor: '#9ca3af',
+              borderColor: '#222633',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return label + ': ₹' + value.toLocaleString('en-IN') + ' (' + percentage + '%)';
+                }
+              }
+            }
+          },
+        },
+      });
+    }
+
+    function createPaymentStatusChart(data) {
+      const ctx = document.getElementById('paymentStatusChart');
+      
+      paymentStatusChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: data.map(d => d._id),
+          datasets: [{
+            data: data.map(d => d.amount),
+            backgroundColor: [
+              '#22c55e',
+              '#fbbf24',
+              '#f97373',
+            ],
+            borderWidth: 0,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#9ca3af',
+                padding: 12,
+                font: { size: 10, weight: '500' },
+                usePointStyle: true,
+                pointStyle: 'circle',
+              },
+            },
+            tooltip: {
+              backgroundColor: '#151821',
+              titleColor: '#f9fafb',
+              bodyColor: '#9ca3af',
+              borderColor: '#222633',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.parsed || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return label + ': ₹' + value.toLocaleString('en-IN') + ' (' + percentage + '%)';
+                }
+              }
+            }
+          },
+        },
+      });
+    }
+
+    async function changePeriod(period) {
+      currentPeriod = period;
+      
+      document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      try {
+        const response = await fetch(`/api/analytics/revenue?period=${period}`);
+        const data = await response.json();
+
+        if (data.ok) {
+          updateStats(data.data);
+          updateTopCustomers(data.data.topCustomers);
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      }
+    }
+
+    function updateStats(data) {
+      document.getElementById('totalRevenue').textContent = '₹' + (data.totalRevenue || 0).toLocaleString('en-IN');
+      document.getElementById('revenueBookings').textContent = (data.bookingsCount || 0) + ' bookings';
+      document.getElementById('pendingPayments').textContent = '₹' + (data.pendingAmount || 0).toLocaleString('en-IN');
+      document.getElementById('paidAmount').textContent = '₹' + (data.paidAmount || 0).toLocaleString('en-IN') + ' paid';
+    }
+
+    function updateTopCustomers(customers) {
+      const tbody = document.getElementById('topCustomersBody');
+      if (!customers || customers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No customer data available</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = customers.map(c => `
+        <tr>
+          <td class="customer-name">${c.name}</td>
+          <td class="customer-bookings">${c.bookingCount}</td>
+          <td class="customer-amount">₹${c.totalSpent.toLocaleString('en-IN')}</td>
+          <td>₹${Math.round(c.totalSpent / c.bookingCount).toLocaleString('en-IN')}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function exportReport() {
+      try {
+        const endDate = new Date().toISOString().split('T')[0];
+        const startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        
+        const response = await fetch(`/api/analytics/export?startDate=${startDate}&endDate=${endDate}&format=json`);
+        const data = await response.json();
+
+        if (data.ok) {
+          const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `analytics-report-${startDate}-${endDate}.json`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        }
+      } catch (error) {
+        console.error('Export error:', error);
+        alert('Failed to export report');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,106 @@
 const Invoice = require("../models/invoiceModel");
 const Booking = require("../models/bookingModel");
 const Customer = require("../models/customerModel");
+const jwt = require("jsonwebtoken");
+const invoicePdfService = require("./invoicePdfService");
+
+/**
+ * Generate secure download token for invoice
+ */
+const generateInvoiceDownloadToken = async (invoiceId) => {
+  try {
+    const invoice = await Invoice.findById(invoiceId).lean();
+
+    if (!invoice) {
+      throw new Error("Invoice not found");
+    }
+
+    // Create JWT token valid for 7 days
+    const token = jwt.sign(
+      {
+        invoiceId: invoice._id.toString(),
+        invoiceNumber: invoice.invoiceNumber,
+      },
+      process.env.JWT_SECRET ,
+      { expiresIn: "7d" }
+    );
+
+    return {
+      token,
+      downloadUrl: `${
+        process.env.BASE_URL
+      }/api/invoices/download/${token}`,
+    };
+  } catch (error) {
+    throw new Error(`Token generation failed: ${error.message}`);
+  }
+};
+
+/**
+ * Send invoice to customer via WhatsApp
+ */
+const sendInvoiceViaWhatsApp = async (invoiceId) => {
+  try {
+    const invoice = await Invoice.findById(invoiceId)
+      .populate("customerId", "fullName name primaryMobile")
+      .populate("bookingId", "bookingCode")
+      .lean();
+
+    if (!invoice) {
+      throw new Error("Invoice not found");
+    }
+
+    const customer = invoice.customerId;
+
+    if (!customer?.primaryMobile) {
+      throw new Error("Customer mobile number not found");
+    }
+
+    // Generate secure download token
+    const { downloadUrl } = await generateInvoiceDownloadToken(invoiceId);
+
+    // Format WhatsApp message
+    const customerName =
+      customer.fullName || customer.name || "Valued Customer";
+    const message = `Hello ${customerName},
+
+Thank you for choosing Royal Suite! 
+
+Your invoice ${invoice.invoiceNumber} is ready.
+
+📄 *Invoice Details:*
+• Amount: ₹${invoice.totalAmount.toFixed(2)}
+• Balance Due: ₹${invoice.balanceDue.toFixed(2)}
+• Due Date: ${new Date(invoice.dueDate).toLocaleDateString("en-IN")}
+
+📥 *Download Invoice:*
+${downloadUrl}
+
+For any queries, feel free to contact us.
+
+Best regards,
+Royal Suite Team`;
+
+    // Format mobile number for WhatsApp
+    const cleanMobile = customer.primaryMobile.replace(/\D/g, "");
+    const phoneNumber = cleanMobile.startsWith("91")
+      ? cleanMobile
+      : `91${cleanMobile}`;
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    return {
+      success: true,
+      whatsappUrl,
+      downloadUrl,
+      message,
+    };
+  } catch (error) {
+    throw new Error(`WhatsApp send failed: ${error.message}`);
+  }
+};
 
 /**
  * Check if invoice exists for booking
@@ -464,4 +564,6 @@ module.exports = {
   refundSecurityDeposit,
   cancelInvoice,
   getInvoiceStats,
+  generateInvoiceDownloadToken,
+  sendInvoiceViaWhatsApp,
 };

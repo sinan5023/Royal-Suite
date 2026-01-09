@@ -54,12 +54,6 @@ const customerCreateSchema = Joi.object({
       "string.pattern.base":
         "Alternate mobile must be country code + 10 digits (e.g. +911234567890)",
     }),
-
-  email: Joi.string().email().required().messages({
-    "string.email": "Please enter a valid email address",
-    "string.empty": "Email is required",
-  }),
-
   preferredContact: Joi.string()
     .valid("whatsapp", "call", "sms", "email")
     .required()

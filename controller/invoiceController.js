@@ -1,5 +1,9 @@
 const invoiceService = require("../services/invoiceService");
 const Invoice = require("../models/invoiceModel");
+const invoicePdfService = require("../services/invoicePdfService");
+const jwt = require("jsonwebtoken");
+const env = require("dotenv")
+env.config()
 
 // ===== PAGE RENDERING FUNCTIONS =====
 
@@ -104,7 +108,7 @@ const getEditInvoicePage = async (req, res) => {
     const invoice = await invoiceService.getInvoiceById(invoiceId);
 
     if (invoice.status === "Paid") {
-      return res.status(403).json( {
+      return res.status(403).json({
         message: "Cannot edit paid invoices",
         user: req.user || { name: "Guest", role: "User" },
       });
@@ -127,6 +131,74 @@ const getEditInvoicePage = async (req, res) => {
 };
 
 // ===== API FUNCTIONS =====
+
+/**
+ * Download invoice with secure token (public route)
+ * @route GET /api/invoices/download/:token
+ */
+const downloadInvoiceWithToken = async (req, res) => {
+  try {
+    // ✅ Decode the token first
+    const token = decodeURIComponent(req.params.token);
+    
+    console.log('🔐 Verifying token...');
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedpayload = jwt.decode(token)
+
+    console.log('✅ Token verified:', decoded.invoiceNumber);
+
+    // Generate PDF
+    const pdfBuffer = await invoicePdfService.generateInvoicePDF(decodedpayload.invoiceId);
+
+    // Set headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="Invoice-${decoded.invoiceNumber}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+
+    // Send PDF
+    res.send(pdfBuffer);
+
+  } catch (error) {
+    console.error('Invoice download error:', error);
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).send('<h1>Link Expired</h1><p>This invoice download link has expired. Please request a new one.</p>');
+    }
+    
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).send('<h1>Invalid Link</h1><p>This download link is invalid or has been tampered with.</p>');
+    }
+
+    res.status(500).send('<h1>Error</h1><p>Failed to download invoice. Please try again.</p>');
+  }
+};
+
+
+/**
+ * Send invoice via WhatsApp
+ * POST /api/invoices/:id/send-whatsapp
+ */
+const sendInvoiceWhatsApp = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await invoiceService.sendInvoiceViaWhatsApp(id);
+
+    res.json({
+      ok: true,
+      message: "WhatsApp link generated successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("WhatsApp send error:", error);
+    res.status(500).json({
+      ok: false,
+      message: error.message || "Failed to send invoice via WhatsApp",
+    });
+  }
+};
 
 /**
  * Check if invoice exists for booking
@@ -407,6 +479,63 @@ const getInvoiceStats = async (req, res) => {
   }
 };
 
+/**
+ * Download invoice PDF directly by ID
+ * @route GET /api/invoices/:id/download
+ */
+const downloadInvoiceById = async (req, res) => {
+  try {
+    console.log('📥 Download request received for invoice:', req.params.id);
+    
+    const { id } = req.params;
+
+    // Validate invoice exists
+    const invoice = await Invoice.findById(id);
+    
+    if (!invoice) {
+      console.log('❌ Invoice not found');
+      return res.status(404).json({
+        ok: false,
+        message: 'Invoice not found'
+      });
+    }
+
+    console.log('✅ Invoice found:', invoice.invoiceNumber);
+    console.log('🔄 Starting PDF generation...');
+
+    // Generate PDF buffer using your existing service
+    const pdfBuffer = await invoicePdfService.generateInvoicePDF(id);
+
+    console.log('✅ PDF generated, buffer size:', pdfBuffer.length);
+
+    // Set response headers for download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="Invoice-${invoice.invoiceNumber}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+
+    console.log('📤 Sending PDF to client...');
+    
+    // Send the buffer directly
+    res.send(pdfBuffer);
+    
+    console.log('✅ PDF sent successfully');
+
+  } catch (error) {
+    console.error('❌ Download invoice error:', error);
+    console.error('Error stack:', error.stack);
+    
+    // Check if headers already sent
+    if (!res.headersSent) {
+      res.status(500).json({
+        ok: false,
+        message: 'Failed to download invoice',
+        error: error.message
+      });
+    }
+  }
+};
+
+
 // ===== HELPER FUNCTIONS =====
 
 function getGreeting() {
@@ -443,4 +572,7 @@ module.exports = {
   refundDeposit,
   cancelInvoice,
   getInvoiceStats,
+  downloadInvoiceWithToken,
+  sendInvoiceWhatsApp,
+  downloadInvoiceById
 };

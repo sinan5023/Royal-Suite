@@ -251,7 +251,7 @@
 
       .stats-row {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
         margin-top: 6px;
       }
@@ -405,21 +405,6 @@
         font-size: 11px;
       }
 
-      .filter-pill {
-        padding: 5px 10px;
-        border-radius: 999px;
-        border: 1px solid #222635;
-        background: #11131c;
-        font-size: 11px;
-        color: var(--text-soft);
-        cursor: pointer;
-      }
-
-      .filter-pill.active {
-        background: #1c2233;
-        color: #e5e7eb;
-      }
-
       /* Simple three-column list layout */
       .columns-3 {
         display: grid;
@@ -439,6 +424,14 @@
 
       .list-item {
         margin-bottom: 10px;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: background 0.2s;
+      }
+
+      .list-item:hover {
+        background: #181b27;
       }
 
       .list-main {
@@ -543,10 +536,15 @@
         background: var(--accent-soft);
       }
 
+      /* Hidden class for search */
+      .hidden {
+        display: none !important;
+      }
+
       /* Responsive */
       @media (max-width: 1024px) {
         .stats-row {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .columns-3 {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -589,10 +587,7 @@
         </div>
       </div>
       <div class="topbar-center">
-        <span
-          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
-          currentDate %></span
-        >
+        <span><%= greeting %>, <%= user.name %></span>
       </div>
       <div class="topbar-right">
         <div class="topbar-pill">
@@ -607,43 +602,49 @@
     <div class="layout">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <div class="sidebar-header">
-          <div class="sidebar-header-logo">🧳</div>
-          <div class="sidebar-header-text">SuitManager Pro</div>
-        </div>
-        <div class="sidebar-nav">
-          <div class="sidebar-section-title">Menu</div>
-
-          <a href="/dashboard" class="sidebar-item active">
-            <div class="sidebar-icon">🏠</div>
-            <span>Dashboard</span>
-          </a>
-          <a href="/customers" class="sidebar-item">
-            <div class="sidebar-icon">👤</div>
-            <span>Customers</span>
-          </a>
-          <a href="/bookings" class="sidebar-item">
-            <div class="sidebar-icon">📦</div>
-            <span>Bookings</span>
-          </a>
-          <a href="/expenses" class="sidebar-item">
-            <div class="sidebar-icon">💳</div>
-            <span>Sales &amp; Expenses</span>
-          </a>
-          <a href="/inventory" class="sidebar-item">
-            <div class="sidebar-icon">📋</div>
-            <span>Inventory</span>
-          </a>
-          <a href="/invoices" class="sidebar-item">
-            <div class="sidebar-icon">💼</div>
-            <span>Invoices</span>
-          </a>
-        </div>
-        <div class="sidebar-footer">
-          <span>v1.0.0</span>
-          <div class="sidebar-collapse">⬅ Collapse</div>
-        </div>
-      </aside>
+      <div class="sidebar-header">
+        <div class="sidebar-header-logo">🧳</div>
+        <div class="sidebar-header-text">SuitManager Pro</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-section-title">Menu</div>
+        <a href="/dashboard" class="sidebar-item">
+          <div class="sidebar-icon">🏠</div>
+          <span>Dashboard</span>
+        </a>
+        <a href="/calendar" class="sidebar-item">
+          <div class="sidebar-icon">📅</div>
+          <span>Calendar</span>
+        </a>
+        <a href="/analytics" class="sidebar-item active">
+          <div class="sidebar-icon">📊</div>
+          <span>Analytics</span>
+        </a>
+        <a href="/expenses" class="sidebar-item">
+          <div class="sidebar-icon">💸</div>
+          <span>Expenses</span>
+        </a>
+        <a href="/customers" class="sidebar-item">
+          <div class="sidebar-icon">👤</div>
+          <span>Customers</span>
+        </a>
+        <a href="/bookings" class="sidebar-item">
+          <div class="sidebar-icon">📦</div>
+          <span>Bookings</span>
+        </a>
+        <a href="/inventory" class="sidebar-item">
+          <div class="sidebar-icon">📋</div>
+          <span>Inventory</span>
+        </a>
+        <a href="/invoices" class="sidebar-item">
+          <div class="sidebar-icon">💼</div>
+          <span>Invoices</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <span>v1.0.0</span>
+      </div>
+    </aside>
 
       <!-- Content -->
       <main class="content">
@@ -651,14 +652,14 @@
         <section class="greeting-card">
           <div>
             <div class="greeting-header">
-              <%= user.greeting %>, <%= user.name %>.
+              <%= greeting %>, <%= user.name %>.
             </div>
             <div class="greeting-sub">
               <%= user.role %> | <%= currentDate %>
             </div>
           </div>
 
-          <div class="stats-row">
+          <div class="stats-row" id="statsContainer">
             <div class="stat-card">
               <div class="stat-label">Deliveries Today</div>
               <div class="stat-value"><%= stats.deliveriesToday %></div>
@@ -679,16 +680,6 @@
               <div class="stat-value"><%= stats.activeBookings %></div>
               <div class="stat-meta"><%= stats.activeChange %></div>
             </div>
-            <div class="stat-card">
-              <div class="stat-label">Revenue vs Target</div>
-              <div class="stat-value"><%= stats.revenuePercent %>%</div>
-              <div class="stat-meta"><%= stats.revenueStatus %></div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Utilization</div>
-              <div class="stat-value"><%= stats.utilization %>%</div>
-              <div class="stat-meta"><%= stats.utilizationChange %></div>
-            </div>
           </div>
         </section>
 
@@ -708,91 +699,101 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">Upcoming Deliveries</div>
+              <button onclick="refreshDeliveries()" class="btn-pill" style="border: none; padding: 4px 8px;">
+                <span>🔄</span>
+              </button>
             </div>
 
             <div class="filter-row">
-              <input class="filter-input" placeholder="Search deliveries..." />
-              <button class="filter-pill">Delivery Method</button>
-              <button class="filter-pill">Assigned Staff</button>
+              <input class="filter-input" id="deliverySearch" placeholder="Search deliveries..." />
             </div>
 
-            <div class="columns-3">
+            <div class="columns-3" id="deliveriesContainer">
               <div>
                 <div class="column-title">Today</div>
-                <% if (deliveries.today && deliveries.today.length > 0) { %> <%
-                deliveries.today.forEach(delivery => { %>
-                <div class="list-item">
-                  <div class="list-main"><%= delivery.customerName %></div>
-                  <div class="list-sub"><%= delivery.productName %></div>
+                <div id="deliveriesToday">
+                  <% if (deliveries.today && deliveries.today.length > 0) { %>
+                    <% deliveries.today.forEach(delivery => { %>
+                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
+                        <div class="list-main"><%= delivery.customerName %></div>
+                        <div class="list-sub"><%= delivery.productName %></div>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="list-sub">No deliveries today</div>
+                  <% } %>
                 </div>
-                <% }) %> <% } else { %>
-                <div class="list-sub">No deliveries today</div>
-                <% } %>
               </div>
 
               <div>
                 <div class="column-title">Tomorrow</div>
-                <% if (deliveries.tomorrow && deliveries.tomorrow.length > 0) {
-                %> <% deliveries.tomorrow.forEach(delivery => { %>
-                <div class="list-item">
-                  <div class="list-main"><%= delivery.customerName %></div>
-                  <div class="list-sub"><%= delivery.productName %></div>
+                <div id="deliveriesTomorrow">
+                  <% if (deliveries.tomorrow && deliveries.tomorrow.length > 0) { %>
+                    <% deliveries.tomorrow.forEach(delivery => { %>
+                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
+                        <div class="list-main"><%= delivery.customerName %></div>
+                        <div class="list-sub"><%= delivery.productName %></div>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="list-sub">No deliveries tomorrow</div>
+                  <% } %>
                 </div>
-                <% }) %> <% } else { %>
-                <div class="list-sub">No deliveries tomorrow</div>
-                <% } %>
               </div>
 
               <div>
                 <div class="column-title">Day After Tomorrow</div>
-                <% if (deliveries.dayAfter && deliveries.dayAfter.length > 0) {
-                %> <% deliveries.dayAfter.forEach(delivery => { %>
-                <div class="list-item">
-                  <div class="list-main"><%= delivery.customerName %></div>
-                  <div class="list-sub"><%= delivery.productName %></div>
+                <div id="deliveriesDayAfter">
+                  <% if (deliveries.dayAfter && deliveries.dayAfter.length > 0) { %>
+                    <% deliveries.dayAfter.forEach(delivery => { %>
+                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
+                        <div class="list-main"><%= delivery.customerName %></div>
+                        <div class="list-sub"><%= delivery.productName %></div>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="list-sub">No deliveries</div>
+                  <% } %>
                 </div>
-                <% }) %> <% } else { %>
-                <div class="list-sub">No deliveries</div>
-                <% } %>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Upcoming returns + notifications/notes -->
+        <!-- Upcoming returns + notifications -->
         <section class="main-grid-2col">
           <div class="card">
             <div class="card-header">
               <div class="card-title">Upcoming Returns</div>
               <div class="card-tabs">
-                <div class="card-tab active">All</div>
-                <div class="card-tab">Due Today</div>
-                <div class="card-tab">Overdue</div>
-                <div class="card-tab">Next 7 Days</div>
+                <div class="card-tab active" data-filter="all" onclick="filterReturns('all')">All</div>
+                <div class="card-tab" data-filter="dueToday" onclick="filterReturns('dueToday')">Due Today</div>
+                <div class="card-tab" data-filter="overdue" onclick="filterReturns('overdue')">Overdue</div>
+                <div class="card-tab" data-filter="next7days" onclick="filterReturns('next7days')">Next 7 Days</div>
               </div>
             </div>
 
-            <div class="returns-list">
-              <% if (returns && returns.length > 0) { %> <%
-              returns.forEach(returnItem => { %>
-              <div class="return-row">
-                <div>
-                  <div class="list-main"><%= returnItem.customerName %></div>
-                  <div class="list-sub"><%= returnItem.productName %></div>
-                </div>
-                <div>
-                  <% if (returnItem.isOverdue) { %>
-                  <span class="badge-danger">Overdue</span>
-                  <% } %>
-                </div>
-                <div class="row-actions">
-                  <span>✏</span>
-                  <span>🔁</span>
-                  <span>⋯</span>
-                </div>
-              </div>
-              <% }) %> <% } else { %>
-              <div class="list-sub">No upcoming returns</div>
+            <div class="returns-list" id="returnsContainer">
+              <% if (returns && returns.length > 0) { %>
+                <% returns.forEach(returnItem => { %>
+                  <div class="return-row">
+                    <div style="cursor: pointer;" onclick="window.location.href='/bookings/<%= returnItem.id %>'">
+                      <div class="list-main"><%= returnItem.customerName %></div>
+                      <div class="list-sub"><%= returnItem.productName %> • <%= returnItem.returnDate %></div>
+                    </div>
+                    <div>
+                      <% if (returnItem.isOverdue) { %>
+                        <span class="badge-danger">Overdue (<%= returnItem.daysOverdue %>d)</span>
+                      <% } %>
+                    </div>
+                    <div class="row-actions">
+                      <span onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>/edit'">✏</span>
+                      <span onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>'">🔁</span>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="list-sub">No upcoming returns</div>
               <% } %>
             </div>
           </div>
@@ -801,33 +802,26 @@
             <div class="card" style="margin-bottom: 12px">
               <div class="card-header">
                 <div class="card-title">Notifications</div>
-                <a
-                  href="/notifications"
-                  style="
-                    font-size: 11px;
-                    color: var(--text-soft);
-                    text-decoration: none;
-                  "
-                >
-                  View All
-                </a>
+                <button onclick="refreshNotifications()" class="btn-pill" style="border: none; padding: 4px 8px; font-size: 10px;">
+                  🔄
+                </button>
               </div>
 
-              <div class="notifications-list">
-                <% if (notifications && notifications.length > 0) { %> <%
-                notifications.forEach(notif => { %>
-                <div class="notif-item">
-                  <div>
-                    <div class="notif-main"><%= notif.message %></div>
-                    <div class="notif-meta"><%= notif.timeAgo %></div>
-                  </div>
-                  <div class="notif-icons">
-                    <span>🔔</span>
-                    <span>⋯</span>
-                  </div>
-                </div>
-                <% }) %> <% } else { %>
-                <div class="list-sub">No new notifications</div>
+              <div class="notifications-list" id="notificationsContainer">
+                <% if (notifications && notifications.length > 0) { %>
+                  <% notifications.forEach(notif => { %>
+                    <div class="notif-item">
+                      <div>
+                        <div class="notif-main"><%= notif.message %></div>
+                        <div class="notif-meta"><%= notif.timeAgo %></div>
+                      </div>
+                      <div class="notif-icons">
+                        <span><%= notif.icon || '🔔' %></span>
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <div class="list-sub">No new notifications</div>
                 <% } %>
               </div>
             </div>
@@ -836,14 +830,13 @@
               <div class="card-header">
                 <div class="card-title">Handover / Today's Notes</div>
               </div>
-              <form method="POST" action="/dashboard/save-notes">
+              <form onsubmit="saveNotes(event)">
                 <textarea
                   class="notes-textarea"
+                  id="notesTextarea"
                   name="notes"
                   placeholder="Add notes for the next shift here..."
-                >
-<%= todayNotes || '' %></textarea
-                >
+                ><%= todayNotes || '' %></textarea>
                 <button type="submit" class="btn-full">Save Notes</button>
               </form>
             </div>
@@ -851,5 +844,218 @@
         </section>
       </main>
     </div>
+
+    <script>
+      // State
+      let currentReturnFilter = 'all';
+
+      // Auto-refresh stats every 30 seconds
+      setInterval(refreshStats, 30000);
+
+      // Refresh stats
+      async function refreshStats() {
+        try {
+          const response = await fetch('/api/dashboard/stats');
+          const data = await response.json();
+
+          if (data.ok) {
+            updateStatsUI(data.data);
+          }
+        } catch (error) {
+          console.error('Failed to refresh stats:', error);
+        }
+      }
+
+      // Update stats UI
+      function updateStatsUI(stats) {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-label">Deliveries Today</div>
+            <div class="stat-value">${stats.deliveriesToday}</div>
+            <div class="stat-meta">${stats.deliveriesChange}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Returns Due Today</div>
+            <div class="stat-value">${stats.returnsDueToday}</div>
+            <div class="stat-meta">${stats.returnsChange}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Overdue Returns</div>
+            <div class="stat-value">${stats.overdueReturns}</div>
+            <div class="stat-meta">${stats.overdueChange}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Bookings</div>
+            <div class="stat-value">${stats.activeBookings}</div>
+            <div class="stat-meta">${stats.activeChange}</div>
+          </div>
+        `;
+      }
+
+      // Refresh deliveries
+      async function refreshDeliveries() {
+        try {
+          const response = await fetch('/api/dashboard/deliveries');
+          const data = await response.json();
+
+          if (data.ok) {
+            updateDeliveriesUI(data.data);
+          }
+        } catch (error) {
+          console.error('Failed to refresh deliveries:', error);
+        }
+      }
+
+      // Update deliveries UI
+      function updateDeliveriesUI(deliveries) {
+        const renderDeliveryList = (items) => {
+          if (items.length === 0) {
+            return '<div class="list-sub">No deliveries</div>';
+          }
+          return items.map(d => `
+            <div class="list-item delivery-item" onclick="window.location.href='/bookings/${d.id}'">
+              <div class="list-main">${d.customerName}</div>
+              <div class="list-sub">${d.productName}</div>
+            </div>
+          `).join('');
+        };
+
+        document.getElementById('deliveriesToday').innerHTML = renderDeliveryList(deliveries.today);
+        document.getElementById('deliveriesTomorrow').innerHTML = renderDeliveryList(deliveries.tomorrow);
+        document.getElementById('deliveriesDayAfter').innerHTML = renderDeliveryList(deliveries.dayAfter);
+      }
+
+      // Filter returns
+      async function filterReturns(filter) {
+        currentReturnFilter = filter;
+
+        // Update active tab
+        document.querySelectorAll('.card-tab').forEach(tab => {
+          tab.classList.remove('active');
+          if (tab.dataset.filter === filter) {
+            tab.classList.add('active');
+          }
+        });
+
+        try {
+          const response = await fetch(`/api/dashboard/returns?filter=${filter}`);
+          const data = await response.json();
+
+          if (data.ok) {
+            updateReturnsUI(data.data);
+          }
+        } catch (error) {
+          console.error('Failed to filter returns:', error);
+        }
+      }
+
+      // Update returns UI
+      function updateReturnsUI(returns) {
+        const container = document.getElementById('returnsContainer');
+        
+        if (returns.length === 0) {
+          container.innerHTML = '<div class="list-sub">No upcoming returns</div>';
+          return;
+        }
+
+        container.innerHTML = returns.map(r => `
+          <div class="return-row">
+            <div style="cursor: pointer;" onclick="window.location.href='/bookings/${r.id}'">
+              <div class="list-main">${r.customerName}</div>
+              <div class="list-sub">${r.productName} • ${r.returnDate}</div>
+            </div>
+            <div>
+              ${r.isOverdue ? `<span class="badge-danger">Overdue (${r.daysOverdue}d)</span>` : ''}
+            </div>
+            <div class="row-actions">
+              <span onclick="event.stopPropagation(); window.location.href='/bookings/${r.id}/edit'">✏</span>
+              <span onclick="event.stopPropagation(); window.location.href='/bookings/${r.id}'">🔁</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Refresh notifications
+      async function refreshNotifications() {
+        try {
+          const response = await fetch('/api/dashboard/notifications');
+          const data = await response.json();
+
+          if (data.ok) {
+            updateNotificationsUI(data.data);
+          }
+        } catch (error) {
+          console.error('Failed to refresh notifications:', error);
+        }
+      }
+
+      // Update notifications UI
+      function updateNotificationsUI(notifications) {
+        const container = document.getElementById('notificationsContainer');
+        
+        if (notifications.length === 0) {
+          container.innerHTML = '<div class="list-sub">No new notifications</div>';
+          return;
+        }
+
+        container.innerHTML = notifications.map(n => `
+          <div class="notif-item">
+            <div>
+              <div class="notif-main">${n.message}</div>
+              <div class="notif-meta">${n.timeAgo}</div>
+            </div>
+            <div class="notif-icons">
+              <span>${n.icon || '🔔'}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Save notes
+      async function saveNotes(event) {
+        event.preventDefault();
+        const notes = document.getElementById('notesTextarea').value;
+
+        try {
+          const response = await fetch('/dashboard/save-notes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ notes }),
+          });
+
+          const data = await response.json();
+
+          if (data.ok) {
+            alert('Notes saved successfully!');
+          } else {
+            alert('Failed to save notes: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Failed to save notes:', error);
+          alert('Failed to save notes. Please try again.');
+        }
+      }
+
+      // Delivery search - FIXED
+      const deliverySearchInput = document.getElementById('deliverySearch');
+      if (deliverySearchInput) {
+        deliverySearchInput.addEventListener('input', function(e) {
+          const searchTerm = e.target.value.toLowerCase().trim();
+          const allDeliveryItems = document.querySelectorAll('.delivery-item');
+          
+          allDeliveryItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (searchTerm === '' || text.includes(searchTerm)) {
+              item.classList.remove('hidden');
+            } else {
+              item.classList.add('hidden');
+            }
+          });
+        });
+      }
+    </script>
   </body>
 </html>

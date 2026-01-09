@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Bookings - SuitManager Pro</title>
+    <title>Expenses - SuitManager Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- SweetAlert2 CDN -->
@@ -216,15 +216,6 @@
         align-items: center;
       }
 
-      .sidebar-collapse {
-        font-size: 11px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        cursor: pointer;
-        color: var(--text-soft);
-      }
-
       /* Content */
       .content {
         flex: 1;
@@ -278,6 +269,41 @@
         font-size: 13px;
       }
 
+      /* Stats row */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .stat-card {
+        background: var(--bg-elevated);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-subtle);
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--text-soft);
+        font-weight: 500;
+      }
+
+      .stat-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .stat-meta {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
       /* Search and filter row */
       .search-filter-row {
         display: flex;
@@ -285,6 +311,7 @@
         align-items: center;
         margin-bottom: 10px;
         gap: 10px;
+        flex-wrap: wrap;
       }
 
       .search-box-wrapper {
@@ -298,6 +325,7 @@
         padding: 6px 10px;
         font-size: 12px;
         color: var(--text-soft);
+        min-width: 240px;
       }
 
       .search-input {
@@ -309,7 +337,13 @@
         font-size: 12px;
       }
 
-      .filter-btn {
+      .filter-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .filter-select {
         padding: 6px 12px;
         border-radius: 999px;
         border: 1px solid #222635;
@@ -317,13 +351,12 @@
         color: var(--text-soft);
         font-size: 12px;
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+        min-width: 140px;
       }
 
-      .filter-btn:hover {
-        background: #191d2a;
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--accent);
       }
 
       /* Table card */
@@ -371,20 +404,25 @@
         background: #1b1f2c;
       }
 
-      .booking-id {
+      .expense-code {
         color: #60a5fa;
         font-size: 12px;
         font-weight: 500;
       }
 
-      .customer-name {
-        color: #e5e7eb;
-        font-size: 12px;
-      }
-
       .date-text {
         font-size: 12px;
         color: var(--text-main);
+      }
+
+      .category-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        background: #1e293b;
+        color: var(--info);
       }
 
       .status-badge {
@@ -395,45 +433,17 @@
         font-weight: 500;
       }
 
-      .status-confirmed {
+      .status-paid {
         background: #1e3a2e;
         color: var(--success);
       }
 
-      .status-draft {
-        background: #2d2d3b;
-        color: #9ca3af;
-      }
-
-      .status-completed {
-        background: #1e293b;
-        color: var(--info);
-      }
-
-      .status-cancelled {
-        background: #3b1a1f;
-        color: var(--danger);
-      }
-
-      .payment-badge {
-        display: inline-block;
-        padding: 3px 8px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 500;
-      }
-
-      .payment-paid {
-        background: #1e3a2e;
-        color: var(--success);
-      }
-
-      .payment-unpaid {
+      .status-pending {
         background: #3b1f2f;
         color: var(--danger);
       }
 
-      .payment-partial {
+      .status-partial {
         background: #3b2d1f;
         color: var(--warning);
       }
@@ -444,6 +454,7 @@
 
       .currency {
         font-variant-numeric: tabular-nums;
+        font-weight: 600;
       }
 
       .actions-cell {
@@ -586,6 +597,12 @@
         color: #e5e7eb !important;
       }
 
+      @media (max-width: 1024px) {
+        .stats-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
       @media (max-width: 900px) {
         .layout {
           flex-direction: column;
@@ -597,12 +614,31 @@
         .content {
           order: 1;
         }
+        .stats-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
         .table {
           font-size: 11px;
         }
         .table th,
         .table td {
           padding: 8px 8px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .stats-row {
+          grid-template-columns: 1fr;
+        }
+        .search-filter-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filter-group {
+          width: 100%;
+        }
+        .filter-select {
+          flex: 1;
         }
       }
     </style>
@@ -683,15 +719,37 @@
       <main class="content">
         <div class="page-header-row">
           <div class="page-header-texts">
-            <div class="page-title">Bookings</div>
-            <div class="page-subtitle">
-              Search, filter, and manage all bookings.
-            </div>
+            <div class="page-title">Expenses</div>
+            <div class="page-subtitle">Track and manage business expenses</div>
           </div>
-          <a href="/bookings/new" class="btn-primary">
-            <span class="btn-icon">📦+</span>
-            <span>New Booking</span>
+          <a href="/expenses/new" class="btn-primary">
+            <span class="btn-icon">💸+</span>
+            <span>Add Expense</span>
           </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Total Expenses</div>
+            <div class="stat-value" id="totalExpenses">₹0</div>
+            <div class="stat-meta">All time expenses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Paid Amount</div>
+            <div class="stat-value" id="paidAmount">₹0</div>
+            <div class="stat-meta">Completed payments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending Amount</div>
+            <div class="stat-value" id="pendingAmount">₹0</div>
+            <div class="stat-meta">Outstanding dues</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Count</div>
+            <div class="stat-value" id="expenseCount">0</div>
+            <div class="stat-meta">Active expenses</div>
+          </div>
         </div>
 
         <!-- Search and Filter -->
@@ -702,13 +760,27 @@
               type="text"
               id="searchInput"
               class="search-input"
-              placeholder="Search Booking ID or Customer..."
+              placeholder="Search expenses..."
             />
           </div>
-          <button class="filter-btn" id="filterBtn">
-            <span>🎚</span>
-            <span>Filter</span>
-          </button>
+          <div class="filter-group">
+            <select class="filter-select" id="categoryFilter">
+              <option value="">All Categories</option>
+              <option value="Rent">Rent</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Salaries">Salaries</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Inventory">Inventory</option>
+              <option value="Other">Other</option>
+            </select>
+            <select class="filter-select" id="statusFilter">
+              <option value="">All Status</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Partial">Partial</option>
+            </select>
+          </div>
         </div>
 
         <!-- Table (AJAX filled) -->
@@ -716,25 +788,23 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Booking ID</th>
-                <th>Customer Name</th>
-                <th>Event Date</th>
-                <th>Pickup Date</th>
-                <th>Return Date</th>
-                <th>Items Summary</th>
-                <th>Booking Status</th>
-                <th>Payment Status / Outstanding</th>
+                <th>Expense Code</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th class="numeric-cell">Amount</th>
+                <th>Payment Status</th>
                 <th class="numeric-cell">Actions</th>
               </tr>
             </thead>
-            <tbody id="bookingsBody">
+            <tbody id="expensesBody">
               <!-- rows injected by JS -->
             </tbody>
           </table>
 
           <!-- Footer / pagination -->
           <div class="table-footer">
-            <div id="summaryText">Showing 0–0 of 0 bookings</div>
+            <div id="summaryText">Showing 0–0 of 0 expenses</div>
             <div>
               <span class="rows-per-page">
                 <span>Rows per page:</span>
@@ -767,24 +837,76 @@
         total: 0,
         totalPages: 1,
         q: "",
+        category: "",
+        paymentStatus: "",
       };
 
-      const tbody = document.getElementById("bookingsBody");
+      const tbody = document.getElementById("expensesBody");
       const summaryText = document.getElementById("summaryText");
       const pageText = document.getElementById("pageText");
       const prevPageBtn = document.getElementById("prevPageBtn");
       const nextPageBtn = document.getElementById("nextPageBtn");
       const rowsPerPage = document.getElementById("rowsPerPage");
       const searchInput = document.getElementById("searchInput");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const statusFilter = document.getElementById("statusFilter");
 
-      async function fetchBookings() {
+      async function loadSummary() {
+        try {
+          const endDate = new Date().toISOString().split("T")[0];
+          const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split("T")[0];
+
+          const response = await fetch(
+            `/api/expenses/summary?startDate=${startDate}&endDate=${endDate}`
+          );
+          const result = await response.json();
+
+          if (result.ok) {
+            const data = result.data;
+            document.getElementById("totalExpenses").textContent =
+              "₹" + (data.totalExpenses || 0).toLocaleString("en-IN");
+            document.getElementById("expenseCount").textContent =
+              data.totalCount || 0;
+
+            let paid = 0;
+            let pending = 0;
+
+            if (data.byPaymentStatus) {
+              data.byPaymentStatus.forEach((status) => {
+                if (status._id === "Paid") {
+                  paid = status.total;
+                } else if (status._id === "Pending") {
+                  pending = status.total;
+                } else if (status._id === "Partial") {
+                  pending += status.total;
+                }
+              });
+            }
+
+            document.getElementById("paidAmount").textContent =
+              "₹" + paid.toLocaleString("en-IN");
+            document.getElementById("pendingAmount").textContent =
+              "₹" + pending.toLocaleString("en-IN");
+          }
+        } catch (error) {
+          console.error("Error loading summary:", error);
+        }
+      }
+
+      async function fetchExpenses() {
         const params = new URLSearchParams({
           page: state.page,
           limit: state.limit,
-          q: state.q,
         });
 
-        const res = await fetch("/api/bookings?" + params.toString(), {
+        if (state.q) params.append("q", state.q);
+        if (state.category) params.append("category", state.category);
+        if (state.paymentStatus)
+          params.append("paymentStatus", state.paymentStatus);
+
+        const res = await fetch("/api/expenses?" + params.toString(), {
           headers: { Accept: "application/json" },
         });
 
@@ -792,9 +914,9 @@
         if (!json.ok) {
           await Swal.fire({
             icon: "error",
-            title: "Failed to load bookings",
+            title: "Failed to load expenses",
             text:
-              json.message || "Something went wrong while loading bookings.",
+              json.message || "Something went wrong while loading expenses.",
             background: "#151821",
             color: "#f9fafb",
             confirmButtonText: "OK",
@@ -819,101 +941,76 @@
         if (!rows.length) {
           const tr = document.createElement("tr");
           const td = document.createElement("td");
-          td.colSpan = 9;
+          td.colSpan = 7;
           td.style.textAlign = "center";
           td.style.padding = "14px";
-          td.textContent = "No bookings found.";
+          td.textContent = "No expenses found.";
           tr.appendChild(td);
           tbody.appendChild(tr);
           return;
         }
 
-        rows.forEach((b) => {
+        rows.forEach((e) => {
           const tr = document.createElement("tr");
-          tr.dataset.id = b.id;
+          tr.dataset.id = e._id;
 
-          // Booking ID
-          const tdId = document.createElement("td");
-          const bookingIdSpan = document.createElement("span");
-          bookingIdSpan.className = "booking-id";
-          bookingIdSpan.textContent = b.bookingId || b.id;
-          tdId.appendChild(bookingIdSpan);
-          tr.appendChild(tdId);
+          // Expense Code
+          const tdCode = document.createElement("td");
+          const codeSpan = document.createElement("span");
+          codeSpan.className = "expense-code";
+          codeSpan.textContent = e.expenseCode || e._id;
+          tdCode.appendChild(codeSpan);
+          tr.appendChild(tdCode);
 
-          // Customer Name
-          const tdCustomer = document.createElement("td");
-          const customerSpan = document.createElement("span");
-          customerSpan.className = "customer-name";
-          customerSpan.textContent = b.customerName || "-";
-          tdCustomer.appendChild(customerSpan);
-          tr.appendChild(tdCustomer);
+          // Date
+          const tdDate = document.createElement("td");
+          const dateSpan = document.createElement("span");
+          dateSpan.className = "date-text";
+          dateSpan.textContent = e.expenseDate
+            ? new Date(e.expenseDate).toLocaleDateString("en-IN")
+            : "-";
+          tdDate.appendChild(dateSpan);
+          tr.appendChild(tdDate);
 
-          // Event Date
-          const tdEvent = document.createElement("td");
-          const eventSpan = document.createElement("span");
-          eventSpan.className = "date-text";
-          eventSpan.textContent = b.eventDate || "-";
-          tdEvent.appendChild(eventSpan);
-          tr.appendChild(tdEvent);
+          // Category
+          const tdCategory = document.createElement("td");
+          const categoryBadge = document.createElement("span");
+          categoryBadge.className = "category-badge";
+          categoryBadge.textContent = e.category || "-";
+          tdCategory.appendChild(categoryBadge);
+          tr.appendChild(tdCategory);
 
-          // Pickup Date
-          const tdPickup = document.createElement("td");
-          const pickupSpan = document.createElement("span");
-          pickupSpan.className = "date-text";
-          pickupSpan.textContent = b.pickupDate || "-";
-          tdPickup.appendChild(pickupSpan);
-          tr.appendChild(tdPickup);
+          // Description
+          const tdDesc = document.createElement("td");
+          tdDesc.textContent = e.description || "-";
+          tdDesc.style.maxWidth = "200px";
+          tdDesc.style.overflow = "hidden";
+          tdDesc.style.textOverflow = "ellipsis";
+          tr.appendChild(tdDesc);
 
-          // Return Date
-          const tdReturn = document.createElement("td");
-          const returnSpan = document.createElement("span");
-          returnSpan.className = "date-text";
-          returnSpan.textContent = b.returnDate || "-";
-          tdReturn.appendChild(returnSpan);
-          tr.appendChild(tdReturn);
+          // Amount
+          const tdAmount = document.createElement("td");
+          tdAmount.className = "numeric-cell";
+          const amountSpan = document.createElement("span");
+          amountSpan.className = "currency";
+          amountSpan.textContent =
+            "₹" + (e.amount || 0).toLocaleString("en-IN");
+          tdAmount.appendChild(amountSpan);
+          tr.appendChild(tdAmount);
 
-          // Items Summary
-          const tdItems = document.createElement("td");
-          tdItems.textContent = b.itemsSummary || "-";
-          tr.appendChild(tdItems);
-
-          // Booking Status
+          // Payment Status
           const tdStatus = document.createElement("td");
           const statusBadge = document.createElement("span");
           statusBadge.classList.add("status-badge");
-          const status = (b.bookingStatus || "").toLowerCase();
-          if (status === "confirmed")
-            statusBadge.classList.add("status-confirmed");
-          else if (status === "draft")
-            statusBadge.classList.add("status-draft");
-          else if (status === "completed")
-            statusBadge.classList.add("status-completed");
-          else if (status === "cancelled")
-            statusBadge.classList.add("status-cancelled");
-          statusBadge.textContent = b.bookingStatus || "Draft";
+          const status = (e.paymentStatus || "").toLowerCase();
+          if (status === "paid") statusBadge.classList.add("status-paid");
+          else if (status === "pending")
+            statusBadge.classList.add("status-pending");
+          else if (status === "partial")
+            statusBadge.classList.add("status-partial");
+          statusBadge.textContent = e.paymentStatus || "Pending";
           tdStatus.appendChild(statusBadge);
           tr.appendChild(tdStatus);
-
-          // Payment Status
-          const tdPayment = document.createElement("td");
-          const paymentBadge = document.createElement("span");
-          paymentBadge.classList.add("payment-badge");
-          const payment = (b.paymentStatus || "").toLowerCase();
-          if (payment === "paid") paymentBadge.classList.add("payment-paid");
-          else if (payment === "unpaid")
-            paymentBadge.classList.add("payment-unpaid");
-          else if (payment === "partial" || payment === "partially paid")
-            paymentBadge.classList.add("payment-partial");
-
-          let paymentText = b.paymentStatus || "Unpaid";
-          if (b.outstandingAmount && b.outstandingAmount > 0) {
-            paymentText += ` / ₹${b.outstandingAmount.toLocaleString(
-              "en-IN"
-            )} Outstanding`;
-          }
-          paymentBadge.textContent = paymentText;
-          tdPayment.appendChild(paymentBadge);
-          tr.appendChild(tdPayment);
 
           // Actions
           const tdActions = document.createElement("td");
@@ -924,14 +1021,14 @@
           btn.className = "more-btn";
           btn.innerHTML = "&#8942;";
           btn.dataset.action = "menu";
-          btn.dataset.id = b.id;
+          btn.dataset.id = e._id;
 
           const menu = document.createElement("div");
           menu.className = "row-menu";
           menu.innerHTML = `
-            <div class="row-menu-item" data-action="view" data-id="${b.id}">View</div>
-            <div class="row-menu-item" data-action="edit" data-id="${b.id}">Edit</div>
-            <div class="row-menu-item delete" data-action="delete" data-id="${b.id}">Delete</div>
+            <div class="row-menu-item" data-action="view" data-id="${e._id}">View</div>
+            <div class="row-menu-item" data-action="edit" data-id="${e._id}">Edit</div>
+            <div class="row-menu-item delete" data-action="delete" data-id="${e._id}">Delete</div>
           `;
 
           tdActions.appendChild(btn);
@@ -944,9 +1041,9 @@
 
       function renderFooter(p) {
         if (p.total === 0) {
-          summaryText.textContent = "Showing 0–0 of 0 bookings";
+          summaryText.textContent = "Showing 0–0 of 0 expenses";
         } else {
-          summaryText.textContent = `Showing ${p.from}–${p.to} of ${p.total} bookings`;
+          summaryText.textContent = `Showing ${p.from}–${p.to} of ${p.total} expenses`;
         }
         pageText.textContent = `Page ${p.page} of ${p.totalPages}`;
         prevPageBtn.disabled = p.page <= 1;
@@ -956,19 +1053,19 @@
       prevPageBtn.addEventListener("click", () => {
         if (state.page <= 1) return;
         state.page -= 1;
-        fetchBookings();
+        fetchExpenses();
       });
 
       nextPageBtn.addEventListener("click", () => {
         if (state.page >= state.totalPages) return;
         state.page += 1;
-        fetchBookings();
+        fetchExpenses();
       });
 
       rowsPerPage.addEventListener("change", () => {
         state.limit = parseInt(rowsPerPage.value, 10) || 20;
         state.page = 1;
-        fetchBookings();
+        fetchExpenses();
       });
 
       // Search debounce
@@ -978,8 +1075,21 @@
         searchTimer = setTimeout(() => {
           state.q = searchInput.value.trim();
           state.page = 1;
-          fetchBookings();
+          fetchExpenses();
         }, 300);
+      });
+
+      // Filter changes
+      categoryFilter.addEventListener("change", () => {
+        state.category = categoryFilter.value;
+        state.page = 1;
+        fetchExpenses();
+      });
+
+      statusFilter.addEventListener("change", () => {
+        state.paymentStatus = statusFilter.value;
+        state.page = 1;
+        fetchExpenses();
       });
 
       // Actions: dots menu + delete
@@ -1010,18 +1120,18 @@
         closeAllMenus();
 
         if (action === "view") {
-          window.location.href = `/bookings/${id}`;
+          window.location.href = `/expenses/${id}`;
           return;
         }
 
         if (action === "edit") {
-          window.location.href = `/bookings/${id}/edit`;
+          window.location.href = `/expenses/${id}/edit`;
           return;
         }
 
         if (action === "delete") {
           const result = await Swal.fire({
-            title: "Delete booking?",
+            title: "Delete expense?",
             text: "This action cannot be undone.",
             icon: "warning",
             background: "#151821",
@@ -1041,7 +1151,7 @@
           if (!result.isConfirmed) return;
 
           try {
-            const res = await fetch(`/api/bookings/${id}`, {
+            const res = await fetch(`/api/expenses/${id}`, {
               method: "DELETE",
               headers: { Accept: "application/json" },
             });
@@ -1068,7 +1178,7 @@
             await Swal.fire({
               icon: "success",
               title: "Deleted",
-              text: json.message || "Booking deleted successfully.",
+              text: json.message || "Expense deleted successfully.",
               background: "#151821",
               color: "#f9fafb",
               confirmButtonColor: "#4b63ff",
@@ -1080,7 +1190,8 @@
               showConfirmButton: false,
             });
 
-            fetchBookings();
+            fetchExpenses();
+            loadSummary();
           } catch (err) {
             console.error(err);
             await Swal.fire({
@@ -1107,7 +1218,8 @@
       });
 
       // Initial load
-      fetchBookings();
+      loadSummary();
+      fetchExpenses();
     </script>
   </body>
 </html>
