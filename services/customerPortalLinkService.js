@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Customer = require("../models/customerModel");
+const dotenv = require("dotenv");
+dotenv.config();
 
 /**
  * Generate customer portal access token
@@ -7,7 +9,10 @@ const Customer = require("../models/customerModel");
  * @param {String} redirectTo - Path to redirect after login
  * @returns {Promise<Object>} Token and portal URL
  */
-const generatePortalAccessToken = async (customerId, redirectTo = "/customer/dashboard") => {
+const generatePortalAccessToken = async (
+  customerId,
+  redirectTo = "/customer/dashboard"
+) => {
   try {
     const customer = await Customer.findById(customerId)
       .select("fullName primaryMobile portalCredentials customerCode")
@@ -33,14 +38,22 @@ const generatePortalAccessToken = async (customerId, redirectTo = "/customer/das
       type: "portal_access",
     };
 
+    console.log("🔐 Generating token with payload:", payload); // DEBUG
+
     const token = jwt.sign(
       payload,
-      process.env.JWT_SECRET || "your-secret-key",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
+    console.log("✅ Token generated successfully"); // DEBUG
+
     // Construct portal access URL
-    const portalAccessUrl = `${process.env.BASE_URL}/customer/access/${encodeURIComponent(token)}`;
+    const portalAccessUrl = `${
+      process.env.BASE_URL
+    }/customer/access/${encodeURIComponent(token)}`;
+
+    console.log("🔗 Portal URL:", portalAccessUrl); // DEBUG
 
     return {
       success: true,
@@ -53,7 +66,7 @@ const generatePortalAccessToken = async (customerId, redirectTo = "/customer/das
       },
     };
   } catch (error) {
-    console.error("Error generating portal access token:", error);
+    console.error("❌ Error generating portal access token:", error);
     throw error;
   }
 };
@@ -135,7 +148,9 @@ Royal Suite Team`;
       ? cleanMobile
       : `91${cleanMobile}`;
 
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
 
     return {
       success: true,
@@ -156,7 +171,11 @@ Royal Suite Team`;
  * @param {Object} invoiceData - Invoice details (invoiceNumber, totalAmount, dueDate)
  * @returns {Promise<Object>} WhatsApp URL and message
  */
-const generateInvoiceAccessWhatsAppLink = async (customerId, invoiceId, invoiceData) => {
+const generateInvoiceAccessWhatsAppLink = async (
+  customerId,
+  invoiceId,
+  invoiceData
+) => {
   try {
     const customer = await Customer.findById(customerId)
       .select("fullName primaryMobile portalCredentials")
@@ -235,7 +254,9 @@ Royal Suite Team`;
       ? cleanMobile
       : `91${cleanMobile}`;
 
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
 
     return {
       success: true,
@@ -256,14 +277,19 @@ Royal Suite Team`;
  */
 const verifyPortalAccessToken = async (token) => {
   try {
+    console.log("🔍 Verifying token:", token.substring(0, 20) + "..."); // DEBUG
+
     // Verify JWT token
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your-secret-key"
+      process.env.JWT_SECRET
     );
+
+    console.log("✅ Token decoded:", decoded); // DEBUG
 
     // Validate token type
     if (decoded.type !== "portal_access") {
+      console.log("❌ Invalid token type:", decoded.type); // DEBUG
       throw new Error("Invalid token type");
     }
 
@@ -273,12 +299,16 @@ const verifyPortalAccessToken = async (token) => {
       .lean();
 
     if (!customer) {
+      console.log("❌ Customer not found:", decoded.customerId); // DEBUG
       throw new Error("Customer not found");
     }
 
     if (!customer.portalCredentials?.isActive) {
+      console.log("❌ Portal access disabled"); // DEBUG
       throw new Error("Portal access is disabled");
     }
+
+    console.log("✅ Token verified successfully"); // DEBUG
 
     return {
       valid: true,
@@ -287,10 +317,15 @@ const verifyPortalAccessToken = async (token) => {
       redirectTo: decoded.redirectTo || "/customer/dashboard",
     };
   } catch (error) {
+    console.error("❌ Token verification error:", error.message); // DEBUG
+
     if (error.name === "TokenExpiredError") {
-      throw new Error("Portal access link has expired. Please request a new link.");
+      throw new Error(
+        "Portal access link has expired. Please request a new link."
+      );
     }
     if (error.name === "JsonWebTokenError") {
+      console.log("❌ JWT Error:", error.message); // DEBUG
       throw new Error("Invalid portal access link");
     }
     throw error;

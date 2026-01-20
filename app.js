@@ -7,6 +7,7 @@ const bookingRoutes = require("./Routes/bookingRoutes");
 const invoiceRoutes = require("./Routes/invoiceRoutes");
 const analyticsRoutes = require("./Routes/analyticsRoutes")
 const expenseRoutes = require("./Routes/expenseRoutes")
+const customerPortalRoutes = require("./Routes/customerPortalRoutes")
 //APIS
 const authApi = require("./Routes/api/authApi");
 const customerApi = require("./Routes/api/customerApi");
@@ -17,6 +18,7 @@ const dashboardApi = require("./Routes/api/dashboardApi");
 const calendarApi = require("./Routes/api/calendarApi")
 const analyticsApi = require("./Routes/api/analyticsApi")
 const expenseApi = require("./Routes/api/expenseApi")
+const customerPortalApi  = require("./Routes/api/customerPortalApi")
 //routes-end
 const dotenv = require("dotenv");
 const path = require("node:path");
@@ -40,6 +42,7 @@ app.use("/bookings", bookingRoutes);
 app.use("/invoices", invoiceRoutes);
 app.use("/analytics", analyticsRoutes)
 app.use("/expenses",expenseRoutes)
+app.use("/customer",customerPortalRoutes)
 // apis.    {
 //inventory API
 app.use("/api/inventory", inventoryApi);
@@ -59,6 +62,8 @@ app.use("/api/calendar",calendarApi)
 app.use("/api/analytics",analyticsApi)
 // expense API
 app.use("/api/expenses",expenseApi)
+// customer poral API
+app.use("/api/customer",customerPortalApi)
 
 //   }
 

@@ -2,6 +2,9 @@ const Customer = require("../models/customerModel");
 const Booking = require("../models/bookingModel");
 const Invoice = require("../models/invoiceModel");
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv")
+
+dotenv.config()
 
 /**
  * Authenticate customer with username and password
@@ -64,7 +67,7 @@ const authenticateCustomer = async (username, password) => {
         name: customer.fullName,
         type: "session",
       },
-      process.env.JWT_SECRET || "your-secret-key",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
@@ -193,6 +196,7 @@ const getCustomerBookings = async (customerId, page = 1, limit = 10) => {
     throw error;
   }
 };
+
 
 /**
  * Get single booking details

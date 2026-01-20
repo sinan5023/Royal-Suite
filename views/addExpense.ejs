@@ -447,7 +447,9 @@
       }
 
       @keyframes spin {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       /* SweetAlert2 overrides */
@@ -515,7 +517,7 @@
         </div>
       </div>
       <div class="topbar-center">
-        <span><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%= currentDate %></span>
+        <span><%= greeting %>, <%= user.name %></span>
       </div>
       <div class="topbar-right">
         <div class="topbar-pill">
@@ -524,55 +526,75 @@
         <div class="avatar-circle">
           <%= user.name.charAt(0).toUpperCase() %>
         </div>
+        <!-- Logout Button -->
+        <a
+          href="/logout"
+          class="topbar-pill logout-btn"
+          style="cursor: pointer; text-decoration: none; color: inherit"
+        >
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
       </div>
     </header>
+    <style>
+      .logout-btn {
+        transition: all 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        background: #2a1f1f !important;
+        border-color: #3b2727 !important;
+        color: var(--danger) !important;
+      }
+    </style>
 
     <div class="layout">
       <!-- Sidebar -->
       <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-header-logo">🧳</div>
-        <div class="sidebar-header-text">SuitManager Pro</div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="sidebar-section-title">Menu</div>
-        <a href="/dashboard" class="sidebar-item">
-          <div class="sidebar-icon">🏠</div>
-          <span>Dashboard</span>
-        </a>
-        <a href="/calendar" class="sidebar-item">
-          <div class="sidebar-icon">📅</div>
-          <span>Calendar</span>
-        </a>
-        <a href="/analytics" class="sidebar-item active">
-          <div class="sidebar-icon">📊</div>
-          <span>Analytics</span>
-        </a>
-        <a href="/expenses" class="sidebar-item">
-          <div class="sidebar-icon">💸</div>
-          <span>Expenses</span>
-        </a>
-        <a href="/customers" class="sidebar-item">
-          <div class="sidebar-icon">👤</div>
-          <span>Customers</span>
-        </a>
-        <a href="/bookings" class="sidebar-item">
-          <div class="sidebar-icon">📦</div>
-          <span>Bookings</span>
-        </a>
-        <a href="/inventory" class="sidebar-item">
-          <div class="sidebar-icon">📋</div>
-          <span>Inventory</span>
-        </a>
-        <a href="/invoices" class="sidebar-item">
-          <div class="sidebar-icon">💼</div>
-          <span>Invoices</span>
-        </a>
-      </div>
-      <div class="sidebar-footer">
-        <span>v1.0.0</span>
-      </div>
-    </aside>
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item active">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+        </div>
+      </aside>
 
       <!-- Content -->
       <main class="content">
@@ -581,9 +603,7 @@
             <div class="page-title">Add New Expense</div>
             <div class="page-subtitle">Record a new business expense</div>
           </div>
-          <a href="/expenses" class="btn-secondary">
-            ← Back to Expenses
-          </a>
+          <a href="/expenses" class="btn-secondary"> ← Back to Expenses </a>
         </div>
 
         <!-- Expense Form -->
@@ -592,7 +612,7 @@
           <div class="form-card">
             <div class="form-section">
               <div class="section-header">📝 Basic Information</div>
-              
+
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">
@@ -614,7 +634,12 @@
 
                 <div class="form-group">
                   <label class="form-label">Subcategory</label>
-                  <input type="text" class="form-input" name="subcategory" placeholder="e.g., Electricity, Water">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="subcategory"
+                    placeholder="e.g., Electricity, Water"
+                  />
                 </div>
               </div>
 
@@ -623,7 +648,12 @@
                   <label class="form-label">
                     Description <span class="required">*</span>
                   </label>
-                  <textarea class="form-textarea" name="description" required placeholder="Enter expense description"></textarea>
+                  <textarea
+                    class="form-textarea"
+                    name="description"
+                    required
+                    placeholder="Enter expense description"
+                  ></textarea>
                 </div>
               </div>
 
@@ -632,14 +662,27 @@
                   <label class="form-label">
                     Amount <span class="required">*</span>
                   </label>
-                  <input type="number" class="form-input" name="amount" required min="0" step="0.01" placeholder="₹ 0.00">
+                  <input
+                    type="number"
+                    class="form-input"
+                    name="amount"
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="₹ 0.00"
+                  />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">
                     Expense Date <span class="required">*</span>
                   </label>
-                  <input type="date" class="form-input" name="expenseDate" required>
+                  <input
+                    type="date"
+                    class="form-input"
+                    name="expenseDate"
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -649,7 +692,7 @@
           <div class="form-card">
             <div class="form-section">
               <div class="section-header">💳 Payment Details</div>
-              
+
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">
@@ -669,7 +712,12 @@
                   <label class="form-label">
                     Payment Status <span class="required">*</span>
                   </label>
-                  <select class="form-select" name="paymentStatus" id="paymentStatus" required>
+                  <select
+                    class="form-select"
+                    name="paymentStatus"
+                    id="paymentStatus"
+                    required
+                  >
                     <option value="Paid">Paid</option>
                     <option value="Pending">Pending</option>
                     <option value="Partial">Partial</option>
@@ -677,23 +725,47 @@
                 </div>
               </div>
 
-              <div class="form-row" id="paidAmountRow" style="display: none;">
+              <div class="form-row" id="paidAmountRow" style="display: none">
                 <div class="form-group">
                   <label class="form-label">Paid Amount</label>
-                  <input type="number" class="form-input" name="paidAmount" min="0" step="0.01" placeholder="₹ 0.00">
-                  <span class="form-help">Amount already paid (for partial payments)</span>
+                  <input
+                    type="number"
+                    class="form-input"
+                    name="paidAmount"
+                    min="0"
+                    step="0.01"
+                    placeholder="₹ 0.00"
+                  />
+                  <span class="form-help"
+                    >Amount already paid (for partial payments)</span
+                  >
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Tax Rate (%)</label>
-                  <input type="number" class="form-input" name="taxRate" min="0" max="100" step="0.01" placeholder="0.00">
+                  <input
+                    type="number"
+                    class="form-input"
+                    name="taxRate"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    placeholder="0.00"
+                  />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Tax Amount</label>
-                  <input type="number" class="form-input" name="taxAmount" min="0" step="0.01" placeholder="₹ 0.00">
+                  <input
+                    type="number"
+                    class="form-input"
+                    name="taxAmount"
+                    min="0"
+                    step="0.01"
+                    placeholder="₹ 0.00"
+                  />
                 </div>
               </div>
             </div>
@@ -703,28 +775,48 @@
           <div class="form-card">
             <div class="form-section">
               <div class="section-header">🏢 Vendor Details</div>
-              
+
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Vendor Name</label>
-                  <input type="text" class="form-input" name="vendorName" placeholder="Enter vendor name">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="vendorName"
+                    placeholder="Enter vendor name"
+                  />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Vendor Contact</label>
-                  <input type="text" class="form-input" name="vendorContact" placeholder="Phone or email">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="vendorContact"
+                    placeholder="Phone or email"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Invoice Number</label>
-                  <input type="text" class="form-input" name="invoiceNumber" placeholder="Invoice #">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="invoiceNumber"
+                    placeholder="Invoice #"
+                  />
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Receipt Number</label>
-                  <input type="text" class="form-input" name="receiptNumber" placeholder="Receipt #">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="receiptNumber"
+                    placeholder="Receipt #"
+                  />
                 </div>
               </div>
             </div>
@@ -734,11 +826,16 @@
           <div class="form-card">
             <div class="form-section">
               <div class="section-header">🔄 Recurring Settings</div>
-              
+
               <div class="form-row full">
                 <div class="form-group">
                   <div class="checkbox-wrapper">
-                    <input type="checkbox" class="checkbox-input" name="isRecurring" id="isRecurring">
+                    <input
+                      type="checkbox"
+                      class="checkbox-input"
+                      name="isRecurring"
+                      id="isRecurring"
+                    />
                     <label class="checkbox-label" for="isRecurring">
                       This is a recurring expense
                     </label>
@@ -746,7 +843,7 @@
                 </div>
               </div>
 
-              <div id="recurringFields" style="display: none;">
+              <div id="recurringFields" style="display: none">
                 <div class="form-row">
                   <div class="form-group">
                     <label class="form-label">Frequency</label>
@@ -762,7 +859,11 @@
 
                   <div class="form-group">
                     <label class="form-label">Next Occurrence</label>
-                    <input type="date" class="form-input" name="nextRecurringDate">
+                    <input
+                      type="date"
+                      class="form-input"
+                      name="nextRecurringDate"
+                    />
                   </div>
                 </div>
               </div>
@@ -773,11 +874,15 @@
           <div class="form-card">
             <div class="form-section">
               <div class="section-header">📄 Additional Information</div>
-              
+
               <div class="form-row full">
                 <div class="form-group">
                   <label class="form-label">Notes</label>
-                  <textarea class="form-textarea" name="notes" placeholder="Add any additional notes or comments"></textarea>
+                  <textarea
+                    class="form-textarea"
+                    name="notes"
+                    placeholder="Add any additional notes or comments"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -789,7 +894,11 @@
               <a href="/expenses" class="btn-cancel">Cancel</a>
               <button type="submit" class="btn-primary" id="submitBtn">
                 <span id="submitText">💾 Save Expense</span>
-                <div class="spinner" id="submitSpinner" style="display: none;"></div>
+                <div
+                  class="spinner"
+                  id="submitSpinner"
+                  style="display: none"
+                ></div>
               </button>
             </div>
           </div>
@@ -799,124 +908,130 @@
 
     <script>
       // Set today's date as default
-      document.addEventListener('DOMContentLoaded', function() {
-        const today = new Date().toISOString().split('T')[0];
+      document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date().toISOString().split("T")[0];
         document.querySelector('input[name="expenseDate"]').value = today;
       });
 
       // Toggle paid amount field
-      document.getElementById('paymentStatus').addEventListener('change', function() {
-        const paidAmountRow = document.getElementById('paidAmountRow');
-        if (this.value === 'Partial') {
-          paidAmountRow.style.display = 'grid';
-        } else {
-          paidAmountRow.style.display = 'none';
-        }
-      });
+      document
+        .getElementById("paymentStatus")
+        .addEventListener("change", function () {
+          const paidAmountRow = document.getElementById("paidAmountRow");
+          if (this.value === "Partial") {
+            paidAmountRow.style.display = "grid";
+          } else {
+            paidAmountRow.style.display = "none";
+          }
+        });
 
       // Toggle recurring fields
-      document.getElementById('isRecurring').addEventListener('change', function() {
-        const recurringFields = document.getElementById('recurringFields');
-        if (this.checked) {
-          recurringFields.style.display = 'block';
-        } else {
-          recurringFields.style.display = 'none';
-        }
-      });
+      document
+        .getElementById("isRecurring")
+        .addEventListener("change", function () {
+          const recurringFields = document.getElementById("recurringFields");
+          if (this.checked) {
+            recurringFields.style.display = "block";
+          } else {
+            recurringFields.style.display = "none";
+          }
+        });
 
       // Handle form submission
-      document.getElementById('expenseForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
-        const submitSpinner = document.getElementById('submitSpinner');
-        
-        // Disable button and show loading
-        submitBtn.disabled = true;
-        submitText.style.display = 'none';
-        submitSpinner.style.display = 'block';
-        
-        try {
-          const formData = new FormData(this);
-          const data = {};
-          
-          formData.forEach((value, key) => {
-            if (key === 'isRecurring') {
-              data[key] = true;
-            } else if (value !== '') {
-              data[key] = value;
+      document
+        .getElementById("expenseForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const submitBtn = document.getElementById("submitBtn");
+          const submitText = document.getElementById("submitText");
+          const submitSpinner = document.getElementById("submitSpinner");
+
+          // Disable button and show loading
+          submitBtn.disabled = true;
+          submitText.style.display = "none";
+          submitSpinner.style.display = "block";
+
+          try {
+            const formData = new FormData(this);
+            const data = {};
+
+            formData.forEach((value, key) => {
+              if (key === "isRecurring") {
+                data[key] = true;
+              } else if (value !== "") {
+                data[key] = value;
+              }
+            });
+
+            const response = await fetch("/api/expenses", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (result.ok) {
+              await Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Expense created successfully!",
+                background: "#151821",
+                color: "#f9fafb",
+                confirmButtonColor: "#4b63ff",
+                customClass: {
+                  popup: "swal2-suit-popup",
+                  confirmButton: "swal2-suit-confirm",
+                },
+                timer: 1500,
+                showConfirmButton: false,
+              });
+
+              window.location.href = "/expenses";
+            } else {
+              await Swal.fire({
+                icon: "error",
+                title: "Failed to create expense",
+                text: result.message || "Something went wrong.",
+                background: "#151821",
+                color: "#f9fafb",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#4b63ff",
+                customClass: {
+                  popup: "swal2-suit-popup",
+                  confirmButton: "swal2-suit-confirm",
+                },
+              });
+
+              submitBtn.disabled = false;
+              submitText.style.display = "block";
+              submitSpinner.style.display = "none";
             }
-          });
-          
-          const response = await fetch('/api/expenses', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-          });
-          
-          const result = await response.json();
-          
-          if (result.ok) {
+          } catch (error) {
+            console.error("Error:", error);
+
             await Swal.fire({
-              icon: 'success',
-              title: 'Success',
-              text: 'Expense created successfully!',
-              background: '#151821',
-              color: '#f9fafb',
-              confirmButtonColor: '#4b63ff',
+              icon: "error",
+              title: "Error",
+              text: "An error occurred. Please try again.",
+              background: "#151821",
+              color: "#f9fafb",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#4b63ff",
               customClass: {
-                popup: 'swal2-suit-popup',
-                confirmButton: 'swal2-suit-confirm',
-              },
-              timer: 1500,
-              showConfirmButton: false,
-            });
-            
-            window.location.href = '/expenses';
-          } else {
-            await Swal.fire({
-              icon: 'error',
-              title: 'Failed to create expense',
-              text: result.message || 'Something went wrong.',
-              background: '#151821',
-              color: '#f9fafb',
-              confirmButtonText: 'OK',
-              confirmButtonColor: '#4b63ff',
-              customClass: {
-                popup: 'swal2-suit-popup',
-                confirmButton: 'swal2-suit-confirm',
+                popup: "swal2-suit-popup",
+                confirmButton: "swal2-suit-confirm",
               },
             });
-            
+
             submitBtn.disabled = false;
-            submitText.style.display = 'block';
-            submitSpinner.style.display = 'none';
+            submitText.style.display = "block";
+            submitSpinner.style.display = "none";
           }
-        } catch (error) {
-          console.error('Error:', error);
-          
-          await Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An error occurred. Please try again.',
-            background: '#151821',
-            color: '#f9fafb',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#4b63ff',
-            customClass: {
-              popup: 'swal2-suit-popup',
-              confirmButton: 'swal2-suit-confirm',
-            },
-          });
-          
-          submitBtn.disabled = false;
-          submitText.style.display = 'block';
-          submitSpinner.style.display = 'none';
-        }
-      });
+        });
     </script>
   </body>
 </html>

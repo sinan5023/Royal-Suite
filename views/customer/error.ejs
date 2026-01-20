@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Royal Suite</title>
+    <style>
+        :root {
+            --bg-main: #101117;
+            --accent: #4b63ff;
+            --accent-soft: #1f2434;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --border-subtle: #1f2230;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #181a24 0, #101117 55%);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(75, 99, 255, 0.3);
+            border-radius: 50%;
+            animation: float-particle 15s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 12s;
+        }
+
+        .particle:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+            animation-duration: 16s;
+        }
+
+        .particle:nth-child(3) {
+            top: 40%;
+            left: 30%;
+            animation-delay: 4s;
+            animation-duration: 14s;
+        }
+
+        .particle:nth-child(4) {
+            top: 80%;
+            left: 60%;
+            animation-delay: 6s;
+            animation-duration: 18s;
+        }
+
+        .particle:nth-child(5) {
+            top: 15%;
+            left: 70%;
+            animation-delay: 3s;
+            animation-duration: 13s;
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(30px, -40px) scale(1.5);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-20px, -80px) scale(1);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(-40px, -40px) scale(1.3);
+                opacity: 0.5;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .logo-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #151827;
+            border: 1px solid #252a3a;
+            font-size: 12px;
+            margin-bottom: 18px;
+            animation: fade-in-down 0.6s ease-out;
+        }
+
+        .logo-square {
+            width: 22px;
+            height: 22px;
+            border-radius: 8px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .logo-text {
+            font-weight: 600;
+            color: #bfdbfe;
+        }
+
+        .error-icon {
+            font-size: clamp(72px, 11vw, 110px);
+            margin-bottom: 10px;
+            animation: bounce 1s ease infinite, fade-in-down 0.8s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .title {
+            font-size: clamp(22px, 3vw, 28px);
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: fade-in-down 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 480px;
+            margin-bottom: 22px;
+            animation: fade-in-down 1.2s ease-out;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            border-radius: 12px;
+            border: 1px solid #3d2929;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #fca5a5;
+            margin-bottom: 22px;
+            animation: fade-in-down 1.4s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            animation: fade-in-up 1.6s ease-out;
+        }
+
+        .btn {
+            border-radius: 999px;
+            padding: 9px 18px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: #3b4ccc;
+            color: #f9fafb;
+            box-shadow: 0 4px 14px rgba(75, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #3b4ccc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(75, 99, 255, 0.4);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: #303548;
+            color: var(--text-main);
+        }
+
+        .btn-ghost:hover {
+            background: var(--accent-soft);
+            border-color: #3b4063;
+            transform: translateY(-2px);
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fade-in 1s ease-out;
+        }
+
+        .orb {
+            position: relative;
+            width: 280px;
+            height: 280px;
+        }
+
+        .orb-circle {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.18), transparent 70%);
+            border: 1px solid #3d2929;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(239, 68, 68, 0.1);
+            animation: pulse-orb 4s ease-in-out infinite;
+        }
+
+        .orb-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 96px;
+            height: 96px;
+            transform: translate(-50%, -50%);
+            border-radius: 26px;
+            background: linear-gradient(145deg, #ef4444, #f87171);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 20px 45px rgba(239, 68, 68, 0.65);
+            animation: float-icon 3s ease-in-out infinite, rotate-subtle 6s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        .orb-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px dashed #3d2929;
+            opacity: 0.6;
+        }
+
+        .orb-ring:nth-child(2) {
+            inset: 22px;
+            animation: rotate-ring 20s linear infinite;
+        }
+
+        .orb-ring:nth-child(3) {
+            inset: 44px;
+            border-style: dotted;
+            animation: rotate-ring 15s linear infinite reverse;
+        }
+
+        .orb-ring:nth-child(4) {
+            inset: 66px;
+            animation: rotate-ring 25s linear infinite;
+        }
+
+        .orb-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #f87171;
+            box-shadow: 0 0 15px rgba(248, 113, 113, 0.9);
+            animation: orbit-1 8s linear infinite;
+        }
+
+        .orb-dot:nth-child(6) {
+            background: #fbbf24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.9);
+            animation: orbit-2 10s linear infinite;
+            width: 8px;
+            height: 8px;
+        }
+
+        .orb-dot:nth-child(7) {
+            background: #818cf8;
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.9);
+            animation: orbit-3 12s linear infinite;
+            width: 12px;
+            height: 12px;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle-twinkle 2s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(8) {
+            top: 15%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .sparkle:nth-child(9) {
+            top: 25%;
+            right: 15%;
+            animation-delay: 0.5s;
+        }
+
+        .sparkle:nth-child(10) {
+            bottom: 20%;
+            left: 25%;
+            animation-delay: 1s;
+        }
+
+        .sparkle:nth-child(11) {
+            bottom: 30%;
+            right: 20%;
+            animation-delay: 1.5s;
+        }
+
+        .support-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 20px;
+            animation: fade-in-up 1.8s ease-out;
+        }
+
+        .support-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Keyframes */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(75, 99, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(75, 99, 255, 0.8);
+            }
+        }
+
+        @keyframes pulse-orb {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes float-icon {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-16px);
+            }
+        }
+
+        @keyframes rotate-subtle {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotate(-3deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(3deg);
+            }
+        }
+
+        @keyframes rotate-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes orbit-1 {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) translateX(90px) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(180deg) translateX(90px) scale(1.3);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) translateX(90px) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes orbit-2 {
+            0% {
+                transform: translate(-50%, -50%) rotate(120deg) translateX(70px) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(300deg) translateX(70px) scale(1.4);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(480deg) translateX(70px) scale(1);
+            }
+        }
+
+        @keyframes orbit-3 {
+            0% {
+                transform: translate(-50%, -50%) rotate(240deg) translateX(110px) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(420deg) translateX(110px) scale(0.8);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(600deg) translateX(110px) scale(1);
+            }
+        }
+
+        @keyframes sparkle-twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        @keyframes fade-in-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: minmax(0, 1fr);
+                text-align: center;
+            }
+
+            .left {
+                text-align: center;
+            }
+
+            .subtitle,
+            .error-message {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .actions {
+                justify-content: center;
+            }
+
+            .orb {
+                margin-top: 12px;
+                width: 240px;
+                height: 240px;
+            }
+
+            .orb-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <section class="left">
+            <div class="logo-row">
+                <div class="logo-square">🎭</div>
+                <span class="logo-text">Royal Suite</span>
+            </div>
+
+            <div class="error-icon">⚠️</div>
+            <h1 class="title">Access Error</h1>
+            <p class="subtitle">
+                We couldn't process your request. The portal access link might be invalid, expired, or your account may not have the necessary permissions.
+            </p>
+
+            <div class="error-message">
+                <%= message %>
+            </div>
+
+            <div class="actions">
+                <a href="/customer/login" class="btn btn-primary">
+                    ← Back to Login
+                </a>
+                <a href="tel:+919876543210" class="btn btn-ghost">
+                    📞 Contact Support
+                </a>
+            </div>
+
+            <p class="support-text">
+                <%= greeting %>, <%= currentDate %>
+            </p>
+        </section>
+
+        <section class="right">
+            <div class="orb">
+                <div class="orb-circle"></div>
+                <div class="orb-ring"></div>
+                <div class="orb-ring"></div>
+                <div class="orb-ring"></div>
+                <div class="orb-icon">⚠️</div>
+                <div class="orb-dot"></div>
+                <div class="orb-dot"></div>
+                <div class="orb-dot"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

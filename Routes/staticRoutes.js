@@ -16,4 +16,11 @@ router.get("/calendar", authCheck, dashboardController.renderCalendar);
 router.get("/verifyOtp", otpVerifyMiddleware, (req, res) => {
   res.render("verifyOtp");
 });
+// Logout route
+router.get("/logout", (req, res) => {
+  res.clearCookie('token'); 
+  res.clearCookie("Otptoken")
+  // Redirect to login page
+  res.redirect("/");
+});
 module.exports = router;

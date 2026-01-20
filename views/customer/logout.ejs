@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out - Royal Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #181a24 0, #101117 55%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .logout-card {
+            background: #1a1b26;
+            border: 1px solid #1f2230;
+            border-radius: 24px;
+            padding: 60px 50px;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.6s ease;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            animation: popIn 0.5s ease 0.2s both;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #ffffff;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        p {
+            font-size: 15px;
+            color: #9ca3af;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease 0.5s both;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4b63ff;
+            color: white;
+            border: 2px solid #4b63ff;
+        }
+
+        .btn-primary:hover {
+            background: #394dd9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(75, 99, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #9ca3af;
+            border: 2px solid #303548;
+        }
+
+        .btn-secondary:hover {
+            border-color: #4b63ff;
+            color: #4b63ff;
+        }
+
+        .footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #1f2230;
+            font-size: 13px;
+            color: #6b7280;
+            animation: fadeIn 0.6s ease 0.6s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .logout-card {
+                padding: 40px 30px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-card">
+        <div class="check-circle">✓</div>
+        <h1>You're Logged Out</h1>
+        <p>Thanks for visiting Royal Suite Customer Portal. Your session has ended securely.</p>
+        
+        <div class="btn-group">
+            <a href="/customer/login" class="btn btn-primary">Login Again</a>
+            <a href="tel:+919876543210" class="btn btn-secondary">Support</a>
+        </div>
+
+        <div class="footer">
+            <%= greeting %> • <%= currentDate %>
+        </div>
+    </div>
+</body>
+</html>

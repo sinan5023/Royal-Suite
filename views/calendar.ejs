@@ -546,55 +546,75 @@
         <div class="avatar-circle">
           <%= user.name.charAt(0).toUpperCase() %>
         </div>
+        <!-- Logout Button -->
+        <a
+          href="/logout"
+          class="topbar-pill logout-btn"
+          style="cursor: pointer; text-decoration: none; color: inherit"
+        >
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
       </div>
     </header>
+    <style>
+      .logout-btn {
+        transition: all 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        background: #2a1f1f !important;
+        border-color: #3b2727 !important;
+        color: var(--danger) !important;
+      }
+    </style>
 
     <div class="layout">
       <!-- Sidebar -->
       <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-header-logo">🧳</div>
-        <div class="sidebar-header-text">SuitManager Pro</div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="sidebar-section-title">Menu</div>
-        <a href="/dashboard" class="sidebar-item">
-          <div class="sidebar-icon">🏠</div>
-          <span>Dashboard</span>
-        </a>
-        <a href="/calendar" class="sidebar-item">
-          <div class="sidebar-icon">📅</div>
-          <span>Calendar</span>
-        </a>
-        <a href="/analytics" class="sidebar-item active">
-          <div class="sidebar-icon">📊</div>
-          <span>Analytics</span>
-        </a>
-        <a href="/expenses" class="sidebar-item">
-          <div class="sidebar-icon">💸</div>
-          <span>Expenses</span>
-        </a>
-        <a href="/customers" class="sidebar-item">
-          <div class="sidebar-icon">👤</div>
-          <span>Customers</span>
-        </a>
-        <a href="/bookings" class="sidebar-item">
-          <div class="sidebar-icon">📦</div>
-          <span>Bookings</span>
-        </a>
-        <a href="/inventory" class="sidebar-item">
-          <div class="sidebar-icon">📋</div>
-          <span>Inventory</span>
-        </a>
-        <a href="/invoices" class="sidebar-item">
-          <div class="sidebar-icon">💼</div>
-          <span>Invoices</span>
-        </a>
-      </div>
-      <div class="sidebar-footer">
-        <span>v1.0.0</span>
-      </div>
-    </aside>
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item active">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+        </div>
+      </aside>
 
       <!-- Content -->
       <main class="content">

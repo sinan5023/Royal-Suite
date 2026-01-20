@@ -536,6 +536,16 @@
         background: var(--accent-soft);
       }
 
+      .logout-btn {
+        transition: all 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        background: #2a1f1f !important;
+        border-color: #3b2727 !important;
+        color: var(--danger) !important;
+      }
+
       /* Hidden class for search */
       .hidden {
         display: none !important;
@@ -579,6 +589,7 @@
   </head>
   <body>
     <!-- Top bar -->
+    <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
         <div class="topbar-logo-pill">
@@ -596,55 +607,64 @@
         <div class="avatar-circle">
           <%= user.name.charAt(0).toUpperCase() %>
         </div>
+        <!-- Logout Button -->
+        <a
+          href="/logout"
+          class="topbar-pill logout-btn"
+          style="cursor: pointer; text-decoration: none; color: inherit"
+        >
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
       </div>
     </header>
 
     <div class="layout">
       <!-- Sidebar -->
       <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-header-logo">🧳</div>
-        <div class="sidebar-header-text">SuitManager Pro</div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="sidebar-section-title">Menu</div>
-        <a href="/dashboard" class="sidebar-item">
-          <div class="sidebar-icon">🏠</div>
-          <span>Dashboard</span>
-        </a>
-        <a href="/calendar" class="sidebar-item">
-          <div class="sidebar-icon">📅</div>
-          <span>Calendar</span>
-        </a>
-        <a href="/analytics" class="sidebar-item active">
-          <div class="sidebar-icon">📊</div>
-          <span>Analytics</span>
-        </a>
-        <a href="/expenses" class="sidebar-item">
-          <div class="sidebar-icon">💸</div>
-          <span>Expenses</span>
-        </a>
-        <a href="/customers" class="sidebar-item">
-          <div class="sidebar-icon">👤</div>
-          <span>Customers</span>
-        </a>
-        <a href="/bookings" class="sidebar-item">
-          <div class="sidebar-icon">📦</div>
-          <span>Bookings</span>
-        </a>
-        <a href="/inventory" class="sidebar-item">
-          <div class="sidebar-icon">📋</div>
-          <span>Inventory</span>
-        </a>
-        <a href="/invoices" class="sidebar-item">
-          <div class="sidebar-icon">💼</div>
-          <span>Invoices</span>
-        </a>
-      </div>
-      <div class="sidebar-footer">
-        <span>v1.0.0</span>
-      </div>
-    </aside>
+        <div class="sidebar-header">
+          <div class="sidebar-header-logo">🧳</div>
+          <div class="sidebar-header-text">SuitManager Pro</div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="sidebar-section-title">Menu</div>
+          <a href="/dashboard" class="sidebar-item active">
+            <div class="sidebar-icon">🏠</div>
+            <span>Dashboard</span>
+          </a>
+          <a href="/calendar" class="sidebar-item">
+            <div class="sidebar-icon">📅</div>
+            <span>Calendar</span>
+          </a>
+          <a href="/analytics" class="sidebar-item">
+            <div class="sidebar-icon">📊</div>
+            <span>Analytics</span>
+          </a>
+          <a href="/expenses" class="sidebar-item">
+            <div class="sidebar-icon">💸</div>
+            <span>Expenses</span>
+          </a>
+          <a href="/customers" class="sidebar-item">
+            <div class="sidebar-icon">👤</div>
+            <span>Customers</span>
+          </a>
+          <a href="/bookings" class="sidebar-item">
+            <div class="sidebar-icon">📦</div>
+            <span>Bookings</span>
+          </a>
+          <a href="/inventory" class="sidebar-item">
+            <div class="sidebar-icon">📋</div>
+            <span>Inventory</span>
+          </a>
+          <a href="/invoices" class="sidebar-item">
+            <div class="sidebar-icon">💼</div>
+            <span>Invoices</span>
+          </a>
+        </div>
+        <div class="sidebar-footer">
+          <span>v1.0.0</span>
+        </div>
+      </aside>
 
       <!-- Content -->
       <main class="content">
@@ -699,13 +719,21 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">Upcoming Deliveries</div>
-              <button onclick="refreshDeliveries()" class="btn-pill" style="border: none; padding: 4px 8px;">
+              <button
+                onclick="refreshDeliveries()"
+                class="btn-pill"
+                style="border: none; padding: 4px 8px"
+              >
                 <span>🔄</span>
               </button>
             </div>
 
             <div class="filter-row">
-              <input class="filter-input" id="deliverySearch" placeholder="Search deliveries..." />
+              <input
+                class="filter-input"
+                id="deliverySearch"
+                placeholder="Search deliveries..."
+              />
             </div>
 
             <div class="columns-3" id="deliveriesContainer">
@@ -713,14 +741,16 @@
                 <div class="column-title">Today</div>
                 <div id="deliveriesToday">
                   <% if (deliveries.today && deliveries.today.length > 0) { %>
-                    <% deliveries.today.forEach(delivery => { %>
-                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
-                        <div class="list-main"><%= delivery.customerName %></div>
-                        <div class="list-sub"><%= delivery.productName %></div>
-                      </div>
-                    <% }) %>
-                  <% } else { %>
-                    <div class="list-sub">No deliveries today</div>
+                  <% deliveries.today.forEach(delivery => { %>
+                  <div
+                    class="list-item delivery-item"
+                    onclick="window.location.href='/bookings/<%= delivery.id %>'"
+                  >
+                    <div class="list-main"><%= delivery.customerName %></div>
+                    <div class="list-sub"><%= delivery.productName %></div>
+                  </div>
+                  <% }) %> <% } else { %>
+                  <div class="list-sub">No deliveries today</div>
                   <% } %>
                 </div>
               </div>
@@ -728,15 +758,17 @@
               <div>
                 <div class="column-title">Tomorrow</div>
                 <div id="deliveriesTomorrow">
-                  <% if (deliveries.tomorrow && deliveries.tomorrow.length > 0) { %>
-                    <% deliveries.tomorrow.forEach(delivery => { %>
-                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
-                        <div class="list-main"><%= delivery.customerName %></div>
-                        <div class="list-sub"><%= delivery.productName %></div>
-                      </div>
-                    <% }) %>
-                  <% } else { %>
-                    <div class="list-sub">No deliveries tomorrow</div>
+                  <% if (deliveries.tomorrow && deliveries.tomorrow.length > 0)
+                  { %> <% deliveries.tomorrow.forEach(delivery => { %>
+                  <div
+                    class="list-item delivery-item"
+                    onclick="window.location.href='/bookings/<%= delivery.id %>'"
+                  >
+                    <div class="list-main"><%= delivery.customerName %></div>
+                    <div class="list-sub"><%= delivery.productName %></div>
+                  </div>
+                  <% }) %> <% } else { %>
+                  <div class="list-sub">No deliveries tomorrow</div>
                   <% } %>
                 </div>
               </div>
@@ -744,15 +776,17 @@
               <div>
                 <div class="column-title">Day After Tomorrow</div>
                 <div id="deliveriesDayAfter">
-                  <% if (deliveries.dayAfter && deliveries.dayAfter.length > 0) { %>
-                    <% deliveries.dayAfter.forEach(delivery => { %>
-                      <div class="list-item delivery-item" onclick="window.location.href='/bookings/<%= delivery.id %>'">
-                        <div class="list-main"><%= delivery.customerName %></div>
-                        <div class="list-sub"><%= delivery.productName %></div>
-                      </div>
-                    <% }) %>
-                  <% } else { %>
-                    <div class="list-sub">No deliveries</div>
+                  <% if (deliveries.dayAfter && deliveries.dayAfter.length > 0)
+                  { %> <% deliveries.dayAfter.forEach(delivery => { %>
+                  <div
+                    class="list-item delivery-item"
+                    onclick="window.location.href='/bookings/<%= delivery.id %>'"
+                  >
+                    <div class="list-main"><%= delivery.customerName %></div>
+                    <div class="list-sub"><%= delivery.productName %></div>
+                  </div>
+                  <% }) %> <% } else { %>
+                  <div class="list-sub">No deliveries</div>
                   <% } %>
                 </div>
               </div>
@@ -766,34 +800,70 @@
             <div class="card-header">
               <div class="card-title">Upcoming Returns</div>
               <div class="card-tabs">
-                <div class="card-tab active" data-filter="all" onclick="filterReturns('all')">All</div>
-                <div class="card-tab" data-filter="dueToday" onclick="filterReturns('dueToday')">Due Today</div>
-                <div class="card-tab" data-filter="overdue" onclick="filterReturns('overdue')">Overdue</div>
-                <div class="card-tab" data-filter="next7days" onclick="filterReturns('next7days')">Next 7 Days</div>
+                <div
+                  class="card-tab active"
+                  data-filter="all"
+                  onclick="filterReturns('all')"
+                >
+                  All
+                </div>
+                <div
+                  class="card-tab"
+                  data-filter="dueToday"
+                  onclick="filterReturns('dueToday')"
+                >
+                  Due Today
+                </div>
+                <div
+                  class="card-tab"
+                  data-filter="overdue"
+                  onclick="filterReturns('overdue')"
+                >
+                  Overdue
+                </div>
+                <div
+                  class="card-tab"
+                  data-filter="next7days"
+                  onclick="filterReturns('next7days')"
+                >
+                  Next 7 Days
+                </div>
               </div>
             </div>
 
             <div class="returns-list" id="returnsContainer">
-              <% if (returns && returns.length > 0) { %>
-                <% returns.forEach(returnItem => { %>
-                  <div class="return-row">
-                    <div style="cursor: pointer;" onclick="window.location.href='/bookings/<%= returnItem.id %>'">
-                      <div class="list-main"><%= returnItem.customerName %></div>
-                      <div class="list-sub"><%= returnItem.productName %> • <%= returnItem.returnDate %></div>
-                    </div>
-                    <div>
-                      <% if (returnItem.isOverdue) { %>
-                        <span class="badge-danger">Overdue (<%= returnItem.daysOverdue %>d)</span>
-                      <% } %>
-                    </div>
-                    <div class="row-actions">
-                      <span onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>/edit'">✏</span>
-                      <span onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>'">🔁</span>
-                    </div>
+              <% if (returns && returns.length > 0) { %> <%
+              returns.forEach(returnItem => { %>
+              <div class="return-row">
+                <div
+                  style="cursor: pointer"
+                  onclick="window.location.href='/bookings/<%= returnItem.id %>'"
+                >
+                  <div class="list-main"><%= returnItem.customerName %></div>
+                  <div class="list-sub">
+                    <%= returnItem.productName %> • <%= returnItem.returnDate %>
                   </div>
-                <% }) %>
-              <% } else { %>
-                <div class="list-sub">No upcoming returns</div>
+                </div>
+                <div>
+                  <% if (returnItem.isOverdue) { %>
+                  <span class="badge-danger"
+                    >Overdue (<%= returnItem.daysOverdue %>d)</span
+                  >
+                  <% } %>
+                </div>
+                <div class="row-actions">
+                  <span
+                    onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>/edit'"
+                    >✏</span
+                  >
+                  <span
+                    onclick="event.stopPropagation(); window.location.href='/bookings/<%= returnItem.id %>'"
+                    >🔁</span
+                  >
+                </div>
+              </div>
+              <% }) %> <% } else { %>
+              <div class="list-sub">No upcoming returns</div>
               <% } %>
             </div>
           </div>
@@ -802,26 +872,29 @@
             <div class="card" style="margin-bottom: 12px">
               <div class="card-header">
                 <div class="card-title">Notifications</div>
-                <button onclick="refreshNotifications()" class="btn-pill" style="border: none; padding: 4px 8px; font-size: 10px;">
+                <button
+                  onclick="refreshNotifications()"
+                  class="btn-pill"
+                  style="border: none; padding: 4px 8px; font-size: 10px"
+                >
                   🔄
                 </button>
               </div>
 
               <div class="notifications-list" id="notificationsContainer">
-                <% if (notifications && notifications.length > 0) { %>
-                  <% notifications.forEach(notif => { %>
-                    <div class="notif-item">
-                      <div>
-                        <div class="notif-main"><%= notif.message %></div>
-                        <div class="notif-meta"><%= notif.timeAgo %></div>
-                      </div>
-                      <div class="notif-icons">
-                        <span><%= notif.icon || '🔔' %></span>
-                      </div>
-                    </div>
-                  <% }) %>
-                <% } else { %>
-                  <div class="list-sub">No new notifications</div>
+                <% if (notifications && notifications.length > 0) { %> <%
+                notifications.forEach(notif => { %>
+                <div class="notif-item">
+                  <div>
+                    <div class="notif-main"><%= notif.message %></div>
+                    <div class="notif-meta"><%= notif.timeAgo %></div>
+                  </div>
+                  <div class="notif-icons">
+                    <span><%= notif.icon || '🔔' %></span>
+                  </div>
+                </div>
+                <% }) %> <% } else { %>
+                <div class="list-sub">No new notifications</div>
                 <% } %>
               </div>
             </div>
@@ -836,7 +909,9 @@
                   id="notesTextarea"
                   name="notes"
                   placeholder="Add notes for the next shift here..."
-                ><%= todayNotes || '' %></textarea>
+                >
+<%= todayNotes || '' %></textarea
+                >
                 <button type="submit" class="btn-full">Save Notes</button>
               </form>
             </div>
@@ -847,7 +922,7 @@
 
     <script>
       // State
-      let currentReturnFilter = 'all';
+      let currentReturnFilter = "all";
 
       // Auto-refresh stats every 30 seconds
       setInterval(refreshStats, 30000);
@@ -855,20 +930,20 @@
       // Refresh stats
       async function refreshStats() {
         try {
-          const response = await fetch('/api/dashboard/stats');
+          const response = await fetch("/api/dashboard/stats");
           const data = await response.json();
 
           if (data.ok) {
             updateStatsUI(data.data);
           }
         } catch (error) {
-          console.error('Failed to refresh stats:', error);
+          console.error("Failed to refresh stats:", error);
         }
       }
 
       // Update stats UI
       function updateStatsUI(stats) {
-        const container = document.getElementById('statsContainer');
+        const container = document.getElementById("statsContainer");
         container.innerHTML = `
           <div class="stat-card">
             <div class="stat-label">Deliveries Today</div>
@@ -896,14 +971,14 @@
       // Refresh deliveries
       async function refreshDeliveries() {
         try {
-          const response = await fetch('/api/dashboard/deliveries');
+          const response = await fetch("/api/dashboard/deliveries");
           const data = await response.json();
 
           if (data.ok) {
             updateDeliveriesUI(data.data);
           }
         } catch (error) {
-          console.error('Failed to refresh deliveries:', error);
+          console.error("Failed to refresh deliveries:", error);
         }
       }
 
@@ -913,17 +988,24 @@
           if (items.length === 0) {
             return '<div class="list-sub">No deliveries</div>';
           }
-          return items.map(d => `
+          return items
+            .map(
+              (d) => `
             <div class="list-item delivery-item" onclick="window.location.href='/bookings/${d.id}'">
               <div class="list-main">${d.customerName}</div>
               <div class="list-sub">${d.productName}</div>
             </div>
-          `).join('');
+          `
+            )
+            .join("");
         };
 
-        document.getElementById('deliveriesToday').innerHTML = renderDeliveryList(deliveries.today);
-        document.getElementById('deliveriesTomorrow').innerHTML = renderDeliveryList(deliveries.tomorrow);
-        document.getElementById('deliveriesDayAfter').innerHTML = renderDeliveryList(deliveries.dayAfter);
+        document.getElementById("deliveriesToday").innerHTML =
+          renderDeliveryList(deliveries.today);
+        document.getElementById("deliveriesTomorrow").innerHTML =
+          renderDeliveryList(deliveries.tomorrow);
+        document.getElementById("deliveriesDayAfter").innerHTML =
+          renderDeliveryList(deliveries.dayAfter);
       }
 
       // Filter returns
@@ -931,97 +1013,119 @@
         currentReturnFilter = filter;
 
         // Update active tab
-        document.querySelectorAll('.card-tab').forEach(tab => {
-          tab.classList.remove('active');
+        document.querySelectorAll(".card-tab").forEach((tab) => {
+          tab.classList.remove("active");
           if (tab.dataset.filter === filter) {
-            tab.classList.add('active');
+            tab.classList.add("active");
           }
         });
 
         try {
-          const response = await fetch(`/api/dashboard/returns?filter=${filter}`);
+          const response = await fetch(
+            `/api/dashboard/returns?filter=${filter}`
+          );
           const data = await response.json();
 
           if (data.ok) {
             updateReturnsUI(data.data);
           }
         } catch (error) {
-          console.error('Failed to filter returns:', error);
+          console.error("Failed to filter returns:", error);
         }
       }
 
       // Update returns UI
       function updateReturnsUI(returns) {
-        const container = document.getElementById('returnsContainer');
-        
+        const container = document.getElementById("returnsContainer");
+
         if (returns.length === 0) {
-          container.innerHTML = '<div class="list-sub">No upcoming returns</div>';
+          container.innerHTML =
+            '<div class="list-sub">No upcoming returns</div>';
           return;
         }
 
-        container.innerHTML = returns.map(r => `
+        container.innerHTML = returns
+          .map(
+            (r) => `
           <div class="return-row">
-            <div style="cursor: pointer;" onclick="window.location.href='/bookings/${r.id}'">
+            <div style="cursor: pointer;" onclick="window.location.href='/bookings/${
+              r.id
+            }'">
               <div class="list-main">${r.customerName}</div>
               <div class="list-sub">${r.productName} • ${r.returnDate}</div>
             </div>
             <div>
-              ${r.isOverdue ? `<span class="badge-danger">Overdue (${r.daysOverdue}d)</span>` : ''}
+              ${
+                r.isOverdue
+                  ? `<span class="badge-danger">Overdue (${r.daysOverdue}d)</span>`
+                  : ""
+              }
             </div>
             <div class="row-actions">
-              <span onclick="event.stopPropagation(); window.location.href='/bookings/${r.id}/edit'">✏</span>
-              <span onclick="event.stopPropagation(); window.location.href='/bookings/${r.id}'">🔁</span>
+              <span onclick="event.stopPropagation(); window.location.href='/bookings/${
+                r.id
+              }/edit'">✏</span>
+              <span onclick="event.stopPropagation(); window.location.href='/bookings/${
+                r.id
+              }'">🔁</span>
             </div>
           </div>
-        `).join('');
+        `
+          )
+          .join("");
       }
 
       // Refresh notifications
       async function refreshNotifications() {
         try {
-          const response = await fetch('/api/dashboard/notifications');
+          const response = await fetch("/api/dashboard/notifications");
           const data = await response.json();
 
           if (data.ok) {
             updateNotificationsUI(data.data);
           }
         } catch (error) {
-          console.error('Failed to refresh notifications:', error);
+          console.error("Failed to refresh notifications:", error);
         }
       }
 
       // Update notifications UI
       function updateNotificationsUI(notifications) {
-        const container = document.getElementById('notificationsContainer');
-        
+        const container = document.getElementById("notificationsContainer");
+
         if (notifications.length === 0) {
-          container.innerHTML = '<div class="list-sub">No new notifications</div>';
+          container.innerHTML =
+            '<div class="list-sub">No new notifications</div>';
           return;
         }
 
-        container.innerHTML = notifications.map(n => `
+        container.innerHTML = notifications
+          .map(
+            (n) => `
           <div class="notif-item">
             <div>
               <div class="notif-main">${n.message}</div>
               <div class="notif-meta">${n.timeAgo}</div>
             </div>
             <div class="notif-icons">
-              <span>${n.icon || '🔔'}</span>
+              <span>${n.icon || "🔔"}</span>
             </div>
           </div>
-        `).join('');
+        `
+          )
+          .join("");
       }
 
       // Save notes
       async function saveNotes(event) {
         event.preventDefault();
-        const notes = document.getElementById('notesTextarea').value;
+        const notes = document.getElementById("notesTextarea").value;
 
         try {
-          const response = await fetch('/dashboard/save-notes', {
-            method: 'POST',
+          const response = await fetch("/dashboard/save-notes", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({ notes }),
           });
@@ -1029,29 +1133,29 @@
           const data = await response.json();
 
           if (data.ok) {
-            alert('Notes saved successfully!');
+            alert("Notes saved successfully!");
           } else {
-            alert('Failed to save notes: ' + data.message);
+            alert("Failed to save notes: " + data.message);
           }
         } catch (error) {
-          console.error('Failed to save notes:', error);
-          alert('Failed to save notes. Please try again.');
+          console.error("Failed to save notes:", error);
+          alert("Failed to save notes. Please try again.");
         }
       }
 
       // Delivery search - FIXED
-      const deliverySearchInput = document.getElementById('deliverySearch');
+      const deliverySearchInput = document.getElementById("deliverySearch");
       if (deliverySearchInput) {
-        deliverySearchInput.addEventListener('input', function(e) {
+        deliverySearchInput.addEventListener("input", function (e) {
           const searchTerm = e.target.value.toLowerCase().trim();
-          const allDeliveryItems = document.querySelectorAll('.delivery-item');
-          
-          allDeliveryItems.forEach(item => {
+          const allDeliveryItems = document.querySelectorAll(".delivery-item");
+
+          allDeliveryItems.forEach((item) => {
             const text = item.textContent.toLowerCase();
-            if (searchTerm === '' || text.includes(searchTerm)) {
-              item.classList.remove('hidden');
+            if (searchTerm === "" || text.includes(searchTerm)) {
+              item.classList.remove("hidden");
             } else {
-              item.classList.add('hidden');
+              item.classList.add("hidden");
             }
           });
         });

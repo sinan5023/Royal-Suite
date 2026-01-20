@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Customer Portal - Royal Suite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-main: #101117;
+        --card-bg: #14151f;
+        --border-color: #1f2230;
+        --primary: #4b63ff;
+        --primary-hover: #394dd9;
+        --text-main: #ffffff;
+        --text-muted: #9ca3af;
+        --input-bg: #111827;
+        --input-border: #1f2937;
+        --input-focus: #4b63ff;
+        --btn-secondary-bg: #111827;
+        --btn-secondary-border: #1f2937;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Animated background gradient */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: -100%;
+        background: radial-gradient(
+          circle at 30% 50%,
+          rgba(75, 99, 255, 0.08) 0%,
+          transparent 50%
+        ),
+        radial-gradient(
+          circle at 70% 60%,
+          rgba(129, 140, 248, 0.06) 0%,
+          transparent 50%
+        );
+        animation: gradient-move 15s ease infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes gradient-move {
+        0%, 100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(30px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-20px, 30px) scale(0.9);
+        }
+      }
+
+      /* Floating particles */
+      .bg-particle {
+        position: fixed;
+        width: 3px;
+        height: 3px;
+        background: rgba(75, 99, 255, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .bg-particle:nth-child(1) {
+        top: 20%;
+        left: 15%;
+        animation: float-particle 12s infinite ease-in-out;
+      }
+
+      .bg-particle:nth-child(2) {
+        top: 60%;
+        left: 80%;
+        animation: float-particle 15s infinite ease-in-out 2s;
+      }
+
+      .bg-particle:nth-child(3) {
+        top: 40%;
+        left: 50%;
+        animation: float-particle 18s infinite ease-in-out 4s;
+      }
+
+      .bg-particle:nth-child(4) {
+        top: 75%;
+        left: 25%;
+        animation: float-particle 14s infinite ease-in-out 6s;
+      }
+
+      @keyframes float-particle {
+        0%, 100% {
+          transform: translate(0, 0);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translate(20px, -40px);
+          opacity: 0.7;
+        }
+      }
+
+      .login-wrapper {
+        width: 100%;
+        max-width: 440px;
+        position: relative;
+        z-index: 1;
+        animation: fade-in-up 0.8s ease-out;
+      }
+
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 36px 32px 32px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6),
+                    0 0 0 1px rgba(75, 99, 255, 0.05);
+        position: relative;
+        backdrop-filter: blur(10px);
+      }
+
+      /* Glow effect on hover */
+      .login-card::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 16px;
+        padding: 2px;
+        background: linear-gradient(135deg, transparent, rgba(75, 99, 255, 0.2), transparent);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .login-card:hover::before {
+        opacity: 1;
+      }
+
+      .app-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        animation: fade-in-down 0.6s ease-out;
+      }
+
+      @keyframes fade-in-down {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .app-logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #4b63ff, #2563eb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e5e7eb;
+        font-size: 20px;
+        font-weight: 700;
+        margin-right: 10px;
+        box-shadow: 0 8px 20px rgba(75, 99, 255, 0.3);
+        animation: pulse-glow 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%, 100% {
+          box-shadow: 0 8px 20px rgba(75, 99, 255, 0.3);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 8px 25px rgba(75, 99, 255, 0.5);
+          transform: scale(1.05);
+        }
+      }
+
+      .app-logo-text {
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #60a5fa, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .login-title {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 20px;
+        font-weight: 700;
+        animation: fade-in 1s ease-out;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .login-subtitle {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 28px;
+        animation: fade-in 1.2s ease-out;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+        animation: fade-in 1.4s ease-out;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 7px;
+        color: #d1d5db;
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 11px 13px;
+        font-size: 14px;
+        border-radius: 10px;
+        border: 1px solid var(--input-border);
+        background: var(--input-bg);
+        color: var(--text-main);
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .form-input::placeholder {
+        color: #6b7280;
+      }
+
+      .form-input:focus {
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 3px rgba(75, 99, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .form-input:hover:not(:focus) {
+        border-color: #374151;
+      }
+
+      .form-input:read-only {
+        background: #1a1f2e;
+        color: #9ca3af;
+        cursor: not-allowed;
+        border-color: #1f2937;
+      }
+
+      .form-input:read-only:focus {
+        box-shadow: none;
+        transform: none;
+        border-color: #1f2937;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 4px;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+        z-index: 10;
+      }
+
+      .toggle-password:hover {
+        color: var(--primary);
+      }
+
+      .btn {
+        width: 100%;
+        border-radius: 10px;
+        padding: 11px 14px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+        transform: translate(-50%, -50%);
+      }
+
+      .btn:hover::before {
+        width: 400px;
+        height: 400px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #5b73ff);
+        color: #f9fafb;
+        margin-top: 24px;
+        box-shadow: 0 6px 20px rgba(75, 99, 255, 0.3);
+        animation: fade-in 1.6s ease-out;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--primary-hover), #4b5fef);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(75, 99, 255, 0.4);
+      }
+
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .error-message {
+        display: none;
+        color: #f97373;
+        font-size: 12px;
+        margin-bottom: 16px;
+        padding: 10px 12px;
+        background: rgba(249, 115, 115, 0.1);
+        border: 1px solid rgba(249, 115, 115, 0.3);
+        border-radius: 8px;
+        animation: shake 0.5s ease;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+      }
+
+      /* Loading animation for button */
+      .btn-primary.loading {
+        pointer-events: none;
+        position: relative;
+        color: transparent;
+      }
+
+      .btn-primary.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .security-badge {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .security-badge p {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      .support-link {
+        color: #6366f1;
+        text-decoration: none;
+        font-size: 12px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .support-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: #6366f1;
+        transition: width 0.3s ease;
+      }
+
+      .support-link:hover::after {
+        width: 100%;
+      }
+
+      .lock-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 12px;
+        font-size: 11px;
+        color: #6b7280;
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 28px 24px 24px;
+          border-radius: 14px;
+        }
+
+        .login-title {
+          font-size: 18px;
+        }
+
+        .app-logo-text {
+          font-size: 20px;
+        }
+
+        .app-logo-icon {
+          width: 32px;
+          height: 32px;
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background particles -->
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="app-logo">
+          <div class="app-logo-icon">
+            <span>🎭</span>
+          </div>
+          <span class="app-logo-text">Royal Suite</span>
+        </div>
+
+        <h1 class="login-title"><%= greeting %>!</h1>
+        <p class="login-subtitle">Enter your password to access the customer portal</p>
+        
+        <% if (error) { %>
+        <div class="error-message show">
+          <%= error %>
+        </div>
+        <% } %>
+
+        <form id="login-form" method="POST" action="/customer/login">
+          <!-- Hidden Fields -->
+          <input type="hidden" name="token" value="<%= token %>">
+          <input type="hidden" name="redirectTo" value="<%= redirectTo %>">
+
+          <!-- Username (Pre-filled, Read-only) -->
+          <div class="form-group">
+            <label class="form-label" for="username">Username / Mobile Number</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              class="form-input"
+              value="<%= username %>"
+              readonly
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-wrapper">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                class="form-input"
+                placeholder="Enter your password"
+                required
+                autofocus
+              />
+              <button type="button" class="toggle-password" id="toggle-password" aria-label="Toggle password visibility">
+                <span id="eye-icon">👁️</span>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" id="login-button">
+            Login to Portal
+          </button>
+        </form>
+
+        <div class="security-badge">
+          <p>Need help accessing your account?</p>
+          <a href="tel:+919876543210" class="support-link">Contact Support</a>
+          
+          <div class="lock-badge">
+            <span>🔒</span>
+            <span>Secure Login • Link valid for 7 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById('login-form');
+      const loginButton = document.getElementById('login-button');
+      const togglePassword = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eye-icon');
+
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        eyeIcon.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+      });
+
+      // Form submission with loading state
+      form.addEventListener('submit', function(e) {
+        loginButton.disabled = true;
+        loginButton.classList.add('loading');
+      });
+
+      // Focus password field on load
+      window.addEventListener('load', function() {
+        passwordInput.focus();
+      });
+
+      // Prevent back button after form submission
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+    </script>
+  </body>
+</html>

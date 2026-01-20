@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Royal Suite Customer Portal</title>
+    <style>
+        :root {
+            --bg-main: #101117;
+            --bg-secondary: #14151f;
+            --card-bg: #1a1b26;
+            --border-color: #1f2230;
+            --primary: #4b63ff;
+            --primary-hover: #394dd9;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4b63ff, #2563eb);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .brand-text {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-main);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .filter-input,
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(75, 99, 255, 0.1);
+        }
+
+        .filter-input::placeholder {
+            color: #6b7280;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Bookings Grid */
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .booking-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .booking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .booking-code {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .booking-type {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .badge.confirmed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .badge.completed {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+        }
+
+        .badge.cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .badge.draft {
+            background: rgba(156, 163, 175, 0.15);
+            color: var(--text-muted);
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .detail-item {
+            font-size: 13px;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .detail-value {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .booking-footer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .payment-status.paid {
+            color: var(--success);
+        }
+
+        .payment-status.pending {
+            color: var(--warning);
+        }
+
+        .payment-status.unpaid {
+            color: var(--danger);
+        }
+
+        .view-btn {
+            padding: 6px 14px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: rgba(75, 99, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 32px;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0 16px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .empty-text {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .filter-btn {
+                width: 100%;
+                align-self: stretch;
+            }
+
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div class="brand-icon">🎭</div>
+            <span class="brand-text">Royal Suite</span>
+        </div>
+        <div class="navbar-nav">
+            <a href="/customer/dashboard" class="nav-link">Dashboard</a>
+            <a href="/customer/bookings" class="nav-link active">Bookings</a>
+            <a href="/customer/invoices" class="nav-link">Invoices</a>
+        </div>
+        <div class="navbar-user">
+            <div class="user-info">
+                <div class="user-name"><%= customer.fullName %></div>
+                <div class="user-role">Customer Portal</div>
+            </div>
+            <a href="/customer/logout">
+                <button class="logout-btn">Logout</button>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">My Bookings</h1>
+            <p class="page-subtitle">View and manage all your bookings</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <label class="filter-label" for="search">Search</label>
+                <input 
+                    type="text" 
+                    id="search" 
+                    class="filter-input" 
+                    placeholder="Search by booking code..."
+                >
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="status">Status</label>
+                <select id="status" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="sort">Sort By</label>
+                <select id="sort" class="filter-select">
+                    <option value="date-desc">Latest First</option>
+                    <option value="date-asc">Oldest First</option>
+                    <option value="amount-desc">Amount (High to Low)</option>
+                    <option value="amount-asc">Amount (Low to High)</option>
+                </select>
+            </div>
+            <button class="filter-btn" onclick="applyFilters()">Apply</button>
+        </div>
+
+        <!-- Bookings Grid -->
+        <% if (bookings && bookings.length > 0) { %>
+        <div class="bookings-grid">
+            <% bookings.forEach(booking => { %>
+            <div class="booking-card" onclick="window.location.href='/customer/bookings/<%= booking._id %>'">
+                <div class="booking-header">
+                    <div>
+                        <div class="booking-code"><%= booking.bookingCode %></div>
+                        <div class="booking-type"><%= booking.eventType %></div>
+                    </div>
+                    <span class="badge <%= booking.bookingStatus.toLowerCase() %>">
+                        <%= booking.bookingStatus %>
+                    </span>
+                </div>
+
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Event Date</div>
+                        <div class="detail-value">
+                            <%= new Date(booking.eventDate).toLocaleDateString('en-IN', { 
+                                month: 'short', 
+                                day: 'numeric', 
+                                year: 'numeric' 
+                            }) %>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Pickup Date</div>
+                        <div class="detail-value">
+                            <%= new Date(booking.pickupDate).toLocaleDateString('en-IN', { 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }) %>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Return Date</div>
+                        <div class="detail-value">
+                            <%= new Date(booking.expectedReturnDate).toLocaleDateString('en-IN', { 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }) %>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total Amount</div>
+                        <div class="detail-value">₹<%= booking.totalAmount.toFixed(2) %></div>
+                    </div>
+                </div>
+
+                <div class="booking-footer">
+                    <div class="payment-status <%= booking.paymentStatus.toLowerCase().replace(' ', '-') %>">
+                        <% if (booking.paymentStatus === 'Paid') { %>
+                            ✅ Paid
+                        <% } else if (booking.paymentStatus === 'Partially Paid') { %>
+                            ⚠️ Partial
+                        <% } else { %>
+                            ❌ Unpaid
+                        <% } %>
+                    </div>
+                    <button class="view-btn" onclick="event.stopPropagation(); window.location.href='/customer/bookings/<%= booking._id %>'">
+                        View Details →
+                    </button>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button 
+                class="pagination-btn" 
+                onclick="goToPage(<%= pagination.page - 1 %>)"
+                <%= pagination.page === 1 ? 'disabled' : '' %>
+            >
+                ← Previous
+            </button>
+
+            <span class="pagination-info">
+                Page <%= pagination.page %> of <%= pagination.totalPages %>
+            </span>
+
+            <button 
+                class="pagination-btn" 
+                onclick="goToPage(<%= pagination.page + 1 %>)"
+                <%= pagination.page === pagination.totalPages ? 'disabled' : '' %>
+            >
+                Next →
+            </button>
+        </div>
+
+        <% } else { %>
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <div class="empty-title">No bookings found</div>
+            <div class="empty-text">Your bookings will appear here once they are created</div>
+        </div>
+        <% } %>
+    </div>
+
+    <script>
+        function goToPage(page) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('page', page);
+            window.location.search = urlParams.toString();
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('search').value;
+            const status = document.getElementById('status').value;
+            const sort = document.getElementById('sort').value;
+
+            const params = new URLSearchParams();
+            if (search) params.set('search', search);
+            if (status) params.set('status', status);
+            if (sort) params.set('sort', sort);
+
+            window.location.href = '/customer/bookings?' + params.toString();
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    </script>
+</body>
+</html>

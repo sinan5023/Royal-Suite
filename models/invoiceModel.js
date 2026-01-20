@@ -204,7 +204,7 @@ const invoiceSchema = new Schema(
         },
         method: {
           type: String,
-          enum: ["Cash", "Card", "UPI", "Bank Transfer", "Cheque"],
+          enum: ["Cash", "Card", "UPI", "Bank Transfer", "Cheque", "Online"],
           required: true,
         },
         paymentDate: {
@@ -343,6 +343,82 @@ invoiceSchema.pre("save", function () {
   }
 });
 
+// ===== POST-SAVE MIDDLEWARE (AUTO-SYNC BOOKING) =====
+
+/**
+ * Auto-sync booking payment status whenever invoice is saved
+ * This ensures booking payment status always matches invoice status
+ */
+invoiceSchema.post("save", async function (doc) {
+  // Only run if invoice has a linked booking
+  if (!doc.bookingId) {
+    console.log("⚠️ Invoice has no linked booking");
+    return;
+  }
+
+  try {
+    // Use mongoose.model() to avoid circular dependency
+    const mongoose = require("mongoose");
+    const Booking = mongoose.model("Booking");
+    const Invoice = mongoose.model("Invoice");
+
+    console.log(
+      "🔄 Auto-syncing booking payment for invoice:",
+      doc.invoiceNumber
+    );
+
+    // Get all invoices for this booking
+    const allInvoices = await Invoice.find({ bookingId: doc.bookingId });
+
+    let totalPaid = 0;
+    let totalDue = 0;
+
+    allInvoices.forEach((inv) => {
+      totalPaid += inv.amountPaid || 0;
+      totalDue += inv.balanceDue || 0;
+    });
+
+    console.log(`💰 Totals for booking: Paid ₹${totalPaid}, Due ₹${totalDue}`);
+
+    // Update booking
+    const booking = await Booking.findById(doc.bookingId);
+
+    if (!booking) {
+      console.log("❌ Booking not found:", doc.bookingId);
+      return;
+    }
+
+    // Determine payment status
+    let newStatus = "Unpaid";
+    if (totalDue === 0 && totalPaid > 0) {
+      newStatus = "Paid";
+    } else if (totalPaid > 0 && totalDue > 0) {
+      newStatus = "Partially Paid";
+    }
+
+    // Only update if changed
+    if (
+      booking.paymentStatus !== newStatus ||
+      booking.balanceDue !== totalDue ||
+      booking.amountPaid !== totalPaid
+    ) {
+      booking.paymentStatus = newStatus;
+      booking.balanceDue = totalDue;
+      booking.amountPaid = totalPaid;
+
+      await booking.save();
+      console.log(
+        `✅ Auto-synced booking ${booking.bookingCode}: ${newStatus}, Balance: ₹${totalDue}`
+      );
+    } else {
+      console.log("ℹ️ Booking already up to date");
+    }
+  } catch (error) {
+    console.error("❌ Error auto-syncing booking payment:", error);
+    console.error(error.stack);
+  }
+});
+
 // ===== INDEXES =====
 invoiceSchema.index({ invoiceNumber: 1 });
 invoiceSchema.index({ bookingId: 1 });
@@ -446,6 +522,7 @@ invoiceSchema.methods.refundSecurityDeposit = function (refundData) {
 invoiceSchema.set("toJSON", { virtuals: true });
 invoiceSchema.set("toObject", { virtuals: true });
 
+// ===== CREATE AND EXPORT MODEL =====
 const Invoice = mongoose.model("Invoice", invoiceSchema);
 
 module.exports = Invoice;

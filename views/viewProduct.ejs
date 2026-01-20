@@ -611,7 +611,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Top bar -->
-    <header class="topbar">
+     <header class="topbar">
       <div class="topbar-left">
         <div class="topbar-logo-pill">
           <div class="logo-square">🧳</div>
@@ -619,10 +619,7 @@
         </div>
       </div>
       <div class="topbar-center">
-        <span
-          ><%= greeting %>, <%= user.name %>. &nbsp; <%= user.role %> | <%=
-          currentDate %></span
-        >
+        <span><%= greeting %>, <%= user.name %></span>
       </div>
       <div class="topbar-right">
         <div class="topbar-pill">
@@ -631,8 +628,28 @@
         <div class="avatar-circle">
           <%= user.name.charAt(0).toUpperCase() %>
         </div>
+        <!-- Logout Button -->
+        <a
+          href="/logout"
+          class="topbar-pill logout-btn"
+          style="cursor: pointer; text-decoration: none; color: inherit"
+        >
+          <span>🚪</span>
+          <span>Logout</span>
+        </a>
       </div>
     </header>
+    <style>
+      .logout-btn {
+        transition: all 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        background: #2a1f1f !important;
+        border-color: #3b2727 !important;
+        color: var(--danger) !important;
+      }
+    </style>
 
     <div class="layout">
       <!-- Sidebar -->
@@ -651,7 +668,7 @@
             <div class="sidebar-icon">📅</div>
             <span>Calendar</span>
           </a>
-          <a href="/analytics" class="sidebar-item active">
+          <a href="/analytics" class="sidebar-item">
             <div class="sidebar-icon">📊</div>
             <span>Analytics</span>
           </a>
@@ -667,7 +684,7 @@
             <div class="sidebar-icon">📦</div>
             <span>Bookings</span>
           </a>
-          <a href="/inventory" class="sidebar-item">
+          <a href="/inventory" class="sidebar-item active">
             <div class="sidebar-icon">📋</div>
             <span>Inventory</span>
           </a>
