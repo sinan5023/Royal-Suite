@@ -1,7 +1,6 @@
 const invoiceService = require("../services/invoiceService");
 const Invoice = require("../models/invoiceModel");
 const invoicePdfService = require("../services/invoicePdfService");
-const customerPortalLinkService = require("../services/customerPortalLinkService")
 const jwt = require("jsonwebtoken");
 const env = require("dotenv")
 env.config()
@@ -200,59 +199,6 @@ const sendInvoiceWhatsApp = async (req, res) => {
     });
   }
 };
-
-
-/**
- * Send invoice portal link via WhatsApp (NEW - Portal access with login)
- * POST /api/invoices/:id/send-portal-link
- */
-const sendInvoicePortalLink = async (req, res) => {
-  try {
-    const invoiceId = req.params.id;
-
-    // Get invoice details
-    const Invoice = require("../models/invoiceModel");
-    const invoice = await Invoice.findById(invoiceId)
-      .populate("customerId", "_id fullName")
-      .lean();
-
-    if (!invoice) {
-      return res.status(404).json({
-        ok: false,
-        message: "Invoice not found",
-      });
-    }
-
-    console.log(invoice.customerId._id)
-    // Generate invoice portal access link
-    const result = await customerPortalLinkService.generateInvoiceAccessWhatsAppLink(
-      invoice.customerId._id,
-      invoiceId,
-      {
-        invoiceNumber: invoice.invoiceNumber,
-        totalAmount: invoice.totalAmount,
-        dueDate: invoice.dueDate,
-      }
-    );
-
-    res.json({
-      ok: true,
-      message: "Invoice portal link generated successfully",
-      data: result,
-    });
-  } catch (error) {
-    console.error("Error sending invoice portal link:", error);
-    res.status(500).json({
-      ok: false,
-      message: error.message || "Failed to send invoice portal link",
-    });
-  }
-};
-
-
-
-
-
 
 /**
  * Check if invoice exists for booking
@@ -629,5 +575,4 @@ module.exports = {
   downloadInvoiceWithToken,
   downloadInvoiceById,
   sendInvoiceWhatsApp,
-  sendInvoicePortalLink
 };

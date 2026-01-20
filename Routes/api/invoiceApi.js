@@ -15,10 +15,10 @@ router.get("/" , authCheck, invoiceController.getInvoices);
 router.get("/download/:token" ,  invoiceController.downloadInvoiceWithToken);
 
 // api to generate the customer portal link for whatsapp 
-router.post("/:id/send-portal-link", invoiceController.sendInvoicePortalLink)
+// router.post("/:id/send-portal-link", invoiceController.sendInvoicePortalLink)
 
-// // Send invoice via WhatsApp
-// router.post("/:id/send-whatsapp" , authCheck, invoiceController.sendInvoiceWhatsApp);
+// Send invoice via WhatsApp
+router.post("/:id/send-whatsapp" , authCheck, invoiceController.sendInvoiceWhatsApp);
 
 router.get("/:id/download" , authCheck, invoiceController.downloadInvoiceById);
 
